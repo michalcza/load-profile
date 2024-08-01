@@ -27,7 +27,7 @@ try {
 
     Write-Output "Headers added successfully to '$filePath'."
     # Call the Python script if header addition is successful
-    python "Q:\Energy\Engineering\R Stuff\working folder michal\lpd-r1\lpd-r6.py" LP_comma_202401301627.csv
+    python "C:\Users\mczarnecki\GitHub\load-profile\lpd.py" LP_comma_202401301627.csv
 }
 catch {
     Write-Error "An error occurred: $_"
