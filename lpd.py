@@ -42,10 +42,26 @@ def process_csv(input_file):
             'peak_total_kw': [peak_row['total_kw']]
         })
 
+        # Calculate additional factors
+        total_kw_sum = load_profile['total_kw'].sum()
+        average_load = total_kw_sum / len(load_profile)
+        peak_load = peak_row['total_kw']
+
+        # Dynamically calculate individual maximum demands
+        individual_maximum_demands = data.groupby(data.index.date)['kw'].max().tolist()
+        total_connected_load = sum(individual_maximum_demands)
+
+        # Calculate factors
+        diversity_factor = sum(individual_maximum_demands) / peak_load
+        load_factor = average_load / peak_load
+        coincidence_factor = peak_load / sum(individual_maximum_demands)
+        demand_factor = peak_load / total_connected_load
+
         # Generate output filenames
         base, ext = os.path.splitext(input_file)
         load_profile_file = f"{base}_out.csv"
         peak_info_file = f"{base}_peak.csv"
+        factors_file = f"{base}_factors.csv"
 
         # Save the load profile data to CSV
         load_profile.to_csv(load_profile_file, index=False)
@@ -53,8 +69,16 @@ def process_csv(input_file):
         # Save the peak info data to CSV
         peak_info.to_csv(peak_info_file, index=False)
 
+        # Save the factors to CSV
+        factors_data = pd.DataFrame({
+            'factor': ['diversity_factor', 'load_factor', 'coincidence_factor', 'demand_factor'],
+            'value': [diversity_factor, load_factor, coincidence_factor, demand_factor]
+        })
+        factors_data.to_csv(factors_file, index=False)
+
         print(f"Load profile has been created and saved to '{load_profile_file}'.")
         print(f"Peak info has been created and saved to '{peak_info_file}'.")
+        print(f"Factors have been calculated and saved to '{factors_file}'.")
 
     except FileNotFoundError:
         print(f"Error: The file '{input_file}' was not found.")
