@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Download Processed Files</title>
+  </head>
+  <body>
+    <h1>Download Processed Files</h1>
+    <ul>
+      <li><a href="{{ url_for('uploaded_file', filename=output_filename) }}">Download Load Profile CSV</a></li>
+      <li><a href="{{ url_for('uploaded_file', filename=peak_filename) }}">Download Peak Info CSV</a></li>
+      <li><a href="{{ url_for('uploaded_file', filename=factors_filename) }}">Download Factors CSV</a></li>
+    </ul>
+  </body>
+</html>
