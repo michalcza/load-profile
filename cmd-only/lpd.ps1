@@ -15,7 +15,7 @@ if ($fileContent -notmatch "^date,time,kw$") {
 }
 
 # Call the Python script
-$scriptPath = "C:\Users\mczarnecki\GitHub\load-profile\lpd.py"
+$scriptPath = "lpd.py"
 $process = Start-Process -NoNewWindow -FilePath "python" -ArgumentList "$scriptPath", "$filename" -Wait -PassThru
 
 if ($process.ExitCode -ne 0) {
