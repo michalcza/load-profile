@@ -1,0 +1,10 @@
+^C:\USERS\MICHA\GITHUB\LOAD-PROFILE\APP-CPLUSPLUS-REV01\CMAKELISTS.TXT
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/micha/GitHub/load-profile/app-cplusplus-rev01 -BC:/Users/micha/GitHub/load-profile/app-cplusplus-rev01 --check-stamp-file C:/Users/micha/GitHub/load-profile/app-cplusplus-rev01/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
