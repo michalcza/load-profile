@@ -4,11 +4,32 @@ import pandas as pd
 import argparse
 import os
 
-scale_factor = 1.5
-scale_factor = input(f"Please enter the scale factor to use to estimate total system load. Typically, this is between 1.5 and 2.0: [{scale_factor}] ")
-scale_factor = float(scale_factor) if scale_factor else 1.5
-print(f"We will use scale factor: {scale_factor}")
+def clear_screen():
+    # Check if the OS is Windows
+    if os.name == 'nt':
+        os.system('cls')  # Use 'cls' for Windows
+    else:
+        os.system('clear')  # Use 'clear' for Mac and Linux
+clear_screen()
 
+while True:
+    try:
+        scale_factor = float(input(
+    """Please enter the scale factor to use to estimate total system load.
+    Commercial load  [1.1 - 1.2]
+    Residential load [1.2 - 1.3]
+    Lighting load    [1.5 - 2.0]: """
+        ))
+        # Check if the scale factor is within the valid range
+        if 1.0 <= scale_factor <= 2.0:
+            break  # Exit the loop if valid
+        else:
+            print("Invalid input. Please enter a number between 1.0 and 2.0.")
+    
+    except ValueError:
+        print("Invalid input. Please enter a valid number.")
+
+print(f"Scale factor accepted: {scale_factor}")
 
 def process_csv(input_file):
     try:
@@ -25,27 +46,27 @@ def process_csv(input_file):
 
         # Convert the 'date' and 'time' columns to a single datetime column
         data['datetime'] = pd.to_datetime(data['date'] + ' ' + data['time'], format='%Y-%m-%d %H:%M:%S.%f', errors='coerce')
-        print("Datetime conversion completed.")
+        #print("Datetime conversion completed.")
 
         # Drop rows where datetime conversion failed
         data = data.dropna(subset=['datetime'])
-        print("Dropped rows with invalid datetime.")
+        #print("Dropped rows with invalid datetime.")
 
         # Set the 'datetime' column as the index
         data.set_index('datetime', inplace=True)
-        print("Set 'datetime' as index.")
+        #print("Set 'datetime' as index.")
 
         # Ensure 'kw' is numeric
         data['kw'] = pd.to_numeric(data['kw'], errors='coerce')
-        print("Converted 'kw' to numeric.")
+        #print("Converted 'kw' to numeric.")
 
         # Drop rows where 'kw' conversion failed
         data = data.dropna(subset=['kw'])
-        print("Dropped rows with invalid 'kw'.")
+        #print("Dropped rows with invalid 'kw'.")
 
         # Resample to 15-minute intervals and sum the 'kw' values for each interval
         load_profile = data['kw'].resample('15min').sum()
-        print("Resampling completed.")
+        #print("Resampling completed.")
 
         # Check if load_profile is empty
         if load_profile.empty:
@@ -53,11 +74,11 @@ def process_csv(input_file):
 
         # Reset index to get 'datetime' back as a column
         load_profile = load_profile.reset_index()
-        print("Reset index on load profile.")
+        #print("Reset index on load profile.")
 
         # Rename columns for clarity
         load_profile.columns = ['datetime', 'total_kw']
-        print("Renamed columns.")
+        #print("Renamed columns.")
 
         # Find the datetime for the peak total_kw
         peak_row = load_profile.loc[load_profile['total_kw'].idxmax()]
@@ -68,7 +89,7 @@ def process_csv(input_file):
         peak_info = pd.DataFrame({
             'datetime': [peak_datetime],
             'peak_total_kw': [peak_load]})
-        print("Created peak info DataFrame.")
+        #print("Created peak info DataFrame.")
         # Calculate average load
         average_load = load_profile['total_kw'].mean()
         average_load_per_meter = data.groupby('meter')['kw'].mean()
@@ -93,32 +114,32 @@ def process_csv(input_file):
         # Calculate individual maximum demands
         individual_maximum_demands_array = data.groupby(data.index.date)['kw'].max().tolist()
         total_connected_load = sum(individual_maximum_demands_array)
-        print("Calculated individual maximum demands.")
+        #print("Calculated individual maximum demands.")
 
         # Calculate factors
         diversity_factor = sum(individual_maximum_demands_array) / peak_load
         load_factor = average_load / peak_load
-        print("Calculated factors.")
+        #print("Calculated factors.")
 
         # Generate output filenames
         base, ext = os.path.splitext(input_file)
         load_profile_file = f"{base}_out.csv"
         peak_info_file = f"{base}_peak.csv"
         factors_file = f"{base}_factors.csv"
-        print(f"Output filename: {load_profile_file}")
-        print(f"Output filename: {peak_info_file}")
-        print(f"Output filename: {factors_file}")
+        #print(f"Output filename: {load_profile_file}")
+        #print(f"Output filename: {peak_info_file}")
+        #print(f"Output filename: {factors_file}")
         # Print calculated variables
         calculation_summary_width = 120
         calculation_summary_lines = [
             "=" * calculation_summary_width,
-            f"{'Calculation Variables':^{calculation_summary_width}}",
+            f"{'Calculations and Results':^{calculation_summary_width}}",
             "=" * calculation_summary_width,
-            f"{'Number of Days:':<30} {num_days:>20}",
-            f"{'Number of Meters:':<30} {num_meters:>20} {'':<30}",
+            #f"{'Number of Days:':<30} {num_days:>20}", # NEEDS VALIDATION
+            #f"{'Number of Meters:':<30} {num_meters:>20} {'':<30}", # NEEDS VALIDATION
             f"{'Average Load:':<30} {average_load:>20.2f} {'KW':<30}",
             f"{'Average Load per Meter:':<30} {average_load_per_meter.mean():>20.2f} {'KW':<30}",
-            f"{'Peak Load:':<30} {peak_load:>20.2f} {'KW on ' + str(peak_datetime):<30}",
+            f"{'>>>> Peak Load: <<<<':<30} {peak_load:>20.2f} {'KW on ' + str(peak_datetime):<30}",
             f"{'Estimated Total Connected Load:':<30} {total_connected_load_estimated:>20.2f} {'KW using scale factor: ' + str(scale_factor):<30}",
             "" * calculation_summary_width,
         ]
@@ -129,13 +150,37 @@ def process_csv(input_file):
         summary_results_width = 120
         summary_results_lines = [
             "=" * summary_results_width,
-            f"{'Summary of Results':^{summary_results_width}}",
+            f"{'Calculated Factors':^{summary_results_width}}",
             "=" * summary_results_width,
-            f"{'Diversity Factor:':<30} {diversity_factor:>20.2f} {'= sum(individual_maximum_demands_array) / peak_load':<30}",
-            f"{'Load Factor:':<30} {load_factor:>20.2f} {'= average_load / peak_load':<30}",
-            f"{'Coincidence Factor:':<30} {coincidence_factor:>20.2f} {'= peak_load / total_connected_load_estimated':<30}",
-            f"{'Demand Factor:':<30} {demand_factor:>20.2f} {'= peak_load / total_connected_load':<30}",
+            # DIVERSITY FACTOR >=1 (MORE THAN 1).
+            f"{'Diversity Factor:':<20} {diversity_factor:>20.2f} {'= sum(individual_maximum_demands) / peak_load':<30}",
+            f"{'':<44}{'Must be >=1 (more than 1)':<30}",
+            f"{'':<44}{'Reciprocal if Coincidence Factor':<30}",
+            f"{'':<44}{'2.23 means that a meter operates at peak load 2.23% of the time.':<30}",
+            f"{''}",
+            # LOAD FACTOR <=1 (LESS THAN 1)
+            f"{'Load Factor:':<20} {load_factor:>20.2f} {'= average_load / peak_load':<30}",
+            f"{'':<44}{'Must be <=1 (less than 1)':<30}",
+            f"{'':<44}{'Constant load LF =1':<30}",
+            f"{'':<44}{'Varying load LF = 0':<30}",
+            f"{'':<44}{'High LF = fixed costs are spread over more kWh of output.':<30}",
+            f"{'':<44}{'Indicates how efficiently the customer is using peak demand.':<30}",
+            f"{''}",
+            # COINCIDENCE FACTOR <=1 (LESS THAN 1)
+            # 1/CF = DF 
+            f"{'Coincidence Factor:':<20} {coincidence_factor:>20.2f} {'= peak_load / total_connected_load_estimated':<30}",
+            f"{'':<44}{'Must be <=1 (less than 1)':<30}",
+            f"{'':<44}{'CF will decrease as sample size increases':<30}",
+            f"{'':<44}{'Reciprocal of Diversity Factor':<30}",
+            f"{''}",
+            # DEMAND FACTOR <=1 (LESS THAN 1)            
+            f"{'Demand Factor:':<20} {demand_factor:>20.2f} {'= peak_load / total_connected_load':<30}",
+            f"{'':<44}{'Must be <=1 (less than 1)':<30}",
+            f"{'':<44}{'Low demand factor requires less system capacity to serve total load.':<30}",
+            f"{'':<44}{'DF is why sum of branch circuits in panel can exceed main breaker amps':<30}",
+            f"{''}",
             "=" * summary_results_width,
+            
         ]
         summary_results_box = "\n".join(summary_results_lines)
         print(summary_results_box)
