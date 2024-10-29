@@ -1,8 +1,14 @@
+import subprocess
 #!/usr/bin/env python3
 
 import pandas as pd
 import argparse
 import os
+def transformer_load_analysis(load_profile_file, transformer_kva):
+    print('Running transformer_load_analysis...')
+    import pandas as pd
+    transformer_kw = transformer_kva  # Assuming PF = 1, so KVA ≈ KW for simplification
+    
 
 def clear_screen():
     # Check if the OS is Windows
@@ -219,3 +225,49 @@ if __name__ == "__main__":
     input_file = args.filename
 
     process_csv(input_file)
+
+
+# Prompt for transformer load analysis
+while True:
+    transformer_choice = input("If these calculations are downstream from a single transformer, would you like to continue with transformer load analysis, or exit? (Y/N): ").strip().lower()
+    if transformer_choice in ['n', 'no', 'N']:
+        print("Exiting without transformer load analysis.")
+        exit()
+    elif transformer_choice in ['y', 'yes', 'Y']:
+        while True:
+            try:
+                transformer_kva = float(input("Please enter the transformer size in KVA: "))
+                break
+            except ValueError:
+                print("Invalid input. Please enter a numerical value for transformer size.")
+        
+        # Launch xfrm-load.py as a subprocess, passing the load profile file
+        load_profile_file = 'LP_comma_head_202410290821_out.csv'
+        transformer_load_analysis(load_profile_file, transformer_kva)
+        break
+    else:
+        print("Invalid input. Please type 'Y' or 'N'.")
+
+
+
+    # Display the results to the user
+    print(f"Percentage of time load is between 85% and 100% of transformer capacity: {(above_85_100 / total_entries) * 100:.2f}%")
+    print(f"Percentage of time load is between 100% and 120% of transformer capacity: {(above_100_120 / total_entries) * 100:.2f}%")
+    print(f"Percentage of time load exceeds 120% of transformer capacity: {(above_120 / total_entries) * 100:.2f}%")
+    # Load the load profile data from the specified CSV file
+    out_data = pd.read_csv(load_profile_file)
+    
+    # Ensure the 'total_kw' column exists in the data
+    if 'total_kw' not in out_data.columns:
+        raise ValueError("The load profile file must contain a 'total_kw' column representing load in KW.")
+    
+    # Calculate load as a percentage of transformer capacity
+    out_data['load_percentage'] = (out_data['total_kw'] / transformer_kw) * 100
+
+    # Calculate time (count of entries) and percentages for specified ranges
+    total_entries = len(out_data)
+
+    # Determine time spent within different load ranges
+    above_85_100 = len(out_data[(out_data['load_percentage'] >= 85) & (out_data['load_percentage'] < 100)])
+    above_100_120 = len(out_data[(out_data['load_percentage'] >= 100) & (out_data['load_percentage'] < 120)])
+    above_120 = len(out_data[out_data['load_percentage'] >= 120])
