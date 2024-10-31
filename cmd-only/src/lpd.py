@@ -20,22 +20,32 @@ clear_screen()
 
 while True:
     try:
-        scale_factor = float(input(
-    """Please enter the scale factor to use to estimate total system load.
-    Commercial load  [1.1 - 1.2]
-    Residential load [1.2 - 1.3]
-    Lighting load    [1.5 - 2.0]: """
-        ))
+        # Prompt the user for input
+        input_value = input(
+            """Please enter the scale factor to use to estimate total system load.
+            Commercial load  [1.1 - 1.2]
+            Residential load [1.2 - 1.3]
+            Lighting load    [1.5 - 2.0]
+            (Press Enter to use default value 1.2): """
+        )
+        
+        # Check if input is empty and assign default value if so
+        if input_value.strip() == "":
+            scale_factor = 1.2  # Set default value
+        else:
+            scale_factor = float(input_value)  # Convert to float if input is provided
+
         # Check if the scale factor is within the valid range
         if 1.0 <= scale_factor <= 2.0:
             break  # Exit the loop if valid
         else:
             print("Invalid input. Please enter a number between 1.0 and 2.0.")
-    
+
     except ValueError:
         print("Invalid input. Please enter a valid number.")
 
 print(f"Scale factor accepted: {scale_factor}")
+
 
 def process_csv(input_file):
     try:
