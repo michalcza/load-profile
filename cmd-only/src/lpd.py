@@ -217,14 +217,51 @@ def process_csv(input_file):
         print(f"An unexpected error occurred: {e}")
         sys.exit(1)
         
+# def transformer_load_analysis(load_profile_file, transformer_kva):
+    # try:
+        # print(f"Starting transformer load analysis on file: {load_profile_file} with transformer size {transformer_kva} KVA")
+
+        # # Load the load profile data from the specified CSV file
+        # out_data = pd.read_csv(load_profile_file)
+        # # Print the first few rows for verification
+        # # print("Data loaded for analysis:", out_data.head())
+
+        # # Ensure the 'total_kw' column exists in the data
+        # if 'total_kw' not in out_data.columns:
+            # raise ValueError("The load profile file must contain a 'total_kw' column representing load in KW.")
+
+        # # Calculate load as a percentage of transformer capacity
+        # out_data['load_percentage'] = (out_data['total_kw'] / transformer_kva) * 100
+
+        # # Calculate time (count of entries) and percentages for specified ranges
+        # total_entries = len(out_data)
+
+        # # Determine time spent within different load ranges
+        # above_85_100 = len(out_data[(out_data['load_percentage'] >= 85) & (out_data['load_percentage'] < 100)])
+        # above_100_120 = len(out_data[(out_data['load_percentage'] >= 100) & (out_data['load_percentage'] < 120)])
+        # above_120 = len(out_data[out_data['load_percentage'] >= 120])
+
+        # # Display results
+        # print(f"Percentage of time load is between 85% and 100% of transformer capacity: {(above_85_100 / total_entries) * 100:.2f}%")
+        # print(f"Percentage of time load is between 100% and 120% of transformer capacity: {(above_100_120 / total_entries) * 100:.2f}%")
+        # print(f"Percentage of time load exceeds 120% of transformer capacity: {(above_120 / total_entries) * 100:.2f}%")
+
+    # except FileNotFoundError:
+        # print(f"Error: The file '{load_profile_file}' was not found.")
+    # except ValueError as e:
+        # print(f"Error: {e}")
+    # except Exception as e:
+        # print(f"An unexpected error occurred: {e}")
+import pandas as pd
+
 def transformer_load_analysis(load_profile_file, transformer_kva):
     try:
+        print(f"")
         print(f"Starting transformer load analysis on file: {load_profile_file} with transformer size {transformer_kva} KVA")
 
         # Load the load profile data from the specified CSV file
         out_data = pd.read_csv(load_profile_file)
-        # Print the first few rows for verification
-        # print("Data loaded for analysis:", out_data.head())
+        # print("Data loaded for analysis:", out_data.head())  # Print the first few rows for verification
 
         # Ensure the 'total_kw' column exists in the data
         if 'total_kw' not in out_data.columns:
@@ -233,18 +270,52 @@ def transformer_load_analysis(load_profile_file, transformer_kva):
         # Calculate load as a percentage of transformer capacity
         out_data['load_percentage'] = (out_data['total_kw'] / transformer_kva) * 100
 
-        # Calculate time (count of entries) and percentages for specified ranges
-        total_entries = len(out_data)
+        # Calculate the total hours and days of the dataset
+        out_data['datetime'] = pd.to_datetime(out_data['datetime'])  # Convert to datetime if not already
+        total_time = (out_data['datetime'].max() - out_data['datetime'].min()).total_seconds()
+        total_hours = total_time / 3600  # Convert seconds to hours
+        total_days = total_hours / 24  # Convert hours to days
+
+        print(f"")
+        print(f"Total time of dataset: {total_days:.2f} days ({total_hours:.2f} hours)")
 
         # Determine time spent within different load ranges
-        above_85_100 = len(out_data[(out_data['load_percentage'] >= 85) & (out_data['load_percentage'] < 100)])
-        above_100_120 = len(out_data[(out_data['load_percentage'] >= 100) & (out_data['load_percentage'] < 120)])
-        above_120 = len(out_data[out_data['load_percentage'] >= 120])
+        time_interval = (out_data['datetime'].iloc[1] - out_data['datetime'].iloc[0]).total_seconds() / 3600  # Get time interval in hours
+
+        # Determine time spent within different load ranges
+        time_interval = (out_data['datetime'].iloc[1] - out_data['datetime'].iloc[0]).total_seconds() / 3600  # Get time interval in hours
+
+        # Calculate time spent in each load range in hours
+        below_85 = len(out_data[out_data['load_percentage'] < 85]) * time_interval
+        between_85_100 = len(out_data[(out_data['load_percentage'] >= 85) & (out_data['load_percentage'] < 100)]) * time_interval
+        between_100_120 = len(out_data[(out_data['load_percentage'] >= 100) & (out_data['load_percentage'] < 120)]) * time_interval
+        above_120 = len(out_data[out_data['load_percentage'] >= 120]) * time_interval
+
+        # Calculate percentages based on total hours
+        total_hours = (out_data['datetime'].max() - out_data['datetime'].min()).total_seconds() / 3600  # Total dataset hours
+        percent_below_85 = (below_85 / total_hours) * 100
+        percent_between_85_100 = (between_85_100 / total_hours) * 100
+        percent_between_100_120 = (between_100_120 / total_hours) * 100
+        percent_above_120 = (above_120 / total_hours) * 100
 
         # Display results
-        print(f"Percentage of time load is between 85% and 100% of transformer capacity: {(above_85_100 / total_entries) * 100:.2f}%")
-        print(f"Percentage of time load is between 100% and 120% of transformer capacity: {(above_100_120 / total_entries) * 100:.2f}%")
-        print(f"Percentage of time load exceeds 120% of transformer capacity: {(above_120 / total_entries) * 100:.2f}%")
+        print("=" * 82)
+        print(f"|{'Transformer Capacity Distribution':^80}|")
+        print("=" * 82)
+        print(f"| {'LOAD RANGE':^30}| {'DAYS':^16}| {'HOURS':^17}| {'%':^10}|")
+        print("-" * 82)
+        print(f"| {'Below 85%':<30}| {(below_85 / 24):<10.2f} days | {below_85:<10.2f} hours | {percent_below_85:<7.2f} % |")
+        print(f"| {'Between 85% and 100%':<30}| {(between_85_100 / 24):<10.2f} days | {between_85_100:<10.2f} hours | {percent_between_85_100:<7.2f} % |")
+        print(f"| {'Between 100% and 120%':<30}| {(between_100_120 / 24):<10.2f} days | {between_100_120:<10.2f} hours | {percent_between_100_120:<7.2f} % |")
+        print(f"| {'Exceeds 120%':<30}| {(above_120 / 24):<10.2f} days | {above_120:<10.2f} hours | {percent_above_120:<7.2f} % |")
+        print("=" * 82)
+
+
+
+
+
+
+
 
     except FileNotFoundError:
         print(f"Error: The file '{load_profile_file}' was not found.")
@@ -252,7 +323,7 @@ def transformer_load_analysis(load_profile_file, transformer_kva):
         print(f"Error: {e}")
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
-        
+
 
 if __name__ == "__main__":
     # Parse command-line arguments
