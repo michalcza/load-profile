@@ -1,1 +1,14 @@
+# Ignore all CSV files
 *.csv
+
+# Ignore all TXT files
+*.txt
+
+# Allow specific sample files
+!cmd-only/src/transformer_capacity_distribution.txt
+!cmd-only/src/sample-LP_comma_202401301627.csv
+!cmd-only/src/sample-LP_comma_head_202410231511.csv
+!cmd-only/src/sample-LP_comma_202401301627_out.csv
+!cmd-only/src/sample-LP_comma_202401301627_peak.csv
+!cmd-only/src/sample-LP_comma_202401301627_factors.csv
+!cmd-only/src/sample-LP_comma_head_202410231511_visualization.png

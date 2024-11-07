@@ -6,6 +6,7 @@ import sys
 import re
 import argparse
 import os
+import matplotlib.pyplot as plt
 
 def clear_screen():
     if os.name == 'nt':
@@ -261,7 +262,7 @@ def transformer_load_analysis(load_profile_file, transformer_kva):
         percent_between_100_120 = (between_100_120 / total_hours) * 100
         percent_above_120 = (above_120 / total_hours) * 100
 
-# Display results and print to output file
+        # Display results and print to output file
         load_distribution_output_file = "transformer_capacity_distribution.txt"
         with open(load_distribution_output_file, "w") as f:
             print("=" * 82)
@@ -297,7 +298,6 @@ def transformer_load_analysis(load_profile_file, transformer_kva):
             # Confirm that the table has been saved
             print(f"Output table saved to '{load_distribution_output_file}'")
 
-
     except FileNotFoundError:
         print(f"Error: The file '{load_profile_file}' was not found.")
     except ValueError as e:
@@ -305,6 +305,56 @@ def transformer_load_analysis(load_profile_file, transformer_kva):
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
 
+def visualize_load_profile(load_profile_file, transformer_kva):
+    """
+    Prompts the user to visualize the load data in a file ending with '_out.csv'.
+    If the user agrees, it generates a time-based plot with load thresholds and saves the plot to a file.
+    """
+    if load_profile_file.endswith("_out.csv"):
+        visualize = input("Would you like to visualize the data in the file ending with '_out.csv'? (Y/N): ").strip().lower()
+        
+        if visualize in ['y', 'yes']:
+            try:
+                # Load the data
+                data = pd.read_csv(load_profile_file)
+                
+                # Ensure the necessary columns are present
+                if 'datetime' in data.columns and 'total_kw' in data.columns:
+                    # Convert 'datetime' column to datetime type for plotting
+                    data['datetime'] = pd.to_datetime(data['datetime'])
+                    data.set_index('datetime', inplace=True)
+
+                    # Define thresholds for 85%, 100%, and 120% of transformer load
+                    load_85 = transformer_kva * 0.85
+                    load_100 = transformer_kva
+                    load_120 = transformer_kva * 1.2
+
+                    # Plotting
+                    plt.figure(figsize=(12, 6))
+                    plt.plot(data.index, data['total_kw'], label="Load (kW)", color="blue")
+                    
+                    # Add horizontal lines for load thresholds
+                    plt.axhline(y=load_85, color='orange', linestyle='--', label="85% Load")
+                    plt.axhline(y=load_100, color='green', linestyle='--', label="100% Load")
+                    plt.axhline(y=load_120, color='red', linestyle='--', label="120% Load")
+
+                    # Customize the plot
+                    plt.title("Time-Based Load Visualization")
+                    plt.xlabel("Time")
+                    plt.ylabel("Load (kW)")
+                    plt.legend()
+
+                    # Save the plot to a file
+                    graph_file = load_profile_file.replace("_out.csv", "_visualization.png")
+                    plt.savefig(graph_file)
+                    print(f"Graph saved to '{graph_file}'")
+                else:
+                    print("Error: Required columns 'datetime' and 'total_kw' are not present in the file.")
+            except Exception as e:
+                print(f"An error occurred while generating the visualization: {e}")
+        else:
+            print("Exiting without visualization.")
+            
 if __name__ == "__main__":
     # Parse command-line arguments
     parser = argparse.ArgumentParser(description='Process a CSV file with date, time, and kw columns.')
@@ -333,9 +383,15 @@ if __name__ == "__main__":
                 
                 # Call the transformer load analysis function
                 transformer_load_analysis(load_profile_file, transformer_kva)
+                # Call the transformer load analysis visualization function
+                visualize_load_profile(load_profile_file, transformer_kva)
                 break
             else:
                 print("Invalid input. Please type 'Y' or 'N'.")
     else:
         print(f"Error: The file '{load_profile_file}' was not created or found.")
         sys.exit(1)
+
+
+
+
