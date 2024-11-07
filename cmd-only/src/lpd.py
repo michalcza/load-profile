@@ -263,38 +263,29 @@ def transformer_load_analysis(load_profile_file, transformer_kva):
         percent_above_120 = (above_120 / total_hours) * 100
 
         # Display results and print to output file
-        load_distribution_output_file = "transformer_capacity_distribution.txt"
+        base_name = os.path.splitext(input_file)[0]  # Removes the .csv extension
+        load_distribution_output_file = f"{base_name}_xfrm_loading.txt"
         with open(load_distribution_output_file, "w") as f:
             print("=" * 82)
             f.write("=" * 82 + "\n")
-            
             print(f"|{'Transformer Capacity Distribution':^80}|")
             f.write(f"|{'Transformer Capacity Distribution':^80}|\n")
-            
             print("=" * 82)
             f.write("=" * 82 + "\n")
-            
             print(f"| {'LOAD RANGE':^30}| {'DAYS':^16}| {'HOURS':^17}| {'%':^10}|")
             f.write(f"| {'LOAD RANGE':^30}| {'DAYS':^16}| {'HOURS':^17}| {'%':^10}|\n")
-            
             print("-" * 82)
             f.write("-" * 82 + "\n")
-            
             print(f"| {'Below 85%':<30}| {(below_85 / 24):<10.2f} days | {below_85:<10.2f} hours | {percent_below_85:<7.2f} % |")
             f.write(f"| {'Below 85%':<30}| {(below_85 / 24):<10.2f} days | {below_85:<10.2f} hours | {percent_below_85:<7.2f} % |\n")
-            
             print(f"| {'Between 85% and 100%':<30}| {(between_85_100 / 24):<10.2f} days | {between_85_100:<10.2f} hours | {percent_between_85_100:<7.2f} % |")
             f.write(f"| {'Between 85% and 100%':<30}| {(between_85_100 / 24):<10.2f} days | {between_85_100:<10.2f} hours | {percent_between_85_100:<7.2f} % |\n")
-            
             print(f"| {'Between 100% and 120%':<30}| {(between_100_120 / 24):<10.2f} days | {between_100_120:<10.2f} hours | {percent_between_100_120:<7.2f} % |")
             f.write(f"| {'Between 100% and 120%':<30}| {(between_100_120 / 24):<10.2f} days | {between_100_120:<10.2f} hours | {percent_between_100_120:<7.2f} % |\n")
-            
             print(f"| {'Exceeds 120%':<30}| {(above_120 / 24):<10.2f} days | {above_120:<10.2f} hours | {percent_above_120:<7.2f} % |")
             f.write(f"| {'Exceeds 120%':<30}| {(above_120 / 24):<10.2f} days | {above_120:<10.2f} hours | {percent_above_120:<7.2f} % |\n")
-            
             print("=" * 82)
             f.write("=" * 82 + "\n")
-
             # Confirm that the table has been saved
             print(f"Output table saved to '{load_distribution_output_file}'")
 
@@ -311,7 +302,7 @@ def visualize_load_profile(load_profile_file, transformer_kva):
     If the user agrees, it generates a time-based plot with load thresholds and saves the plot to a file.
     """
     if load_profile_file.endswith("_out.csv"):
-        visualize = input("Would you like to visualize the data in the file ending with '_out.csv'? (Y/N): ").strip().lower()
+        visualize = input("Would you like to visualize the load profile data? (Y/N): ").strip().lower()
         
         if visualize in ['y', 'yes']:
             try:

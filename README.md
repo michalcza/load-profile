@@ -1,102 +1,112 @@
 
-# README.md
-# CSV Load Profile Processor
+# Load Processing and Transformer Analysis Script
 
-This project includes a PowerShell script and a Python script to process CSV files containing power consumption data and calculate various factors.
+This Python script processes load data from a CSV file and performs a series of analyses to estimate system loads. It includes capabilities to analyze transformer loads based on user-specified parameters, calculate various load metrics, and optionally visualize the results.
 
-## Requirements
+## Features
 
-- PowerShell
+1. **CSV File Processing**: Reads and validates load data from a CSV file with `meter`, `date`, `time`, and `kw` columns.
+2. **System Load Calculations**: Estimates total system load, peak load, and other metrics.
+3. **Transformer Load Analysis**: Calculates load distribution relative to a specified transformer size (in KVA).
+4. **Optional Visualization**: Generates a time-based plot of the load data with transformer capacity thresholds.
+
+## Prerequisites
+
 - Python 3.x
-- pandas
-- argparse
+- Required Python libraries:
+  - `pandas`
+  - `argparse`
+  - `matplotlib`
 
-## Installation
+Install the required libraries using:
+```bash
+pip install pandas matplotlib
+```
 
-Install the required Python packages using pip:
+## Usage
 
-```sh
-pip install pandas argparse
-``` 
+### Running the Script
 
-## PowerShell Script: `lpd.ps1`
+Run the script from the command line with:
+```bash
+python lpd.py <path_to_csv_file>
+```
 
-### Description
+Replace `<path_to_csv_file>` with the path to your input CSV file containing load data.
 
-The PowerShell script adds a header to the CSV file (if not already present) and then calls the Python script to process the file.
+### Input Format
 
-### Usage
-Run the PowerShell script with the path to the input CSV file as an argument:
-`.\lpd.ps1 <path_to_csv_file>` 
+The input CSV file should have the following columns:
+- `meter`: Meter ID
+- `date`: Date in `YYYY-MM-DD` format
+- `time`: Time in `HH:MM:SS.sss` format
+- `kw`: Load in kilowatts (KW)
 
-### Example
-`.\lpd.ps1 LP_comma_202401301627.csv` 
+The script checks the format of the first two lines in the CSV file to ensure they match the expected structure.
 
-### Script Details
-1.  **Check if File Exists**: Verifies that the specified file exists.
-2.  **Check for Existing Header**: Reads the first line of the file to check if the header is already present.
-3.  **Add Header if Needed**: If the header is not present, adds the header to the file.
-4.  **Call Python Script**: Calls the Python script to process the CSV file.
+### Options and Flow
 
-### Error Handling
-The script includes error handling for file not found and general exceptions.
+1. **Scale Factor**: Upon running, you will be prompted to input a scale factor for estimating the total system load:
+   - Acceptable range: `1.0 - 2.0`
+   - Default value: `1.2` if no input is provided
 
-## Python Script: `lpd.py`
+2. **Transformer Analysis**:
+   - After CSV processing, the script will ask if you'd like to perform transformer load analysis.
+   - If you choose to proceed, you will be prompted to enter the transformer size in KVA.
 
-### Description
-The Python script processes the CSV file to create a load profile, identify peak load information, and calculate various factors.
-
-### Usage
-Run the Python script with the path to the input CSV file as an argument:
-`python lpd.py <path_to_csv_file>` 
-
-### Example
-`python lpd.py LP_comma_202401301627.csv` 
-
-### Input File Format
-The input CSV file must contain the following columns:
--   `date`: Date in `YYYY-MM-DD` format
--   `time`: Time in `HH:MM:SS` format
--   `kw`: Numeric values representing power consumption
+3. **Visualization**:
+   - You can opt to visualize the load profile after transformer analysis.
+   - The graph shows the load over time with thresholds at 85%, 100%, and 120% of the transformer capacity.
 
 ### Output Files
-The script generates three output files:
-1.  **Load Profile CSV**: Contains the resampled 15-minute interval load profile data with summed `kw` values.
-2.  **Peak Info CSV**: Contains the datetime and `total_kw` value for the peak load.
-3.  **Factors CSV**: Contains calculated values for diversity factor, load factor, coincidence factor, and demand factor.
 
-### Example Output Files
--   `LP_comma_202401301627_out.csv`: Load profile data
-```
-datetime,total_kw
-2024-01-01 00:15:00,13.972
-```
--   `LP_comma_202401301627_peak.csv`: Peak load information
-```
-datetime,peak_total_kw
-2024-01-06 09:15:00,37.12
-```
--   `LP_comma_202401301627_factors.csv`: Calculated factors
-```
-factor,value
-diversity_factor,1.7591594827586208
-load_factor,0.4951682605962644
-coincidence_factor,0.5684532924961715
-demand_factor,0.5684532924961715
+The script generates several output files based on the input CSV file:
+- `<input_file>_out.csv`: Load profile data with timestamped total load.
+- `<input_file>_peak.csv`: Summary of peak load information.
+- `<input_file>_factors.csv`: Key metrics, including diversity, load, coincidence, and demand factors.
+- `<input_file>_xfrm_loading.txt`: Transformer capacity distribution, detailing the time spent in different load ranges.
+- `<input_file>_visualization.png` (optional): Graph of load data with transformer capacity thresholds.
+
+### Example
+
+To process `load_data.csv` and perform all analyses, use:
+```bash
+python lpd.py load_data.csv
 ```
 
-### Script Details
-1.  **Read the CSV file**: Reads the data into a DataFrame.
-2.  **Ensure required columns**: Checks if `date`, `time`, and `kw` columns are present.
-3.  **Combine 'date' and 'time'**: Creates a new `datetime` column by combining `date` and `time` columns and converting them to a datetime object.
-4.  **Drop invalid rows**: Drops rows where `datetime` conversion failed.
-5.  **Set datetime index**: Sets the `datetime` column as the DataFrame index.
-6.  **Ensure 'kw' is numeric**: Converts `kw` column to numeric, coercing errors.
-7.  **Resample data**: Resamples the `kw` values into 15-minute intervals and sums the values for each interval.
-8.  **Reset index**: Resets the index to get `datetime` back as a column.
-9.  **Rename columns**: Renames columns for clarity.
-10.  **Find peak load**: Identifies the row with the maximum `total_kw` value.
-11.  **Calculate Factors**: Dynamically calculates individual maximum demands and total connected load from the data, and computes diversity factor, load factor, coincidence factor, and demand factor.
-12.  **Generate output filenames**: Creates output filenames based on the input file name.
-13.  **Save results**: Saves the load profile, peak info, and factors to CSV files.
-14.  **Error Handling**: Catches and prints appropriate error messages for `FileNotFoundError`, `ValueError`, and general exceptions.
+When prompted:
+- Enter a scale factor (e.g., `1.2`) or press Enter to use the default.
+- If proceeding with transformer analysis, enter the transformer size in KVA (e.g., `500`).
+- Choose to visualize the load profile data.
+
+## Error Handling
+
+The script includes error handling for:
+- Missing or incorrect CSV headers
+- Invalid data formats
+- File not found errors
+
+Errors are reported in the console, and the script exits if it encounters an issue.
+
+## License
+
+This project is open-source and free to use under the [MIT License](https://opensource.org/licenses/MIT).
+
+## To Do
+- Error handling when dropping rows with bad data.  Sample file `sample-LP_comma_head_202410231511.csv` Will show Diversity Factor <1 and it is assumed that this is due to dropped rows where time conversion failed.
+```
+        # Drop rows where datetime conversion failed
+        data = data.dropna(subset=['datetime'])
+```
+Graph visualization shows hole in data 10/22/2024
+```
+========================================================================================================================
+                                                   Calculated Factors
+========================================================================================================================
+Diversity Factor:                    0.19 = sum(individual_maximum_demands) / peak_load
+                                            Must be >=1 (more than 1)
+                                            Reciprocal if Coincidence Factor
+                                            2.23 means that a meter operates at peak load 2.23% of the time.
+```
+- Transformer loading calculations need to clarify this is for single-phase XFRM only. Three-phase MDU (120/208V) will not calculate corrrectly.
+- Add GUI to upload data file.
