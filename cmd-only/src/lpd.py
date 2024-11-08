@@ -136,7 +136,41 @@ def process_csv(input_file):
         load_profile_file = f"{base}_out.csv"
         peak_info_file = f"{base}_peak.csv"
         factors_file = f"{base}_factors.csv"
-        
+ 
+        # Construct the full output filename
+        output_file = f"{base}_all_outputs.txt"
+        with open(output_file, 'w') as out_file:
+            out_file.write(f"\n")
+            out_file.write("=" * 80 + "\n")
+            out_file.write(f"{'Load Summary':^80}\n")
+            out_file.write("=" * 80 + "\n")
+            out_file.write(f"{'Average Load (meter): ':<35} {average_load_per_meter.mean():>16.2f} {'KW':<30}\n")
+            out_file.write(f"{'Average Load (dataset): ':<35} {average_load:>16.2f} {'KW':<20}\n")
+            out_file.write(f"\n")
+            out_file.write("=" * 80 + "\n")
+            out_file.write(f"{'Data Summary':^80}\n")
+            out_file.write("=" * 80 + "\n")
+#sus        #out_file.write(f"{'Number of Meters in Dataset: ':<25} {num_meters:>20.0f}\n")
+            out_file.write(f"{'Number of Days (dataset): ':<25} {num_days:>20.0f}\n")
+            out_file.write(f"\n")
+            out_file.write("=" * 80 + "\n")
+            out_file.write(f"{'Peak Load Summary':^80}\n")
+            out_file.write("=" * 80 + "\n")
+            out_file.write(f"{'Peak Load: ':<35} {peak_load:>16.2f} {'KW on ' + str(peak_datetime):<20}\n")
+            out_file.write(f"{'Total Connected Load (Est.): ':<35} {total_connected_load_estimated:>16.2f} {'KW w/ scale factor ' + str(scale_factor):<20}\n")
+            out_file.write(f"{'Sum of individual MAX demand (non-coinc.): ':<25} {sum_individual_maximum_demands:>8.2f} {'KW':<20}\n")
+#sus        #why is total_connected_load_corrected =  sum_individual_maximum_demands
+            #out_file.write(f"{'Total Connected Load: ':<25} {total_connected_load:>20.2f} {'KW':<30}\n")
+            #out_file.write(f"{'Total Connected Load: ':<25} {total_connected_load_corrected:>20.2f} {'KW':<30}\n")
+            out_file.write(f"\n")
+            out_file.write("=" * 80 + "\n")
+            out_file.write(f"{'Factors Summary':^80}\n")
+            out_file.write("=" * 80 + "\n")
+            out_file.write(f"{'Load Factor*: ':<25} {load_factor:>20.2f}\n")
+            out_file.write(f"{'Diversity Factor: ':<25} {diversity_factor:>20.2f}\n")
+            out_file.write(f"{'Coincidence Factor: ':<25} {coincidence_factor:>20.2f}\n")
+            out_file.write(f"{'Demand Factor: ':<25} {demand_factor:>20.2f}\n")
+            out_file.write(f"{'* unverified calculations (see docs)':<25}\n")
         # Print calculated variables
         calculation_summary_width = 120
         calculation_summary_lines = [
@@ -188,23 +222,25 @@ def process_csv(input_file):
             "=" * summary_results_width,
         ]
         summary_results_box = "\n".join(summary_results_lines)
+        print(f"")
         print(summary_results_box)
 
         # Profile data to CSV
         load_profile.to_csv(load_profile_file, index=False)
+        print(f"")
         print(f"Load profile saved to '{load_profile_file}'.")
 
         # Peak info data to CSV
-        peak_info.to_csv(peak_info_file, index=False)
-        print(f"Peak info saved to '{peak_info_file}'.")
+        #peak_info.to_csv(peak_info_file, index=False)
+        #print(f"Peak info saved to '{peak_info_file}'.")
 
         # Factors to CSV
-        factors_data = pd.DataFrame({
-            'factor': ['diversity_factor', 'load_factor', 'coincidence_factor', 'demand_factor'],
-            'value': [diversity_factor, load_factor, coincidence_factor, demand_factor]
-        })
-        factors_data.to_csv(factors_file, index=False)
-        print(f"Factors saved to '{factors_file}'.")
+        #factors_data = pd.DataFrame({
+        #    'factor': ['diversity_factor', 'load_factor', 'coincidence_factor', 'demand_factor'],
+        #    'value': [diversity_factor, load_factor, coincidence_factor, demand_factor]
+        #})
+        #factors_data.to_csv(factors_file, index=False)
+        #print(f"Factors saved to '{factors_file}'.")
         
         return load_profile_file # Return the load_profile_file path for use outside the function
 
@@ -220,6 +256,7 @@ def process_csv(input_file):
         
 def transformer_load_analysis(load_profile_file, transformer_kva):
     try:
+        print(f"")
         print(f"")
         print(f"Starting transformer load analysis on file: {load_profile_file} with transformer size {transformer_kva} KVA")
 
@@ -264,30 +301,31 @@ def transformer_load_analysis(load_profile_file, transformer_kva):
 
         # Display results and print to output file
         base_name = os.path.splitext(input_file)[0]  # Removes the .csv extension
-        load_distribution_output_file = f"{base_name}_xfrm_loading.txt"
-        with open(load_distribution_output_file, "w") as f:
-            print("=" * 82)
-            f.write("=" * 82 + "\n")
-            print(f"|{'Transformer Capacity Distribution':^80}|")
-            f.write(f"|{'Transformer Capacity Distribution':^80}|\n")
-            print("=" * 82)
-            f.write("=" * 82 + "\n")
-            print(f"| {'LOAD RANGE':^30}| {'DAYS':^16}| {'HOURS':^17}| {'%':^10}|")
-            f.write(f"| {'LOAD RANGE':^30}| {'DAYS':^16}| {'HOURS':^17}| {'%':^10}|\n")
-            print("-" * 82)
-            f.write("-" * 82 + "\n")
-            print(f"| {'Below 85%':<30}| {(below_85 / 24):<10.2f} days | {below_85:<10.2f} hours | {percent_below_85:<7.2f} % |")
-            f.write(f"| {'Below 85%':<30}| {(below_85 / 24):<10.2f} days | {below_85:<10.2f} hours | {percent_below_85:<7.2f} % |\n")
-            print(f"| {'Between 85% and 100%':<30}| {(between_85_100 / 24):<10.2f} days | {between_85_100:<10.2f} hours | {percent_between_85_100:<7.2f} % |")
-            f.write(f"| {'Between 85% and 100%':<30}| {(between_85_100 / 24):<10.2f} days | {between_85_100:<10.2f} hours | {percent_between_85_100:<7.2f} % |\n")
-            print(f"| {'Between 100% and 120%':<30}| {(between_100_120 / 24):<10.2f} days | {between_100_120:<10.2f} hours | {percent_between_100_120:<7.2f} % |")
-            f.write(f"| {'Between 100% and 120%':<30}| {(between_100_120 / 24):<10.2f} days | {between_100_120:<10.2f} hours | {percent_between_100_120:<7.2f} % |\n")
-            print(f"| {'Exceeds 120%':<30}| {(above_120 / 24):<10.2f} days | {above_120:<10.2f} hours | {percent_above_120:<7.2f} % |")
-            f.write(f"| {'Exceeds 120%':<30}| {(above_120 / 24):<10.2f} days | {above_120:<10.2f} hours | {percent_above_120:<7.2f} % |\n")
-            print("=" * 82)
-            f.write("=" * 82 + "\n")
+        load_distribution_output_file = f"{base_name}_all_outputs.txt"
+        with open(load_distribution_output_file, "a") as f:
+            print("=" * 80)
+            f.write("" * 80 + "\n")
+            f.write("=" * 80 + "\n")
+            print(f"{'Transformer Capacity Distribution':^80}")
+            f.write(f"{'Transformer Capacity Distribution':^80}\n")
+            print("=" * 80)
+            f.write("=" * 80 + "\n")
+            print(f" {'LOAD RANGE':^30}| {'DAYS':^16}| {'HOURS':^17}| {'%':^10}|")
+            f.write(f" {'LOAD RANGE':^30}| {'DAYS':^16}| {'HOURS':^17}| {'%':^10}\n")
+            print("-" * 80)
+            f.write("-" * 80 + "\n")
+            print(f" {'Below 85%':<30}| {(below_85 / 24):<10.2f} days | {below_85:<10.2f} hours | {percent_below_85:<7.2f} % ")
+            f.write(f" {'Below 85%':<30}| {(below_85 / 24):<10.2f} days | {below_85:<10.2f} hours | {percent_below_85:<7.2f} % \n")
+            print(f" {'Between 85% and 100%':<30}| {(between_85_100 / 24):<10.2f} days | {between_85_100:<10.2f} hours | {percent_between_85_100:<7.2f} % ")
+            f.write(f" {'Between 85% and 100%':<30}| {(between_85_100 / 24):<10.2f} days | {between_85_100:<10.2f} hours | {percent_between_85_100:<7.2f} % \n")
+            print(f" {'Between 100% and 120%':<30}| {(between_100_120 / 24):<10.2f} days | {between_100_120:<10.2f} hours | {percent_between_100_120:<7.2f} % ")
+            f.write(f" {'Between 100% and 120%':<30}| {(between_100_120 / 24):<10.2f} days | {between_100_120:<10.2f} hours | {percent_between_100_120:<7.2f} % \n")
+            print(f" {'Exceeds 120%':<30}| {(above_120 / 24):<10.2f} days | {above_120:<10.2f} hours | {percent_above_120:<7.2f} % ")
+            f.write(f" {'Exceeds 120%':<30}| {(above_120 / 24):<10.2f} days | {above_120:<10.2f} hours | {percent_above_120:<7.2f} % \n")
+            print("=" * 80)
+            f.write("=" * 80 + "\n")
             # Confirm that the table has been saved
-            print(f"Output table saved to '{load_distribution_output_file}'")
+            print(f"Output table appended to '{load_distribution_output_file}'")
 
     except FileNotFoundError:
         print(f"Error: The file '{load_profile_file}' was not found.")

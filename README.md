@@ -110,3 +110,6 @@ Diversity Factor:                    0.19 = sum(individual_maximum_demands) / pe
 ```
 - Transformer loading calculations need to clarify this is for single-phase XFRM only. Three-phase MDU (120/208V) will not calculate corrrectly.
 - Add GUI to upload data file.
+
+# Build EXE
+`pyinstaller --onefile lpd.py`
