@@ -4,11 +4,17 @@
 # Ignore all TXT files
 *.txt
 
+# Ignote all PNG image files
+*.png
+
+# Allow process flowchart for documentation
+!cmd-only/src/lpd.py.flowchart.png
+
 # Allow specific sample files
-!cmd-only/src/transformer_capacity_distribution.txt
-!cmd-only/src/sample-LP_comma_202401301627.csv
-!cmd-only/src/sample-LP_comma_head_202410231511.csv
-!cmd-only/src/sample-LP_comma_202401301627_out.csv
-!cmd-only/src/sample-LP_comma_202401301627_peak.csv
-!cmd-only/src/sample-LP_comma_202401301627_factors.csv
-!cmd-only/src/sample-LP_comma_head_202410231511_visualization.png
+!cmd-only\sample-data\sampleLP_comma_head_202411071043_out.csv
+!cmd-only\sample-data\sampleLP_comma_head_202411071043_visualization.png
+!cmd-only\sample-data\sampleLP_comma_202401301627.csv
+!cmd-only\sample-data\sampleLP_comma_head_202410231511.csv
+!cmd-only\sample-data\sampleLP_comma_head_202411071043.csv
+!cmd-only\sample-data\sampleTR7909.csv
+!cmd-only\sample-data\sampleLP_comma_head_202411071043_all_outputs.txt
