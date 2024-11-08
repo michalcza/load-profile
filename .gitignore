@@ -1,20 +1,20 @@
 # Ignore all CSV files
-*.csv
+#*.csv
 
 # Ignore all TXT files
-*.txt
+#*.txt
 
 # Ignote all PNG image files
-*.png
+#*.png
 
 # Allow process flowchart for documentation
-!cmd-only/src/lpd.py.flowchart.png
+#!cmd-only/src/lpd.py.flowchart.png
 
 # Allow specific sample files
-!cmd-only\sample-data\sampleLP_comma_head_202411071043_out.csv
-!cmd-only\sample-data\sampleLP_comma_head_202411071043_visualization.png
-!cmd-only\sample-data\sampleLP_comma_202401301627.csv
-!cmd-only\sample-data\sampleLP_comma_head_202410231511.csv
-!cmd-only\sample-data\sampleLP_comma_head_202411071043.csv
-!cmd-only\sample-data\sampleTR7909.csv
-!cmd-only\sample-data\sampleLP_comma_head_202411071043_all_outputs.txt
+#!cmd-only\sample-data\sampleLP_comma_head_202411071043_out.csv
+#!cmd-only\sample-data\sampleLP_comma_head_202411071043_visualization.png
+#!cmd-only\sample-data\sampleLP_comma_202401301627.csv
+#!cmd-only\sample-data\sampleLP_comma_head_202410231511.csv
+#!cmd-only\sample-data\sampleLP_comma_head_202411071043.csv
+#!cmd-only\sample-data\sampleTR7909.csv
+#!cmd-only\sample-data\sampleLP_comma_head_202411071043_all_outputs.txt
