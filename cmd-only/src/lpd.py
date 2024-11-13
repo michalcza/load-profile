@@ -1,5 +1,56 @@
 #!/usr/bin/env python3
 
+"""
+==========================================================
+Transformer Load Analysis and Visualization Tool
+==========================================================
+Author: Michal Czarnecki
+Date:   12 NOV 2024
+
+Description:
+    This Python program processes a CSV file containing 
+    load data (with date, time, and kW columns) to perform
+    transformer load analysis, calculate key metrics 
+    (Average Load, Peak Load, Load Factor, Diversity Factor, 
+    Coincidence Factor, and Demand Factor), and generate 
+    visualizations for load patterns over time.
+
+Usage:
+    Run this program from the command line, specifying:
+    - The path to the CSV file.
+    - Optionally, the transformer KVA size for analysis.
+
+    Example:
+        python lpd.py sampleLP_comma_head_202411071043.csv --transformer_kva 75
+
+Input: 
+    - sampleLP_comma_head_202411071043.csv
+        First few row sample:
+        meter,date,time,kw
+        74592856,2024-08-04,00:15:00.000,3.296
+        74592856,2024-08-04,00:30:00.000,2.94
+        74592856,2024-08-04,00:45:00.000,4.424
+        74592856,2024-08-04,01:00:00.000,2.268
+Output:
+    - sampleLP_comma_head_202411071043_all_outputs.txt
+    Ouput file with calculations, results, and interpretations.
+
+    - sampleLP_comma_head_202411071043_out.csv
+    Output file with time based aggregated load profile.
+    
+    - sampleLP_comma_head_202411071043_visualization.png
+    Visualization based on time based load profile data.
+    
+Windows executable:
+    Executable is available as ~\cmd-only\src\dist\lpd.exe
+    and is created using:
+    > pyinstaller --onefile lpd.py
+
+Sample Data:
+    \cmd-only\sample-data
+==========================================================
+"""
+
 import pandas as pd
 import subprocess
 import sys
@@ -254,7 +305,6 @@ def process_csv(input_file):
 
 def transformer_load_analysis(load_profile_file, transformer_kva):
     try:
-        print(f"")
         print(f"")
         print(f"Starting transformer load analysis on file:")
         print(f"{load_profile_file}\nusing transformer size {transformer_kva} KVA")

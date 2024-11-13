@@ -1,36 +1,53 @@
-
 ================================================================================
-                                  Load Summary                                  
+                                    Results                                     
 ================================================================================
-Average Load (dataset):                       451.20 KW                  
-
-Peak Load:                                    781.92 KW on 2024-10-16 19:15:00
-Sum of individual MAX demand (non-coinc.):   3576.68 KW                  
+Average Load:                                451.20 KW                            
+Average Load per Meter:                        0.56 KW                            
+Peak Load:                                   781.92 KW on 2024-10-16 19:15:00     
+Average Peak per Meter:                        3.88 KW                            
 ================================================================================
-                                  Data Summary                                  
-================================================================================
-Number of Meters in Dataset:                   923
-Number of Days (dataset):                     7
-
-================================================================================
-                               Peak Load Summary                                
-================================================================================
-
-================================================================================
-                                Factors Summary                                 
+                               Calculated Factors                               
 ================================================================================
 Load Factor:                              0.58
 Diversity Factor:                         4.57
 Coincidence Factor:                       0.22
 Demand Factor:                            0.22
+================================================================================
+                           Interpretation of Results                            
+================================================================================
+Load Factor:
+     = average_load / peak_load
+     With constant load, LF -> 1
+     With variable load, LF -> 0
+     With LF -> 1, fixed costs are spread over more kWh of output.
+     LF how efficiently the customer is using peak demand.
+     Example: Traffic light service LF ~ 1
+              Electric car charging station LF ~ 0
+      
+Diversity Factor:
+     = sum_individual_maximum_demands / peak_load
+     4.57% of meters peaked at 3.88 (average KW)
+     at the same time the system peaked at 781.92 KW.
+     
+Coincidence Factor:
+     = peak_load / sum_individual_maximum_demands
+     1 / coincidence_factor = diversity_factor
+     CF will naturally decrease as number of meters increases.
+     
+Demand Factor:
+     = peak_load / sum_individual_maximum_demands
+     Low demand factor requires less system capacity to serve total load.
+     Example: Branch circuits in panel can exceed main breaker amps.
+     
+================================================================================
 
 ================================================================================
                        Transformer Capacity Distribution                        
 ================================================================================
            LOAD RANGE          |       DAYS      |       HOURS      |     %     
 --------------------------------------------------------------------------------
- Below 85%                     | 0.81       days | 19.50      hours | 11.62   % 
- Between 85% and 100%          | 0.04       days | 1.00       hours | 0.60    % 
- Between 100% and 120%         | 0.67       days | 16.00      hours | 9.54    % 
- Exceeds 120%                  | 5.48       days | 131.50     hours | 78.39   % 
+ Below 85%                     | 5.48       days | 131.50     hours | 78.39   % 
+ Between 85% and 100%          | 1.21       days | 29.00      hours | 17.29   % 
+ Between 100% and 120%         | 0.31       days | 7.50       hours | 4.47    % 
+ Exceeds 120%                  | 0.00       days | 0.00       hours | 0.00    % 
 ================================================================================
