@@ -18,3 +18,7 @@
 #!cmd-only\sample-data\sampleLP_comma_head_202411071043.csv
 #!cmd-only\sample-data\sampleTR7909.csv
 #!cmd-only\sample-data\sampleLP_comma_head_202411071043_all_outputs.txt
+/cmd-only/src/build
+/cmd-only/src/build
+cmd-only/src/lpd.spec
+cmd-only/src/load_profile.spec

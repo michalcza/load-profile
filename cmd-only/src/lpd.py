@@ -138,6 +138,9 @@ def process_csv(input_file):
             raise ValueError("Too many rows dropped due to 'kw' conversion failure. Exiting.")
             sys.exit(1)
         
+        start_datetime = data.index.min()
+        end_datetime = data.index.max()
+        
         # Resample to 15-minute intervals and sum the 'kw' values for each interval
         load_profile = data["kw"].resample("15min").sum()
 
@@ -186,13 +189,13 @@ def process_csv(input_file):
             print("Coincidence factor is within the expected range (<= 1).")
 
         # Demand factor
-        demand_factor = peak_load / sum_individual_maximum_demands
+        #demand_factor = peak_load / total_conneced_load
         
         # Verify reasonability
-        if demand_factor >= 1:
-            raise ValueError("Demand factor exceeds the reasonability limit of 1.")
-        else:
-            print("Demand Factor is within the expected range (<= 1).")
+        #if demand_factor >= 1:
+        #  raise ValueError("Demand factor exceeds the reasonability limit of 1.")
+        #else:
+        #  print("Demand Factor is within the expected range (<= 1).")
 
         # Diversity factor
         diversity_factor = sum_individual_maximum_demands / peak_load
@@ -238,24 +241,33 @@ def process_csv(input_file):
         calculation_summary_width = 80
         calculation_summary_lines = [
             "=" * calculation_summary_width,
+            f"{'Data Parameters':^{calculation_summary_width}}",
+            "=" * calculation_summary_width,
+            f"{'Starting date & time: ':<37} {str(start_datetime):>35}",
+            f"{'Ending date & time: ':<37} {str(end_datetime):>35}",
+            f"{'Days in dataset: ':<35} {num_days:>20.0f} {'days':<23}",
+            f"{'Meters in dataset: ':<35} {num_meters:>20.0f} {'meters':<23}",
+            f"{'Meter reads in dataset: ':<35} {initial_row_count:>20.0f} {'rows':<23}",
+            f"{'Rows dropped during conversion: ':<35} {rows_dropped:>20.0f} {'rows':<23}",
+            "=" * calculation_summary_width,
             f"{'Results':^{calculation_summary_width}}",
             "=" * calculation_summary_width,
-            f"{'Average Load: ':<30} {average_load:>20.2f} {'KW':<30}",
-            f"{'Average Load per Meter: ':<30} {average_load_per_meter.mean():>20.2f} {'KW':<30}",
-            f"{'Peak Load: ':<30} {peak_load:>20.2f} {'KW on ' + str(peak_datetime):<30}",
-            f"{'Average Peak per Meter: ':<30} {average_peak_load_per_meter:>20.2f} {'KW':<30}",
+            f"{'Average load (total): ':<30} {average_load:>20.2f} {'KW':<28}",
+            f"{'Average load (per meter): ':<30} {average_load_per_meter.mean():>20.2f} {'KW':<28}",
+            f"{'Peak load (total): ':<30} {peak_load:>20.2f} {'KW on ' + str(peak_datetime):<28}",
+            f"{'Peak load (per meter, average): ':<30} {average_peak_load_per_meter:>18.2f} {'KW':<28}",
             "=" * calculation_summary_width,
             f"{'Calculated Factors':^{calculation_summary_width}}",
             "=" * calculation_summary_width,
             f"{'Load Factor: ':<25} {load_factor:>20.2f}",
             f"{'Diversity Factor: ':<25} {diversity_factor:>20.2f}",
             f"{'Coincidence Factor: ':<25} {coincidence_factor:>20.2f}",
-            f"{'Demand Factor: ':<25} {demand_factor:>20.2f}",
+            #f"{'Demand Factor: ':<25} {demand_factor:>20.2f}",
+            f"{'Demand Factor: ':<42}{'indeterminate':<20}",
             "=" * calculation_summary_width,
             f"{'Interpretation of Results':^{calculation_summary_width}}",
             "=" * calculation_summary_width,
-            "Load Factor:",
-            f"{'':<5}= average_load / peak_load",
+            "Load Factor = average_load / peak_load",
             f"{'':<5}With constant load, LF -> 1",
             f"{'':<5}With variable load, LF -> 0",
             f"{'':<5}With LF -> 1, fixed costs are spread over more kWh of output.",
@@ -263,22 +275,18 @@ def process_csv(input_file):
             f"{'':<5}Example: Traffic light service LF ~ 1",
             f"{'':<5}         Electric car charging station LF ~ 0",
             f"{'':<5} ",
-            "Diversity Factor:",
-            f"{'':<5}= sum_individual_maximum_demands / peak_load",
+            "Diversity Factor = sum_individual_maximum_demands / peak_load",
             f"{'':<5}{diversity_factor:.2f}% of meters peaked at {average_peak_load_per_meter:.2f} (average KW)",
             f"{'':<5}at the same time the system peaked at {peak_load:.2f} KW.",
             f"{'':<5}",
-            "Coincidence Factor:",
-            f"{'':<5}= peak_load / sum_individual_maximum_demands",
+            "Coincidence Factor = peak_load / sum_individual_maximum_demands",
             f"{'':<5}1 / coincidence_factor = diversity_factor",
             f"{'':<5}CF will naturally decrease as number of meters increases.",
             f"{'':<5}",
-            "Demand Factor:",
-            f"{'':<5}= peak_load / sum_individual_maximum_demands",
+            "Demand Factor = peak_load / total_connected_load",
             f"{'':<5}Low demand factor requires less system capacity to serve total load.",
             f"{'':<5}Example: Branch circuits in panel can exceed main breaker amps.",
-            f"{'':<5}",
-            "=" * calculation_summary_width,
+            f"{'':<5}Indeterminate. We do not know the total theoretical total connected load.",
         ]
         calculation_summary_box = "\n".join(calculation_summary_lines)
 
@@ -338,11 +346,9 @@ def transformer_load_analysis(load_profile_file, transformer_kva):
         # Calculate time spent in each load range in hours
         below_85 = len(out_data[out_data["load_percentage"] < 85]) * time_interval
         between_85_100 = (
-            len(out_data[(out_data["load_percentage"] >= 85) & (out_data["load_percentage"] < 100)]) * time_interval
-        )
+            len(out_data[(out_data["load_percentage"] >= 85) & (out_data["load_percentage"] < 100)]) * time_interval)
         between_100_120 = (
-            len(out_data[(out_data["load_percentage"] >= 100) & (out_data["load_percentage"] < 120)]) * time_interval
-        )
+            len(out_data[(out_data["load_percentage"] >= 100) & (out_data["load_percentage"] < 120)]) * time_interval)
         above_120 = len(out_data[out_data["load_percentage"] >= 120]) * time_interval
 
         # Calculate percentages based on total hours
@@ -351,51 +357,51 @@ def transformer_load_analysis(load_profile_file, transformer_kva):
         percent_between_85_100 = (between_85_100 / total_hours) * 100
         percent_between_100_120 = (between_100_120 / total_hours) * 100
         percent_above_120 = (above_120 / total_hours) * 100
-
-        # Display results and print to output file
+        # Print results to console
+        print("=" * 80)
+        print(f"{'Transformer Capacity Distribution':^80}")
+        print("=" * 80)
+        print(f" {'LOAD RANGE':^30}| {'DAYS':^16}| {'HOURS':^17}| {'%':^10}")
+        print("-" * 80)
+        print(f" {'Below 85%':<30}| {(below_85 / 24):<10.2f} days | {below_85:<10.2f} hours | {percent_below_85:<7.2f} % ")
+        print(f" {'Between 85% and 100%':<30}| {(between_85_100 / 24):<10.2f} days | {between_85_100:<10.2f} hours | {percent_between_85_100:<7.2f} % ")
+        print(f" {'Between 100% and 120%':<30}| {(between_100_120 / 24):<10.2f} days | {between_100_120:<10.2f} hours | {percent_between_100_120:<7.2f} % ")
+        print(f" {'Exceeds 120%':<30}| {(above_120 / 24):<10.2f} days | {above_120:<10.2f} hours | {percent_above_120:<7.2f} % ")
+        print("=" * 80)
         # Remove the .csv extension
         base_name = os.path.splitext(input_file)[0]
+        # Declare output filename
         load_distribution_output_file = f"{base_name}_all_outputs.txt"
+        graph_file = load_profile_file.replace("_out.csv", "_visualization.png")
+        
+        # Calculate absolute transformer KVA loads at 85% and 120%.
+        kva_85 = transformer_kva * 0.85
+        kva_120 = transformer_kva * 1.2
+        
+        # Print to output file
+
         with open(load_distribution_output_file, "a") as f:
-            print("=" * 80)
-            f.write("" * 80 + "\n")
             f.write("=" * 80 + "\n")
-            print(f"{'Transformer Capacity Distribution':^80}")
-            f.write(f"{'Transformer Capacity Distribution':^80}\n")
-            print("=" * 80)
+            f.write(f"{'Transformer Calculations and Capacity Distribution':^80}\n")
             f.write("=" * 80 + "\n")
-            print(f" {'LOAD RANGE':^30}| {'DAYS':^16}| {'HOURS':^17}| {'%':^10}")
-            f.write(f" {'LOAD RANGE':^30}| {'DAYS':^16}| {'HOURS':^17}| {'%':^10}\n")
-            print("-" * 80)
+            f.write(f"{'Total time: ':<35}{total_days:>20.1f}{' days ('}{total_hours:>.2f}{' hours)'}\n")
+            f.write(f"{'Transformer KVA: ':<35}{transformer_kva:>20.1f}{' KVA':<25}\n")
             f.write("-" * 80 + "\n")
-            print(
-                f" {'Below 85%':<30}| {(below_85 / 24):<10.2f} days | {below_85:<10.2f} hours | {percent_below_85:<7.2f} % "
-            )
-            f.write(
-                f" {'Below 85%':<30}| {(below_85 / 24):<10.2f} days | {below_85:<10.2f} hours | {percent_below_85:<7.2f} % \n"
-            )
-            print(
-                f" {'Between 85% and 100%':<30}| {(between_85_100 / 24):<10.2f} days | {between_85_100:<10.2f} hours | {percent_between_85_100:<7.2f} % "
-            )
-            f.write(
-                f" {'Between 85% and 100%':<30}| {(between_85_100 / 24):<10.2f} days | {between_85_100:<10.2f} hours | {percent_between_85_100:<7.2f} % \n"
-            )
-            print(
-                f" {'Between 100% and 120%':<30}| {(between_100_120 / 24):<10.2f} days | {between_100_120:<10.2f} hours | {percent_between_100_120:<7.2f} % "
-            )
-            f.write(
-                f" {'Between 100% and 120%':<30}| {(between_100_120 / 24):<10.2f} days | {between_100_120:<10.2f} hours | {percent_between_100_120:<7.2f} % \n"
-            )
-            print(
-                f" {'Exceeds 120%':<30}| {(above_120 / 24):<10.2f} days | {above_120:<10.2f} hours | {percent_above_120:<7.2f} % "
-            )
-            f.write(
-                f" {'Exceeds 120%':<30}| {(above_120 / 24):<10.2f} days | {above_120:<10.2f} hours | {percent_above_120:<7.2f} % \n"
-            )
-            print("=" * 80)
+            f.write(f" {'LOAD RANGE':^30}| {'DAYS':^16}| {'HOURS':^17}| {'%':^10}\n")
+            f.write("-" * 80 + "\n")
+            f.write(f" {'Below 85%':<30}| {(below_85 / 24):<10.2f} days | {below_85:<10.2f} hours | {percent_below_85:<7.2f} % \n")
+            f.write(f" {'Between 85% and 100%':<30}| {(between_85_100 / 24):<10.2f} days | {between_85_100:<10.2f} hours | {percent_between_85_100:<7.2f} % \n")
+            f.write(f" {'Between 100% and 120%':<30}| {(between_100_120 / 24):<10.2f} days | {between_100_120:<10.2f} hours | {percent_between_100_120:<7.2f} % \n")
+            f.write(f" {'Exceeds 120%':<30}| {(above_120 / 24):<10.2f} days | {above_120:<10.2f} hours | {percent_above_120:<7.2f} % \n")
             f.write("=" * 80 + "\n")
+            f.write(f"{'Load Profile data saved to: ':<80}\n")
+            f.write(f"{load_profile_file:<80}\n")
+            f.write(f"{'Load Profile graph saved to: ':<80}\n")
+            f.write(f"{graph_file:<80}\n")
+            f.write(f"{'This file: ':<80}\n")
+            f.write(f"{load_distribution_output_file:<80}\n")
             # Confirm that the table has been saved
-            print(f"Output table appended to '{load_distribution_output_file}'")
+            print(f"Output table saved to:\n {load_distribution_output_file}")
 
     except FileNotFoundError:
         print(f"Error: The file '{load_profile_file}' was not found.")
@@ -443,7 +449,7 @@ def visualize_load_profile(load_profile_file, transformer_kva):
                 # Save the plot to file
                 graph_file = load_profile_file.replace("_out.csv", "_visualization.png")
                 plt.savefig(graph_file)
-                print(f"Graph saved to '{graph_file}'")
+                print(f"Graph saved to:\n {graph_file}")
             else:
                 print("Error: Required columns 'datetime' and 'total_kw' are not present in the file.")
         except Exception as e:
@@ -473,5 +479,3 @@ if __name__ == "__main__":
     else:
         print(f"Error: The file '{load_profile_file}' was not created or found.")
         sys.exit(1)
-
-

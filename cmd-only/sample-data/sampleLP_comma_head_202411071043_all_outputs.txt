@@ -1,10 +1,20 @@
 ================================================================================
+                                Data Parameters                                 
+================================================================================
+Starting date & time:                                 2024-08-04 00:15:00
+Ending date & time:                                   2024-08-18 00:00:00
+Days in dataset:                                      14 days                   
+                                                                                
+Meters in dataset:                                    97 meters                 
+Meter reads in dataset:                           130368 rows                   
+Rows dropped during conversion:                        0 rows                   
+================================================================================
                                     Results                                     
 ================================================================================
-Average Load:                                174.60 KW                            
-Average Load per Meter:                        1.80 KW                            
-Peak Load:                                   351.03 KW on 2024-08-06 18:00:00     
-Average Peak per Meter:                        7.40 KW                            
+Average load:                                174.60 KW                          
+Average load per meter:                        1.80 KW                          
+Peak load:                                   351.03 KW on 2024-08-06 18:00:00   
+Average peak per meter:                        7.40 KW                          
 ================================================================================
                                Calculated Factors                               
 ================================================================================
@@ -40,10 +50,14 @@ Demand Factor:
      Example: Branch circuits in panel can exceed main breaker amps.
      
 ================================================================================
-
+                            Transformer Calculations                            
 ================================================================================
+Total time:                                      335.75 hours                   
+Total time:                                        14.0 days                    
+Transformer KVA:                                  300.0 KVA                     
+--------------------------------------------------------------------------------
                        Transformer Capacity Distribution                        
-================================================================================
+--------------------------------------------------------------------------------
            LOAD RANGE          |       DAYS      |       HOURS      |     %     
 --------------------------------------------------------------------------------
  Below 85%                     | 11.39      days | 273.25     hours | 81.38   % 
@@ -51,3 +65,12 @@ Demand Factor:
  Between 100% and 120%         | 0.89       days | 21.25      hours | 6.33    % 
  Exceeds 120%                  | 0.00       days | 0.00       hours | 0.00    % 
 ================================================================================
+Load Profile data saved to:                                                     
+..\sample-data\sampleLP_comma_head_202411071043_out.csv                         
+
+Load Profile graph saved to:                                                    
+..\sample-data\sampleLP_comma_head_202411071043_visualization.png               
+
+This file:                                                                      
+..\sample-data\sampleLP_comma_head_202411071043_all_outputs.txt                 
+
