@@ -13,11 +13,12 @@ Line 1  meter,date,time,kw
 Line 2+ 85400796,2024-01-01,00:15:00.000,0.052
 
 If transformer KVA is entered, a time based transformer loading profile will 
-be generated in the output along with a graph.
+be generated in the output along with a graph. *** Single phase only ***
 If KVA = 0, transformer loading will be skipped in output file.
 Visualization file will not be available.
 
 Program documentation is available in the Dispatch Google Docs files:
+dispatch@provopower.org://docs.google.com/dispatch_notes
 https://tinyurl.com/cshac3an
 https://github.com/michalcza/load-profile
 """
@@ -32,7 +33,6 @@ def browse_file():
     csv_path_entry.insert(0, file_path)  # Insert the selected file path
 
 def launch_analysis():
-
     success_label.config(text="Running...")
     clear_error_label() # Clear previous content
     clear_success_label() # Clear previous content
@@ -175,7 +175,7 @@ status_label = tk.Label(root, text="", fg="black")
 status_label.grid(row=2, column=2, columnspan=5, padx=1, pady=1, sticky="w")
 
 # Output Text Box to display the content of the output file
-output_textbox = scrolledtext.ScrolledText(root, width=80, height=15, wrap=tk.WORD)
+output_textbox = scrolledtext.ScrolledText(root, width=80, height=25, wrap=tk.WORD)
 output_textbox.grid(row=3, column=0, columnspan=7, padx=1, pady=1)
 output_textbox.insert(tk.END, default_text)
 
@@ -199,3 +199,25 @@ clear_all_button.grid(row=4, column=5, pady=10, padx=10)
 
 # Start the GUI event loop
 root.mainloop()
+
+# Create a menu bar
+menu_bar = tk.Menu(root)
+
+# File menu
+file_menu = tk.Menu(menu_bar, tearoff=0)
+file_menu.add_command(label="Load CSV", command=load_csv)
+file_menu.add_command(label="Clear", command=clear_text)
+file_menu.add_separator()
+file_menu.add_command(label="Exit", command=exit_application)
+menu_bar.add_cascade(label="File", menu=file_menu)
+
+# Help menu
+help_menu = tk.Menu(menu_bar, tearoff=0)
+help_menu.add_command(label="Help", command=show_help)
+help_menu.add_command(label="About", command=show_about)
+menu_bar.add_cascade(label="Help", menu=help_menu)
+
+# Add a text area
+text_area = scrolledtext.ScrolledText(root, wrap=tk.WORD, width=80, height=25)
+text_area.insert(tk.END, default_text)
+text_area.pack(padx=10, pady=10)

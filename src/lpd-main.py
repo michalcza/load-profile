@@ -32,25 +32,25 @@ Input:
         74592856,2024-08-04,00:45:00.000,4.424
         74592856,2024-08-04,01:00:00.000,2.268
 Output:
-    - sampleLP_comma_head_202411071043_all_outputs.txt
+    sampleLP_comma_head_202411071043_all_outputs.txt
     Ouput file with calculations, results, and interpretations.
 
-    - sampleLP_comma_head_202411071043_out.csv
+    sampleLP_comma_head_202411071043_out.csv
     Output file with time based aggregated load profile.
     
-    - sampleLP_comma_head_202411071043_visualization.png
+    sampleLP_comma_head_202411071043_visualization.png
     Visualization based on time based load profile data.
     
 Windows executable:
-    Executable is available as ~\cmd-only\src\dist\lpd.exe
+    Executable is available as ~\cmd-only\src\lpd-main.exe
     and is created using:
-    > pyinstaller --onefile lpd.py
+    > pyinstaller --onefile lpd-main.py
 
 Sample Data:
-    \cmd-only\sample-data
+   ..\sample-data
 ==========================================================
 """
-
+import logging
 import pandas as pd
 import subprocess
 import sys
@@ -59,6 +59,19 @@ import argparse
 import os
 import matplotlib.pyplot as plt
 from contextlib import redirect_stdout
+from datetime import datetime
+
+# Configure logging
+log_file = "lpd_debug.log"
+logging.basicConfig(
+    level=logging.DEBUG,
+    format="%(asctime)s - %(levelname)s - %(message)s",
+    handlers=[
+        logging.FileHandler(log_file),  # Log to file
+        logging.StreamHandler(sys.stdout)  # Log to console
+    ]
+)
+logger = logging.getLogger()
 
 def clear_screen():
     if os.name == "nt":
@@ -67,6 +80,9 @@ def clear_screen():
         os.system("clear")
 
 clear_screen()
+
+print(f"Current working directory: {os.getcwd()}")
+
 
 def process_csv(input_file):
     try:
@@ -81,6 +97,7 @@ def process_csv(input_file):
             first_line = file.readline().strip()
             expected_header = "meter,date,time,kw"
             if first_line != expected_header:
+                logger.error("Header mismatch! Expected: %s, Found: %s", expected_header, first_line)
                 raise ValueError(f"Expected header '{expected_header}' but got '{first_line}'")
                 sys.exit(1)
             # Read the second line and check if it matches the expected pattern
@@ -90,6 +107,7 @@ def process_csv(input_file):
             # Line 2            # 85400796,2024-01-01,00:15:00.000,0.052
             pattern = r"^\d{8},(20[1-9][0-9])-([0-1][0-9])-([0-3][0-9]),([0-2][0-9]):(00|15|30|45):([0-5][0-9]\.\d{3}),\d+\.\d{3}$"
             if not re.match(pattern, second_line):
+                logger.error("Second line does not match the expected pattern: %s", second_line)
                 raise ValueError(f"Second line '{second_line}' does not match the expected pattern")
                 sys.exit(1)
 
@@ -103,6 +121,7 @@ def process_csv(input_file):
         )
         # Store the initial row count
         initial_row_count = len(data)
+        logger.debug("Rows dropped after datetime conversion: %d", rows_dropped)
         
         # Drop rows where datetime conversion failed
         data = data.dropna(subset=["datetime"])
@@ -114,6 +133,7 @@ def process_csv(input_file):
         print(f"Number of rows dropped (datetime): {rows_dropped}")
         
         if rows_dropped > 3:
+            logger.error("Too many rows dropped during datetime conversion: %d", rows_dropped)
             raise ValueError("Too many rows dropped due to 'datetime' conversion failure. Exiting.")
             sys.exit(1)
             
@@ -131,57 +151,76 @@ def process_csv(input_file):
                 
         # Calculate the number of rows dropped
         rows_dropped = initial_row_count - len(data)
-                # Print the number of rows dropped
+        logger.debug("Rows dropped after kw conversion: %d", rows_dropped)
+        
+        # Print the number of rows dropped
         print(f"Number of rows dropped (KW): {rows_dropped}")
         
         if rows_dropped > 3:
+            logger.error("Too many rows dropped during kw conversion: %d", rows_dropped)
             raise ValueError("Too many rows dropped due to 'kw' conversion failure. Exiting.")
             sys.exit(1)
         
         start_datetime = data.index.min()
         end_datetime = data.index.max()
+        logger.debug("Start and end dates calculated")
+
         
         # Resample to 15-minute intervals and sum the 'kw' values for each interval
         load_profile = data["kw"].resample("15min").sum()
+        logger.debug("load_profile", load_profile)
 
         # Check if load_profile is empty
         if load_profile.empty:
+            logger.error("Resampling resulted in an empty DataFrame.")
             raise ValueError("Resampling resulted in an empty DataFrame. Check the input data for validity.")
             sys.exit(1)
 
         # Reset index to get 'datetime' back as a column
+        logger.info("Resampling completed successfully.")
         load_profile = load_profile.reset_index()
+        logger.debug("load_profile.reset_index()")
 
         # Rename columns for clarity
         load_profile.columns = ["datetime", "total_kw"]
+        logger.info("CSV processing completed.")
 
         # Find the datetime for the peak total_kw
         peak_row = load_profile.loc[load_profile["total_kw"].idxmax()]
+        logger.debug("peak_row ", peak_row)
         peak_datetime = peak_row["datetime"]
+        logger.debug("peak_datetime ", peak_datetime)
         peak_load = peak_row["total_kw"]
+        logger.debug("peak_load ", peak_load)
+        
 
         # Create a DataFrame to include the peak information
         peak_info = pd.DataFrame({"datetime": [peak_datetime], "peak_total_kw": [peak_load]})
-
+        logger.debug("peak_info ", peak_info)
         # Calculate average load
         average_load = load_profile["total_kw"].mean()
+        logger.debug("average_load ", average_load)
         average_load_per_meter = data.groupby("meter")["kw"].mean()
+        logger.debug("average_load_per_meter ",average_load_per_meter)
 
         # Calculate number of days and number of meters
         num_days = (data.index.max() - data.index.min()).days + 1
+        logger.debug("num_days ",num_days)
 
         # Calculate number of meters
         num_meters = data["meter"].nunique()
-        
+        logger.debug("num_meters ", num_meters)
         print(f"=" * 80)
         print(f"{'Calculations and Integrity Checks':^80}")
         print(f"=" * 80)
                
         # Coincidence factor
         individual_maximum_demands = data.groupby("meter")["kw"].max()
+        logger.debug("individual_maximum_demands ",individual_maximum_demands)
         sum_individual_maximum_demands = individual_maximum_demands.sum()
+        logger.debug("sum_individual_maximum_demands ",sum_individual_maximum_demands)
         coincidence_factor = peak_load / sum_individual_maximum_demands
-        
+        logger.debug("coincidence_factor ",coincidence_factor)
         # Verify reasonability
         if coincidence_factor >= 1:
             raise ValueError("Coincidence factor exceeds the reasonability limit of 1.")
@@ -225,11 +264,13 @@ def process_csv(input_file):
         
         # Generate output filenames
         base, ext = os.path.splitext(input_file)
+        base_name = os.path.basename(input_file)
         load_profile_file = f"{base}_out.csv"
-
-        # Construct the full output filename
         output_file = f"{base}_all_outputs.txt"
-
+        
+        # Generate time stamp for report runtime.
+        current_datetime = datetime.now()
+        
         def print_and_save(summary, filename=output_file):
             with open(filename, "w") as file:
                 # Redirect output to both the console and the file
@@ -243,8 +284,10 @@ def process_csv(input_file):
             "=" * calculation_summary_width,
             f"{'Data Parameters':^{calculation_summary_width}}",
             "=" * calculation_summary_width,
-            f"{'Starting date & time: ':<37} {str(start_datetime):>35}",
-            f"{'Ending date & time: ':<37} {str(end_datetime):>35}",
+            f"{'Input filename: ':<37} {str(base_name):>42}",
+            f"{'Report run date/time: ':<37} {current_datetime.strftime('%Y-%m-%d %H:%M:%S'):>42}",
+            f"{'Data START date/time: ':<37} {str(start_datetime):>42}",
+            f"{'Data END date/time: ':<37} {str(end_datetime):>42}",
             f"{'Days in dataset: ':<35} {num_days:>20.0f} {'days':<23}",
             f"{'Meters in dataset: ':<35} {num_meters:>20.0f} {'meters':<23}",
             f"{'Meter reads in dataset: ':<35} {initial_row_count:>20.0f} {'rows':<23}",
@@ -262,31 +305,28 @@ def process_csv(input_file):
             f"{'Load Factor: ':<25} {load_factor:>20.2f}",
             f"{'Diversity Factor: ':<25} {diversity_factor:>20.2f}",
             f"{'Coincidence Factor: ':<25} {coincidence_factor:>20.2f}",
-            #f"{'Demand Factor: ':<25} {demand_factor:>20.2f}",
             f"{'Demand Factor: ':<42}{'indeterminate':<20}",
             "=" * calculation_summary_width,
             f"{'Interpretation of Results':^{calculation_summary_width}}",
             "=" * calculation_summary_width,
             "Load Factor = average_load / peak_load",
-            f"{'':<5}With constant load, LF -> 1",
-            f"{'':<5}With variable load, LF -> 0",
-            f"{'':<5}With LF -> 1, fixed costs are spread over more kWh of output.",
-            f"{'':<5}LF how efficiently the customer is using peak demand.",
-            f"{'':<5}Example: Traffic light service LF ~ 1",
-            f"{'':<5}         Electric car charging station LF ~ 0",
-            f"{'':<5} ",
+            f"{'':<1}With constant load, LF -> 1. With variable load, LF -> 0",
+            f"{'':<1}With LF -> 1, fixed costs are spread over more kWh of output.",
+            f"{'':<1}LF is how efficiently the customer is using peak demand.",
+            f"{'':<1}Example: Traffic light LF ~ 1, EV charger LF ~ 0",
+            f"{'':<1} ",
             "Diversity Factor = sum_individual_maximum_demands / peak_load",
-            f"{'':<5}{diversity_factor:.2f}% of meters peaked at {average_peak_load_per_meter:.2f} (average KW)",
-            f"{'':<5}at the same time the system peaked at {peak_load:.2f} KW.",
-            f"{'':<5}",
+            f"{'':<1}The system's simultaneous peak load ({peak_load:.2f} KW) is {diversity_factor:.2f}% of sum of individual\n maximum demands ({sum_individual_maximum_demands:.2f} KW).\n This suggests that {diversity_factor:.2f}% of loads are operating at their peak at the\n same time. A low diversity factor implies that the infrastructure is likely\n underutilized for a significant portion of its capacity. While this might\n suggest the potential for downsizing, it also provides flexibility for\n accommodating additional loads.",
+            f"{'':<1}",
             "Coincidence Factor = peak_load / sum_individual_maximum_demands",
-            f"{'':<5}1 / coincidence_factor = diversity_factor",
-            f"{'':<5}CF will naturally decrease as number of meters increases.",
-            f"{'':<5}",
+            f"{'':<1}1 / coincidence_factor = diversity_factor",
+            f"{'':<1}{coincidence_factor * 100:.0f}% of the sum total of maximum demands {sum_individual_maximum_demands:.2f}KW is realized during\n the peak load period of {peak_load:.2f}KW",
+            f"{'':<1}",
+            #29% of the total maximum demand (127.44 kW) is realized during the peak load period (37.12 kW).
             "Demand Factor = peak_load / total_connected_load",
-            f"{'':<5}Low demand factor requires less system capacity to serve total load.",
-            f"{'':<5}Example: Branch circuits in panel can exceed main breaker amps.",
-            f"{'':<5}Indeterminate. We do not know the total theoretical total connected load.",
+            f"{'':<1}Low demand factor requires less system capacity to serve total load.",
+            f"{'':<1}Example: Sum of branch circuits in panel can exceed main breaker amps.",
+            f"{'':<1}Indeterminate. We do not know the total theoretical total connected load.",
         ]
         calculation_summary_box = "\n".join(calculation_summary_lines)
 
