@@ -70,6 +70,11 @@ logging.basicConfig(
         logging.FileHandler(log_file),  # Log to file
         logging.StreamHandler(sys.stdout)  # Log to console
     ]
+# Suppress debug logs from matplotlib
+#logging.getLogger('matplotlib').setLevel(logging.WARNING)
+
+# Suppress debug logs from PIL (Pillow)
+#logging.getLogger('PIL').setLevel(logging.WARNING)
 )
 logger = logging.getLogger()
 
@@ -82,7 +87,12 @@ def clear_screen():
 clear_screen()
 
 print(f"Current working directory: {os.getcwd()}")
-
+pwd = os.getcwd()
+logger.debug("Start")
+logger.debug(pwd)
+# Suppress library logs
+logging.getLogger('matplotlib').setLevel(logging.WARNING)
+logging.getLogger('PIL').setLevel(logging.WARNING)
 
 def process_csv(input_file):
     try:
@@ -90,6 +100,7 @@ def process_csv(input_file):
         print(f"{'Data Manipulation':^80}")
         print(f"=" * 80)
         print(f"Processing file: {input_file}")
+        logger.debug("Line 98")
         
         # Open the file to check the first two lines
         with open(input_file, "r") as file:
@@ -101,27 +112,32 @@ def process_csv(input_file):
                 raise ValueError(f"Expected header '{expected_header}' but got '{first_line}'")
                 sys.exit(1)
             # Read the second line and check if it matches the expected pattern
-            second_line = file.readline().strip()
+            # second_line = file.readline().strip()
             # Define a regex pattern for the example format
             # Line 1            # meter,date,time,kw
             # Line 2            # 85400796,2024-01-01,00:15:00.000,0.052
-            pattern = r"^\d{8},(20[1-9][0-9])-([0-1][0-9])-([0-3][0-9]),([0-2][0-9]):(00|15|30|45):([0-5][0-9]\.\d{3}),\d+\.\d{3}$"
-            if not re.match(pattern, second_line):
-                logger.error("Second line does not match the expected pattern: %s", second_line)
-                raise ValueError(f"Second line '{second_line}' does not match the expected pattern")
-                sys.exit(1)
+            # pattern = r"^\d{8},(20[1-9][0-9])-([0-1][0-9])-([0-3][0-9]),([0-2][0-9]):(00|15|30|45):([0-5][0-9]\.\d{3}),\d+\.\d{3}$"
+            # pattern = r"^\d{8},(20[1-9][0-9])-([0-1][0-9])-([0-3][0-9]),([0-2][0-9]):(00|15|30|45):00\.000,0\.\d{3}$"
+            # pattern = r"/^\d{8},(20[1-9][0-9])-([0-1][0-9])-([0-3][0-9]),([0-2][0-9]):(00|15|30|45):00\.000,\d+(\.\d{1,3})?$"
+
+            #if not re.match(pattern, second_line):
+            #    logger.error("Second line does not match the expected pattern: %s", second_line)
+            #    raise ValueError(f"Second line '{second_line}' does not match the expected pattern")
+            #    sys.exit(1)
 
         # Read the CSV file
         data = pd.read_csv(input_file)
         print("CSV file read successfully.")
-
+        logger.debug("Line 125")
         # Convert the 'date' and 'time' columns to a single datetime column
         data["datetime"] = pd.to_datetime(
             data["date"] + " " + data["time"], format="%Y-%m-%d %H:%M:%S.%f", errors="coerce"
         )
+        logger.debug("Line 131")
         # Store the initial row count
         initial_row_count = len(data)
-        logger.debug("Rows dropped after datetime conversion: %d", rows_dropped)
+        logger.debug("initial row count %d", initial_row_count)
+        #logger.debug("Rows dropped after datetime conversion: %d", rows_dropped)
         
         # Drop rows where datetime conversion failed
         data = data.dropna(subset=["datetime"])
