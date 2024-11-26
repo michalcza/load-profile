@@ -62,10 +62,15 @@ Ensure the following Python libraries are installed:
 ## Usage
 
 ### Graphical Interface (GUI)
-1. Run the GUI:
+1. Run the GUI (command line):
    ```bash
    python lpd-gui.py
    ```
+   or executable binary"
+   ```bash
+   lpd-gui.exe
+   ```
+   
 2. Follow the on-screen instructions:
    - Select the input CSV file.
    - Enter the transformer KVA size.
@@ -112,11 +117,21 @@ meter,date,time,kw
 
 ## Sample Data and Results
 The tool has been tested on datasets of various sizes:
-| Meters | Days | Rows   | Filesize | Status |
-|--------|------|--------|----------|--------|
-| 22     | 365  | 731K   | 28.4MB   | PASS   |
-| 8      | 364  | 278K   | 10.8MB   | PASS   |
-| 98     | 300  | 2788K  | 108.0MB  | PASS   |
+
++--------+-------+-------+----------+---------+
+| Meters | Days  | Rows  | Filesize | Status  |
++--------+-------+-------+----------+---------+
+|     22 |   365 |  731K |   28.4MB | PASS    |
+|     22 |   500 | 1000K |   38.9MB | PASS    |
+|     22 |   736 | 1470K |   57.0MB | PASS    |
+|      8 |   364 |  278K |   10.8MB | PASS    |
+|      8 |   405 |  307K |   11.9MB | PASS    |
+|      8 |    14 |   10K |    0.4MB | PASS    |
+|      8 |    30 |   24K |    0.8MB | PASS    |
+|    932 |     7 |  545K |   21.1MB | PASS    |
+|     98 |   300 | 2788K |  108.0MB | PASS    |
+|     98 |   600 | 5596K |  216.8MB | PASS    |
++--------+-------+-------+----------+---------+
 
 ---
 
