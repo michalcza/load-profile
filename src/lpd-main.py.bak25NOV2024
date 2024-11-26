@@ -70,12 +70,13 @@ logging.basicConfig(
         logging.FileHandler(log_file),  # Log to file
         logging.StreamHandler(sys.stdout)  # Log to console
     ]
+# Suppress debug logs from matplotlib
+#logging.getLogger('matplotlib').setLevel(logging.WARNING)
+
+# Suppress debug logs from PIL (Pillow)
+#logging.getLogger('PIL').setLevel(logging.WARNING)
 )
 logger = logging.getLogger()
-
-# Suppress library logs
-logging.getLogger('matplotlib').setLevel(logging.WARNING)
-logging.getLogger('PIL').setLevel(logging.WARNING)
 
 def clear_screen():
     if os.name == "nt":
@@ -89,7 +90,9 @@ print(f"Current working directory: {os.getcwd()}")
 pwd = os.getcwd()
 logger.debug("Start")
 logger.debug(pwd)
-
+# Suppress library logs
+logging.getLogger('matplotlib').setLevel(logging.WARNING)
+logging.getLogger('PIL').setLevel(logging.WARNING)
 
 def process_csv(input_file):
     try:

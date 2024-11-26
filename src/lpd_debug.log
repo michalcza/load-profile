@@ -1,0 +1,33 @@
+2024-11-25 17:11:56,164 - DEBUG - Start
+2024-11-25 17:11:56,164 - DEBUG - C:\Users\micha\GitHub\load-profile\src
+2024-11-25 17:11:56,165 - DEBUG - Line 98
+2024-11-25 17:11:56,177 - DEBUG - Line 125
+2024-11-25 17:11:56,191 - DEBUG - Line 131
+2024-11-25 17:11:56,191 - DEBUG - initial row count 23039
+2024-11-25 17:11:56,191 - DEBUG - Rows dropped after kw conversion: 0
+2024-11-25 17:11:56,191 - DEBUG - Start and end dates calculated
+2024-11-25 17:11:56,191 - INFO - Resampling completed successfully.
+2024-11-25 17:11:56,191 - DEBUG - load_profile.reset_index()
+2024-11-25 17:11:56,191 - INFO - CSV processing completed.
+2024-11-25 17:23:32,093 - DEBUG - Start
+2024-11-25 17:23:32,093 - DEBUG - C:\Users\micha\GitHub\load-profile\src
+2024-11-25 17:23:32,103 - DEBUG - Line 98
+2024-11-25 17:23:32,115 - DEBUG - Line 125
+2024-11-25 17:23:32,130 - DEBUG - Line 131
+2024-11-25 17:23:32,130 - DEBUG - initial row count 23039
+2024-11-25 17:23:32,130 - DEBUG - Rows dropped after kw conversion: 0
+2024-11-25 17:23:32,130 - DEBUG - Start and end dates calculated
+2024-11-25 17:23:32,130 - INFO - Resampling completed successfully.
+2024-11-25 17:23:32,130 - DEBUG - load_profile.reset_index()
+2024-11-25 17:23:32,130 - INFO - CSV processing completed.
+2024-11-25 17:25:57,484 - DEBUG - Start
+2024-11-25 17:25:57,484 - DEBUG - C:\Users\micha\GitHub\load-profile\src
+2024-11-25 17:25:57,485 - DEBUG - Line 98
+2024-11-25 17:25:57,498 - DEBUG - Line 125
+2024-11-25 17:25:57,513 - DEBUG - Line 131
+2024-11-25 17:25:57,514 - DEBUG - initial row count 23039
+2024-11-25 17:25:57,516 - DEBUG - Rows dropped after kw conversion: 0
+2024-11-25 17:25:57,517 - DEBUG - Start and end dates calculated
+2024-11-25 17:25:57,527 - INFO - Resampling completed successfully.
+2024-11-25 17:25:57,527 - DEBUG - load_profile.reset_index()
+2024-11-25 17:25:57,528 - INFO - CSV processing completed.
