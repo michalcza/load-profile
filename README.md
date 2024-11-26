@@ -1,115 +1,134 @@
 
-# Load Processing and Transformer Analysis Script
+# Transformer Load Analysis Tool
 
-This Python script processes load data from a CSV file and performs a series of analyses to estimate system loads. It includes capabilities to analyze transformer loads based on user-specified parameters, calculate various load metrics, and optionally visualize the results.
+## Overview
+This project is a **Transformer Load Analysis and Visualization Tool** designed to process load data from CSV files. It performs various calculations such as load factors, diversity factors, and peak loads, and provides visualizations to help analyze transformer loading patterns.
+
+The tool includes a graphical interface (GUI) for ease of use and a command-line utility for automated workflows.
+
+---
 
 ## Features
+- **Process CSV Load Data**:
+  - Accepts CSV files with `meter`, `date`, `time`, and `kw` columns.
+- **Transformer Analysis**:
+  - Optionally analyzes load profiles against transformer KVA ratings.
+- **Visualization**:
+  - Generates time-based load profile graphs.
+- **Metrics Calculation**:
+  - Load Factor, Diversity Factor, Coincidence Factor, and more.
+- **Error Handling**:
+  - Validates input data and provides detailed error messages.
+- **GUI Interface**:
+  - Easy-to-use graphical interface for selecting files and configuring settings.
 
-1. **CSV File Processing**: Reads and validates load data from a CSV file with `meter`, `date`, `time`, and `kw` columns.
-2. **System Load Calculations**: Estimates total system load, peak load, and other metrics.
-3. **Transformer Load Analysis**: Calculates load distribution relative to a specified transformer size (in KVA).
-4. **Optional Visualization**: Generates a time-based plot of the load data with transformer capacity thresholds.
+---
 
-## Prerequisites
+## Requirements
+### Dependencies
+Ensure the following Python libraries are installed:
+- `pandas`
+- `matplotlib`
+- `tkinter` (comes pre-installed with Python)
 
-- Python 3.x
-- Required Python libraries:
-  - `pandas`
-  - `argparse`
-  - `matplotlib`
+### Operating Systems
+- Windows
+- Linux
+- macOS
 
-Install the required libraries using:
-```bash
-pip install pandas matplotlib
-```
+---
+
+## Files
+### 1. `lpd-gui.py`
+- A graphical interface for running the tool.
+- Features:
+  - File selection dialog.
+  - Input for transformer KVA size.
+  - Displays output directly in the GUI.
+
+### 2. `lpd-main.py`
+- Command-line utility for performing the load analysis.
+- Features:
+  - Processes CSV files.
+  - Generates outputs: `.txt`, `.csv`, and `.png` files.
+
+### Output Files:
+- `<input_file>_RESULTS.txt`: Contains analysis summary and metrics.
+- `<input_file>_RESULTS-LP.csv`: Aggregated time-based load profile data.
+- `<input_file>_RESULTS-GRAPH.png`: Graphical visualization of the load profile.
+
+---
 
 ## Usage
 
-### Running the Script
+### Graphical Interface (GUI)
+1. Run the GUI:
+   ```bash
+   python lpd-gui.py
+   ```
+2. Follow the on-screen instructions:
+   - Select the input CSV file.
+   - Enter the transformer KVA size.
+   - Run the analysis and view results directly in the application.
 
-Run the script from the command line with:
-```bash
-python lpd.py <path_to_csv_file>
+### Command-Line Utility
+1. Run the tool from the terminal:
+   ```bash
+   python lpd-main.py <input_csv_file> --transformer_kva <kva_size>
+   ```
+   Example:
+   ```bash
+   python lpd-main.py 98meters-300days-2788K_rows.csv --transformer_kva 75
+   ```
+2. Outputs:
+   - Analysis summary saved in `<input_file>_RESULTS.txt`.
+   - Load profile saved in `<input_file>_RESULTS-LP.csv`.
+   - Graph saved in `<input_file>_RESULTS-GRAPH.png`.
+
+---
+
+## Input Data Format
+The input CSV file should have the following structure:
+```csv
+meter,date,time,kw
+85400796,2024-01-01,00:15:00.000,0.052
+85400796,2024-01-01,00:30:00.000,0.048
 ```
 
-Replace `<path_to_csv_file>` with the path to your input CSV file containing load data.
+### Requirements:
+- Columns: `meter`, `date`, `time`, and `kw`.
+- Date Format: `YYYY-MM-DD`.
+- Time Format: `HH:MM:SS.mmm`.
+- `kw`: Numeric values representing load in kilowatts.
 
-### Input Format
+---
 
-The input CSV file should have the following columns:
-- `meter`: Meter ID
-- `date`: Date in `YYYY-MM-DD` format
-- `time`: Time in `HH:MM:SS.sss` format
-- `kw`: Load in kilowatts (KW)
+## Outputs
+- **Analysis Summary**: Detailed metrics including Load Factor, Diversity Factor, and Coincidence Factor.
+- **Load Profile CSV**: Aggregated time-based load profile data.
+- **Visualization Graph**: A time-series plot showing load percentages against transformer capacity thresholds.
 
-The script checks the format of the first two lines in the CSV file to ensure they match the expected structure.
+---
 
-### Options and Flow
+## Sample Data and Results
+The tool has been tested on datasets of various sizes:
+| Meters | Days | Rows   | Filesize | Status |
+|--------|------|--------|----------|--------|
+| 22     | 365  | 731K   | 28.4MB   | PASS   |
+| 8      | 364  | 278K   | 10.8MB   | PASS   |
+| 98     | 300  | 2788K  | 108.0MB  | PASS   |
 
-1. **Scale Factor**: Upon running, you will be prompted to input a scale factor for estimating the total system load:
-   - Acceptable range: `1.0 - 2.0`
-   - Default value: `1.2` if no input is provided
+---
 
-2. **Transformer Analysis**:
-   - After CSV processing, the script will ask if you'd like to perform transformer load analysis.
-   - If you choose to proceed, you will be prompted to enter the transformer size in KVA.
+## Documentation
+- Additional documentation is available:
+  - [Google Docs](https://tinyurl.com/cshac3an)
+  - [GitHub Repository](https://github.com/michalcza/load-profile)
 
-3. **Visualization**:
-   - You can opt to visualize the load profile after transformer analysis.
-   - The graph shows the load over time with thresholds at 85%, 100%, and 120% of the transformer capacity.
+---
 
-### Output Files
+## Author
+- **Michal Czarnecki**
+- Email: mczarnecki@gmail.com
 
-The script generates several output files based on the input CSV file:
-- `<input_file>_out.csv`: Load profile data with timestamped total load.
-- `<input_file>_peak.csv`: Summary of peak load information.
-- `<input_file>_factors.csv`: Key metrics, including diversity, load, coincidence, and demand factors.
-- `<input_file>_xfrm_loading.txt`: Transformer capacity distribution, detailing the time spent in different load ranges.
-- `<input_file>_visualization.png` (optional): Graph of load data with transformer capacity thresholds.
-
-### Example
-
-To process `load_data.csv` and perform all analyses, use:
-```bash
-python lpd.py load_data.csv
-```
-
-When prompted:
-- Enter a scale factor (e.g., `1.2`) or press Enter to use the default.
-- If proceeding with transformer analysis, enter the transformer size in KVA (e.g., `500`).
-- Choose to visualize the load profile data.
-
-## Error Handling
-
-The script includes error handling for:
-- Missing or incorrect CSV headers
-- Invalid data formats
-- File not found errors
-
-Errors are reported in the console, and the script exits if it encounters an issue.
-
-## License
-
-This project is open-source and free to use under the [MIT License](https://opensource.org/licenses/MIT).
-
-## To Do
-- Error handling when dropping rows with bad data.  Sample file `sample-LP_comma_head_202410231511.csv` Will show Diversity Factor <1 and it is assumed that this is due to dropped rows where time conversion failed.
-```
-        # Drop rows where datetime conversion failed
-        data = data.dropna(subset=['datetime'])
-```
-Graph visualization shows hole in data 10/22/2024
-```
-========================================================================================================================
-                                                   Calculated Factors
-========================================================================================================================
-Diversity Factor:                    0.19 = sum(individual_maximum_demands) / peak_load
-                                            Must be >=1 (more than 1)
-                                            Reciprocal if Coincidence Factor
-                                            2.23 means that a meter operates at peak load 2.23% of the time.
-```
-- Transformer loading calculations need to clarify this is for single-phase XFRM only. Three-phase MDU (120/208V) will not calculate corrrectly.
-- Add GUI to upload data file.
-
-# Build EXE
-`pyinstaller --onefile lpd.py`
+--- 

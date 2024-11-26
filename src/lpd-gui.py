@@ -1,3 +1,58 @@
+#!/usr/bin/env python3
+"""
+==============================================================================
+Transformer Load Analysis GUI
+==============================================================================
+Author: Michal Czarnecki
+Date:   11/26/2024
+Version: 1.0
+
+Description:
+    This script provides a graphical user interface (GUI) for the Transformer 
+    Load Analysis Tool. It allows users to select a CSV file containing load 
+    data, input a transformer KVA size, and perform load analysis with 
+    visualization. The tool integrates seamlessly with the `lpd-main.exe` 
+    executable for backend processing.
+
+Features:
+    - Select input CSV files through a file dialog.
+    - Input transformer KVA to include loading analysis in the results.
+    - Display analysis results in a scrollable text area within the GUI.
+    - Generate and open graphical visualizations of load profiles.
+    - Print analysis results directly from the GUI.
+    - Clear all inputs and reset the GUI for new tasks.
+
+Usage:
+    1. Run this script using Python 3:
+       $ python lpd-gui.py
+    2. Select an input CSV file containing load data.
+    3. Enter a transformer KVA size (or 0 to skip transformer analysis).
+    4. Click "Run Analysis" to generate results and visualizations.
+
+Requirements:
+    - Python 3.x
+    - Required libraries: tkinter, subprocess, os, threading
+    - `lpd-main.exe` must be in the same directory as this script.
+
+Output:
+    - Displays load analysis results in the GUI.
+    - Generates output files and visualizations:
+      - `<input_file>_RESULTS.txt`: Analysis summary.
+      - `<input_file>_RESULTS-GRAPH.png`: Visualization of load profile.
+
+Changelog:
+    - 11/26/2024:
+        - Set working directory to enable logging in `lpd-main.exe`.
+        - Adjusted spacing in GUI elements to prevent text cutoff.
+        - Improved error handling for missing executable and invalid input.
+        - Improve workflow and threading for background process (lpd-main.exe)
+
+Compile instructions:
+Syntax:
+> pyinstaller --onefile --add-data "lpd-main.exe;." --distpath . lpd-gui.py
+==============================================================================
+"""
+
 import os
 import tkinter as tk
 from tkinter import filedialog, messagebox, scrolledtext
@@ -32,47 +87,55 @@ def browse_file():
     csv_path_entry.delete(0, tk.END)  # Clear any previous path
     csv_path_entry.insert(0, file_path)  # Insert the selected file path
 
-def launch_analysis():
-    success_label.config(text="Running...")
-    clear_error_label() # Clear previous content
-    clear_success_label() # Clear previous content
-    clear_output_textbox() # Clear previous content
+def launch_analysis(csv_file, kva_value):
+
+    # Clear error and status labels at the start
+    root.after(0, clear_error_and_status_labels)
     
-    # Get the CSV file path and transformer KVA
-    csv_file = csv_path_entry.get()
-    kva_value = kva_entry.get()
-    
+    def update_success_label():
+        root.after(0, lambda: success_label.config(text=" Running..."))
+
+    def update_error_label(message):
+        root.after(0, lambda: error_label.config(text=" Error."))
+
+    # Schedule GUI updates on the main thread
+    root.after(0, update_success_label)
+
+    # Clear previous content
+    root.after(0, clear_error_label)
+    root.after(0, clear_success_label)
+    root.after(0, clear_output_textbox)
+
     # Check if the CSV file and KVA value are provided
     if not csv_file:
-        error_label.config(text="Error. Please select a CSV file.")
+        root.after(0, lambda: update_error_label(" Error. Please select a CSV file."))
         return
     if not kva_value:
-        error_label.config(text="Error. Please enter the transformer KVA size.")
+        root.after(0, lambda: update_error_label(" Error. Please enter the transformer KVA size."))
         return
-    
+
     try:
         kva_value = float(kva_value)  # Convert KVA to float
     except ValueError:
-        error_label.config(text="Error. Transformer KVA must be a numerical value.")
-        status_label.config(text="Status: Failed - Invalid KVA value.")
+        root.after(0, lambda: update_error_label(" Error. Transformer KVA must be a numerical value."))
+        root.after(0, lambda: status_label.config(text=" Status: Failed - Invalid KVA value."))
         return
-    if kva_value == 0:
-        success_label.config(text="Running...")
-        status_label.config(text="Status: Transformer analysis skipped.")
-        plot_button.grid_remove()  # Hide plot visualization
-    # Construct the command to run the executable
-    command = [os.path.join(os.path.dirname(__file__), "lpd-main.exe"), csv_file, "--transformer_kva", str(kva_value)]
-    
-    # Check if 'lpd-main.exe' exists before running the command
-    if not os.path.isfile(command[0]):
-        error_label.config(text="Error. Executable 'lpd-main.exe' not found. Please check the file path.")
-        return
+
     try:
+        # Prepare the command for subprocess
+        # Ensure working directory is set correctly
+        os.chdir(os.path.dirname(__file__))
+        command = [os.path.join(os.path.dirname(__file__), "lpd-main.exe"), csv_file, "--transformer_kva", str(kva_value)]
+
+        # Run the command
         subprocess.run(command, check=True)
-        global base_name 
-        base_name = os.path.splitext(csv_file)[0] # clear csv extension
+
+        # Process output
+        global base_name
+        base_name = os.path.splitext(csv_file)[0]  # Clear csv extension
         global output_file
-        output_file = f"{base_name}_all_outputs.txt"
+        output_file = f"{base_name}_RESULTS.txt"
+
         if os.path.isfile(output_file):
             with open(output_file, "r") as file:
                 output_textbox.delete(1.0, tk.END)  # Clear previous content
@@ -80,13 +143,17 @@ def launch_analysis():
         else:
             output_textbox.delete(1.0, tk.END)
             output_textbox.insert(tk.END, f"Output file '{output_file}' not found.")
+
         # Display print and open plot buttons
-        plot_button.grid(row=4, column=3, pady=10, padx=10)
-        print_button.grid(row=4, column=4, pady=10, padx=10)
-        # Print success message
-        success_label.config(text="Load analysis completed successfully.")
+        root.after(0, lambda: plot_button.grid(row=4, column=3, pady=10, padx=10))
+        root.after(0, lambda: print_button.grid(row=4, column=4, pady=10, padx=10))
+        root.after(0, lambda: success_label.config(text=" Load analysis completed successfully."))
+
     except subprocess.CalledProcessError as e:
-        messagebox.showerror("Error", f"An error occurred: {e}")
+        root.after(0, lambda e=e: error_label.config(text=f" Subprocess Error: {e}"))
+    except Exception as e:
+        root.after(0, lambda e=e: error_label.config(text=f" An error occurred: {e}"))
+
 def clear_success_label():
     error_label.config(text="")
 def clear_error_label():
@@ -98,7 +165,7 @@ def clear_csv_path_entry():
 def clear_kva_entry():
     csv_path_entry.delete(0, tk.END)
 def open_plot():
-    plot_file = f"{base_name}_visualization.png"  # Define the plot file path based on base_name
+    plot_file = f"{base_name}_RESULTS-GRAPH.png"  # Define the plot file path based on base_name
     # Check if the plot file exists
     if not os.path.isfile(plot_file):
         clear_error_label()
@@ -114,11 +181,11 @@ def open_plot():
             raise OSError("Unsupported operating system for opening the plot file.")
     except Exception as e:
         print(f"Could not open the file: {e}")
-        error_label.config(text="Error! Could not open plot file.")
+        error_label.config(text=" Error! Could not open plot file.")
 def print_output_file():
     # Check if the output file exists
     if not os.path.isfile(output_file):
-        error_label.config(text="Error! Output file not found.")
+        error_label.config(text=" Error! Output file not found.")
         return
     try:
         if os.name == 'nt':  # Windows
@@ -126,11 +193,18 @@ def print_output_file():
         elif os.name == 'posix':  # macOS and Linux
             subprocess.run(["lp", output_file], check=True)
         else:
-            error_label.config(text="Unsupported OS for printing.")
+            error_label.config(text=" Unsupported OS for printing.")
     except Exception as e:
-        error_label.config(text="An error occured while printing.")
+        error_label.config(text=" An error occured while printing.")
+
 def start_analysis_thread():
-    threading.Thread(target=launch_analysis).start()
+    # Retrieve widget values in the main thread
+    csv_file = csv_path_entry.get()
+    kva_value = kva_entry.get()
+
+    # Start the background thread, passing these values
+    threading.Thread(target=launch_analysis, args=(csv_file, kva_value), daemon=True).start()
+    
 def clear_all():
     csv_path_entry.delete(0, tk.END)    # Clear CSV path entry
     kva_entry.delete(0, tk.END)         # Clear KVA entry
@@ -141,6 +215,11 @@ def clear_all():
     output_textbox.insert(tk.END, default_text)
     plot_button.grid_remove()           # Hide plot button
     print_button.grid_remove()          # Hide print button
+    
+def clear_error_and_status_labels():
+    error_label.config(text="")
+    status_label.config(text="")
+    
 # Create the main window
 root = tk.Tk()
 root.title("Transformer Load Analysis")
@@ -197,25 +276,7 @@ print_button.grid_remove()  # Hide initially
 clear_all_button = tk.Button(root, text="Clear All", command=clear_all)
 clear_all_button.grid(row=4, column=5, pady=10, padx=10)
 
-# Start the GUI event loop
 root.mainloop()
-
-# Create a menu bar
-menu_bar = tk.Menu(root)
-
-# File menu
-file_menu = tk.Menu(menu_bar, tearoff=0)
-file_menu.add_command(label="Load CSV", command=load_csv)
-file_menu.add_command(label="Clear", command=clear_text)
-file_menu.add_separator()
-file_menu.add_command(label="Exit", command=exit_application)
-menu_bar.add_cascade(label="File", menu=file_menu)
-
-# Help menu
-help_menu = tk.Menu(menu_bar, tearoff=0)
-help_menu.add_command(label="Help", command=show_help)
-help_menu.add_command(label="About", command=show_about)
-menu_bar.add_cascade(label="Help", menu=help_menu)
 
 # Add a text area
 text_area = scrolledtext.ScrolledText(root, wrap=tk.WORD, width=80, height=25)

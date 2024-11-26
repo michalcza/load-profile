@@ -1,33 +1,143 @@
-2024-11-25 17:11:56,164 - DEBUG - Start
-2024-11-25 17:11:56,164 - DEBUG - C:\Users\micha\GitHub\load-profile\src
-2024-11-25 17:11:56,165 - DEBUG - Line 98
-2024-11-25 17:11:56,177 - DEBUG - Line 125
-2024-11-25 17:11:56,191 - DEBUG - Line 131
-2024-11-25 17:11:56,191 - DEBUG - initial row count 23039
-2024-11-25 17:11:56,191 - DEBUG - Rows dropped after kw conversion: 0
-2024-11-25 17:11:56,191 - DEBUG - Start and end dates calculated
-2024-11-25 17:11:56,191 - INFO - Resampling completed successfully.
-2024-11-25 17:11:56,191 - DEBUG - load_profile.reset_index()
-2024-11-25 17:11:56,191 - INFO - CSV processing completed.
-2024-11-25 17:23:32,093 - DEBUG - Start
-2024-11-25 17:23:32,093 - DEBUG - C:\Users\micha\GitHub\load-profile\src
-2024-11-25 17:23:32,103 - DEBUG - Line 98
-2024-11-25 17:23:32,115 - DEBUG - Line 125
-2024-11-25 17:23:32,130 - DEBUG - Line 131
-2024-11-25 17:23:32,130 - DEBUG - initial row count 23039
-2024-11-25 17:23:32,130 - DEBUG - Rows dropped after kw conversion: 0
-2024-11-25 17:23:32,130 - DEBUG - Start and end dates calculated
-2024-11-25 17:23:32,130 - INFO - Resampling completed successfully.
-2024-11-25 17:23:32,130 - DEBUG - load_profile.reset_index()
-2024-11-25 17:23:32,130 - INFO - CSV processing completed.
-2024-11-25 17:25:57,484 - DEBUG - Start
-2024-11-25 17:25:57,484 - DEBUG - C:\Users\micha\GitHub\load-profile\src
-2024-11-25 17:25:57,485 - DEBUG - Line 98
-2024-11-25 17:25:57,498 - DEBUG - Line 125
-2024-11-25 17:25:57,513 - DEBUG - Line 131
-2024-11-25 17:25:57,514 - DEBUG - initial row count 23039
-2024-11-25 17:25:57,516 - DEBUG - Rows dropped after kw conversion: 0
-2024-11-25 17:25:57,517 - DEBUG - Start and end dates calculated
-2024-11-25 17:25:57,527 - INFO - Resampling completed successfully.
-2024-11-25 17:25:57,527 - DEBUG - load_profile.reset_index()
-2024-11-25 17:25:57,528 - INFO - CSV processing completed.
+2024-11-26 11:47:15,694 - INFO -                    *** Start ***
+2024-11-26 11:47:15,694 - INFO - C:\Users\micha\GitHub\load-profile\src
+2024-11-26 11:47:15,694 - INFO - fn process_csv -try
+2024-11-26 11:47:15,904 - INFO - fn process_csv - read csv OK
+2024-11-26 11:47:16,294 - INFO - fn process_csv - datetime conversion OK
+2024-11-26 11:47:16,294 - INFO - initial row count 731465
+2024-11-26 11:47:16,311 - INFO - rows dropped (datetime) 0
+2024-11-26 11:47:16,326 - INFO - Rows dropped after kw conversion: 0
+2024-11-26 11:47:16,328 - INFO - Start and end dates calculated
+2024-11-26 11:47:16,401 - INFO - resample to 15-minute intervals - OK
+2024-11-26 11:47:16,404 - INFO - Resampling completed successfully.
+2024-11-26 11:47:16,404 - INFO - load_profile.reset_index()
+2024-11-26 11:47:16,404 - INFO - Rename columns for clarity.
+2024-11-26 11:53:15,623 - INFO -                    *** Start ***
+2024-11-26 11:53:15,623 - INFO - C:\Users\micha\GitHub\load-profile\src
+2024-11-26 11:53:15,623 - INFO - fn process_csv -try
+2024-11-26 11:53:15,829 - INFO - fn process_csv - read csv OK
+2024-11-26 11:53:16,218 - INFO - fn process_csv - datetime conversion OK
+2024-11-26 11:53:16,219 - INFO - initial row count 731465
+2024-11-26 11:53:16,234 - INFO - rows dropped (datetime) 0
+2024-11-26 11:53:16,242 - INFO - Rows dropped after kw conversion: 0
+2024-11-26 11:53:16,242 - INFO - Start and end dates calculated
+2024-11-26 11:53:16,329 - INFO - resample to 15-minute intervals - OK
+2024-11-26 11:53:16,329 - INFO - Resampling completed successfully.
+2024-11-26 11:53:16,330 - INFO - load_profile.reset_index()
+2024-11-26 11:53:16,330 - INFO - Rename columns for clarity.
+2024-11-26 12:35:10,952 - INFO -                    *** Start ***
+2024-11-26 12:35:10,952 - INFO - C:\Users\micha\GitHub\load-profile\src
+2024-11-26 12:35:10,953 - INFO - fn process_csv -try
+2024-11-26 12:35:11,057 - INFO - fn process_csv - read csv OK
+2024-11-26 12:35:11,220 - INFO - fn process_csv - datetime conversion OK
+2024-11-26 12:35:11,220 - INFO - initial row count 307027
+2024-11-26 12:35:11,227 - INFO - rows dropped (datetime) 0
+2024-11-26 12:35:11,232 - INFO - Rows dropped after kw conversion: 0
+2024-11-26 12:35:11,232 - INFO - Start and end dates calculated
+2024-11-26 12:35:11,266 - INFO - resample to 15-minute intervals - OK
+2024-11-26 12:35:11,267 - INFO - Resampling completed successfully.
+2024-11-26 12:35:11,267 - INFO - load_profile.reset_index()
+2024-11-26 12:35:11,268 - INFO - Rename columns for clarity.
+2024-11-26 12:39:41,545 - INFO -                    *** Start ***
+2024-11-26 12:39:41,545 - INFO - C:\Users\micha\GitHub\load-profile\src
+2024-11-26 12:39:41,545 - INFO - fn process_csv -try
+2024-11-26 12:39:41,763 - INFO - fn process_csv - read csv OK
+2024-11-26 12:39:42,155 - INFO - fn process_csv - datetime conversion OK
+2024-11-26 12:39:42,156 - INFO - initial row count 731465
+2024-11-26 12:39:42,158 - INFO - rows dropped (datetime) 0
+2024-11-26 12:39:42,176 - INFO - Rows dropped after kw conversion: 0
+2024-11-26 12:39:42,188 - INFO - Start and end dates calculated
+2024-11-26 12:39:42,259 - INFO - resample to 15-minute intervals - OK
+2024-11-26 12:39:42,259 - INFO - Resampling completed successfully.
+2024-11-26 12:39:42,260 - INFO - load_profile.reset_index()
+2024-11-26 12:39:42,260 - INFO - Rename columns for clarity.
+2024-11-26 12:41:00,289 - INFO -                    *** Start ***
+2024-11-26 12:41:00,289 - INFO - C:\Users\micha\GitHub\load-profile\src
+2024-11-26 12:41:00,289 - INFO - fn process_csv -try
+2024-11-26 12:41:00,393 - INFO - fn process_csv - read csv OK
+2024-11-26 12:41:00,556 - INFO - fn process_csv - datetime conversion OK
+2024-11-26 12:41:00,556 - INFO - initial row count 307027
+2024-11-26 12:41:00,563 - INFO - rows dropped (datetime) 0
+2024-11-26 12:41:00,571 - INFO - Rows dropped after kw conversion: 0
+2024-11-26 12:41:00,573 - INFO - Start and end dates calculated
+2024-11-26 12:41:00,598 - INFO - resample to 15-minute intervals - OK
+2024-11-26 12:41:00,598 - INFO - Resampling completed successfully.
+2024-11-26 12:41:00,598 - INFO - load_profile.reset_index()
+2024-11-26 12:41:00,598 - INFO - Rename columns for clarity.
+2024-11-26 12:41:42,083 - INFO -                    *** Start ***
+2024-11-26 12:41:42,084 - INFO - C:\Users\micha\GitHub\load-profile\src
+2024-11-26 12:41:42,085 - INFO - fn process_csv -try
+2024-11-26 12:41:42,297 - INFO - fn process_csv - read csv OK
+2024-11-26 12:41:42,681 - INFO - fn process_csv - datetime conversion OK
+2024-11-26 12:41:42,681 - INFO - initial row count 731465
+2024-11-26 12:41:42,693 - INFO - rows dropped (datetime) 0
+2024-11-26 12:41:42,709 - INFO - Rows dropped after kw conversion: 0
+2024-11-26 12:41:42,710 - INFO - Start and end dates calculated
+2024-11-26 12:41:42,789 - INFO - resample to 15-minute intervals - OK
+2024-11-26 12:41:42,790 - INFO - Resampling completed successfully.
+2024-11-26 12:41:42,790 - INFO - load_profile.reset_index()
+2024-11-26 12:41:42,791 - INFO - Rename columns for clarity.
+2024-11-26 12:47:27,408 - INFO -                    *** Start ***
+2024-11-26 12:47:27,409 - INFO - C:\Users\micha\GitHub\load-profile\src
+2024-11-26 12:47:27,409 - INFO - fn process_csv -try
+2024-11-26 12:47:27,511 - INFO - fn process_csv - read csv OK
+2024-11-26 12:47:27,659 - INFO - fn process_csv - datetime conversion OK
+2024-11-26 12:47:27,659 - INFO - initial row count 278798
+2024-11-26 12:47:27,671 - INFO - rows dropped (datetime) 0
+2024-11-26 12:47:27,678 - INFO - Rows dropped after kw conversion: 0
+2024-11-26 12:47:27,679 - INFO - Start and end dates calculated
+2024-11-26 12:47:27,700 - INFO - resample to 15-minute intervals - OK
+2024-11-26 12:47:27,700 - INFO - Resampling completed successfully.
+2024-11-26 12:47:27,710 - INFO - load_profile.reset_index()
+2024-11-26 12:47:27,710 - INFO - Rename columns for clarity.
+2024-11-26 12:48:55,323 - INFO -                    *** Start ***
+2024-11-26 12:48:55,323 - INFO - C:\Users\micha\GitHub\load-profile\src
+2024-11-26 12:48:55,323 - INFO - fn process_csv -try
+2024-11-26 12:48:55,417 - INFO - fn process_csv - read csv OK
+2024-11-26 12:48:55,589 - INFO - fn process_csv - datetime conversion OK
+2024-11-26 12:48:55,589 - INFO - initial row count 307027
+2024-11-26 12:48:55,598 - INFO - rows dropped (datetime) 0
+2024-11-26 12:48:55,600 - INFO - Rows dropped after kw conversion: 0
+2024-11-26 12:48:55,600 - INFO - Start and end dates calculated
+2024-11-26 12:48:55,639 - INFO - resample to 15-minute intervals - OK
+2024-11-26 12:48:55,639 - INFO - Resampling completed successfully.
+2024-11-26 12:48:55,640 - INFO - load_profile.reset_index()
+2024-11-26 12:48:55,640 - INFO - Rename columns for clarity.
+2024-11-26 12:49:52,676 - INFO -                    *** Start ***
+2024-11-26 12:49:52,676 - INFO - C:\Users\micha\GitHub\load-profile\src
+2024-11-26 12:49:52,677 - INFO - fn process_csv -try
+2024-11-26 12:49:52,770 - INFO - fn process_csv - read csv OK
+2024-11-26 12:49:52,941 - INFO - fn process_csv - datetime conversion OK
+2024-11-26 12:49:52,941 - INFO - initial row count 307027
+2024-11-26 12:49:52,941 - INFO - rows dropped (datetime) 0
+2024-11-26 12:49:52,957 - INFO - Rows dropped after kw conversion: 0
+2024-11-26 12:49:52,958 - INFO - Start and end dates calculated
+2024-11-26 12:49:52,990 - INFO - resample to 15-minute intervals - OK
+2024-11-26 12:49:52,990 - INFO - Resampling completed successfully.
+2024-11-26 12:49:52,991 - INFO - load_profile.reset_index()
+2024-11-26 12:49:52,991 - INFO - Rename columns for clarity.
+2024-11-26 12:50:42,813 - INFO -                    *** Start ***
+2024-11-26 12:50:42,813 - INFO - C:\Users\micha\GitHub\load-profile\src
+2024-11-26 12:50:42,813 - INFO - fn process_csv -try
+2024-11-26 12:50:42,836 - INFO - fn process_csv - read csv OK
+2024-11-26 12:50:42,851 - INFO - fn process_csv - datetime conversion OK
+2024-11-26 12:50:42,851 - INFO - initial row count 23039
+2024-11-26 12:50:42,853 - INFO - rows dropped (datetime) 0
+2024-11-26 12:50:42,854 - INFO - Rows dropped after kw conversion: 0
+2024-11-26 12:50:42,855 - INFO - Start and end dates calculated
+2024-11-26 12:50:42,858 - INFO - resample to 15-minute intervals - OK
+2024-11-26 12:50:42,858 - INFO - Resampling completed successfully.
+2024-11-26 12:50:42,858 - INFO - load_profile.reset_index()
+2024-11-26 12:50:42,859 - INFO - Rename columns for clarity.
+2024-11-26 12:53:50,359 - INFO -                    *** Start ***
+2024-11-26 12:53:50,360 - INFO - C:\Users\micha\GitHub\load-profile\src
+2024-11-26 12:53:50,361 - INFO - fn process_csv -try
+2024-11-26 12:53:50,439 - INFO - fn process_csv - read csv OK
+2024-11-26 12:53:50,583 - INFO - fn process_csv - datetime conversion OK
+2024-11-26 12:53:50,583 - INFO - initial row count 278798
+2024-11-26 12:53:50,600 - INFO - rows dropped (datetime) 0
+2024-11-26 12:53:50,611 - INFO - Rows dropped after kw conversion: 0
+2024-11-26 12:53:50,613 - INFO - Start and end dates calculated
+2024-11-26 12:53:50,636 - INFO - resample to 15-minute intervals - OK
+2024-11-26 12:53:50,636 - INFO - Resampling completed successfully.
+2024-11-26 12:53:50,636 - INFO - load_profile.reset_index()
+2024-11-26 12:53:50,636 - INFO - Rename columns for clarity.

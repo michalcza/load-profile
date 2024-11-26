@@ -1,24 +1,43 @@
 # Ignore all CSV files
-#*.csv
+*.csv
 
 # Ignore all TXT files
-#*.txt
+*.txt
 
 # Ignote all PNG image files
-#*.png
+*.png
 
 # Allow process flowchart for documentation
-#!cmd-only/src/lpd.py.flowchart.png
+!cmd-only/src/lpd.py.flowchart.png
 
 # Allow specific sample files
-#!cmd-only\sample-data\sampleLP_comma_head_202411071043_out.csv
-#!cmd-only\sample-data\sampleLP_comma_head_202411071043_visualization.png
-#!cmd-only\sample-data\sampleLP_comma_202401301627.csv
-#!cmd-only\sample-data\sampleLP_comma_head_202410231511.csv
-#!cmd-only\sample-data\sampleLP_comma_head_202411071043.csv
-#!cmd-only\sample-data\sampleTR7909.csv
-#!cmd-only\sample-data\sampleLP_comma_head_202411071043_all_outputs.txt
-/cmd-only/src/build
-/cmd-only/src/build
-cmd-only/src/lpd.spec
-cmd-only/src/load_profile.spec
+#!sample-data/98meters-300days-2788K_rows.csv Excluding because file is 108MB
+#!sample-data/98meters-600days-5596K_rows.csv Excluding because file is 216MB
+!sample-data/98meters-600days-5596K_rows_RESULTS-GRAPH.png
+!sample-data/98meters-600days-5596K_rows_RESULTS.txt
+!sample-data/98meters-600days-5596K_rows_RESULTS-LP.csv
+!sample-data/98meters-300days-2788K_rows_RESULTS.txt
+!sample-data/98meters-300days-2788K_rows_RESULTS-LP.csv
+!sample-data/98meters-300days-2788K_rows_RESULTS-GRAPH.png
+!sample-data/22meters-365days-731K_rows.csv
+!sample-data/22meters-500days-1000K_rows.csv
+!sample-data/22meters-736days-1470K_rows.csv
+!sample-data/22meters-list.csv
+!sample-data/8meters-364days-278K_rows.csv
+!sample-data/8meters-405days-307K_rows.csv
+!sample-data/8meters-list.csv
+!sample-data/8meters-14days-10K_rows.csv
+!sample-data/8meters-30days-23K_rows.csv
+!sample-data/98meters-list.csv
+!sample-data/923meters-7days-545K_rows.csv
+
+# Binary EXE build files
+src/build/
+src/*.spec
+
+*.log
+src/__pycache__/
+
+lpd-main.py.bak25NOV2024
+src/lpd_debug.log
+src/pwd.py
