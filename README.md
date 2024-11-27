@@ -45,12 +45,24 @@ Ensure the following Python libraries are installed:
   - File selection dialog.
   - Input for transformer KVA size.
   - Displays output directly in the GUI.
+  
+### 2. `lpd-gui.exe`
+- Binary executable wrappper of lpd-gui.py
+- Makes sure all rewuired libraries are pre-packaged.
+- Use the following syntax to compile. MUST BE COMPILED SECOND.
+`$ pyinstaller --onefile --add-data "lpd-main.exe;." --distpath . lpd-gui.py`
 
-### 2. `lpd-main.py`
+### 3. `lpd-main.py`
 - Command-line utility for performing the load analysis.
 - Features:
   - Processes CSV files.
   - Generates outputs: `.txt`, `.csv`, and `.png` files.
+  
+### 4. `lpd-main.exe`
+- Binary executable wrappper of lpd-main.py
+- Launched in command-line, or through lpd-gui.exe, or lpd-gui.py
+- Use the following syntax to compile. MUST BE COMPILED FIRST.
+`$ pyinstaller --onefile --distpath . lpd-main.py`
 
 ### Output Files:
 - `<input_file>_RESULTS.txt`: Contains analysis summary and metrics.

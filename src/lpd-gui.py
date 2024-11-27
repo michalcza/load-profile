@@ -46,10 +46,13 @@ Changelog:
         - Adjusted spacing in GUI elements to prevent text cutoff.
         - Improved error handling for missing executable and invalid input.
         - Improve workflow and threading for background process (lpd-main.exe)
+        - Cleared previous inputs/results on file browse and validation errors.
 
 Compile instructions:
+IMPORTANT!!! Build lpd-main.exe first, and then build lpd-gui.exe second.
 Syntax:
-> pyinstaller --onefile --add-data "lpd-main.exe;." --distpath . lpd-gui.py
+$ pyinstaller --onefile --add-data "lpd-main.exe;." --distpath . lpd-gui.py
+
 ==============================================================================
 """
 
@@ -84,8 +87,26 @@ def browse_file():
         title="Select CSV File",
         filetypes=[("CSV Files", "*.csv"), ("All Files", "*.*")]
     )
-    csv_path_entry.delete(0, tk.END)  # Clear any previous path
-    csv_path_entry.insert(0, file_path)  # Insert the selected file path
+    
+    # If a file was selected
+    if file_path:  
+        # Clear any previous path
+        csv_path_entry.delete(0, tk.END)  
+        # Insert the selected file path
+        csv_path_entry.insert(0, file_path)  
+
+        # Clear previous content
+        clear_error_label()
+        clear_success_label()
+        clear_output_textbox()
+
+        # Hide plot button if currently displayed
+        if plot_button.grid_info():  # Checks if the button is currently managed
+            plot_button.grid_remove()
+
+        # Hide print button if currently displayed
+        if print_button.grid_info():  # Checks if the button is currently managed
+            print_button.grid_remove()
 
 def launch_analysis(csv_file, kva_value):
 

@@ -41,10 +41,12 @@ Output:
     98meters-300days-2788K_rows_RESULTS-GRAPH.png
     Visualization based on time based load profile data.
     
-Windows executable:
-    Executable is available as \src\lpd-main.exe
-    and is created using:
-    > pyinstaller --onefile lpd-main.py
+
+Compile instructions:
+Syntax:
+$ pyinstaller --onefile --distpath . lpd-main.py
+will compile binary to:
+\src\lpd-main.exe
 
 Sample Data:
    ..\sample-data
@@ -78,6 +80,12 @@ Example: 98meters-300days-2788K_rows.csv
 |     98 |   300 | 2788K |  108.0MB | PASS    |
 |     98 |   600 | 5596K |  216.8MB | PASS    |
 +--------+-------+-------+----------+---------+
+
+-Adding amperage calculations to 'Results' table
+-Minor formatting corrections to 'Interpretation of Results' table
+-Refactoring how output files are listed at end of report to limit
+ 80-column overflow.
+-Commenting out non-error prints to screen
 """
 import logging
 import pandas as pd
@@ -91,7 +99,7 @@ from contextlib import redirect_stdout
 from datetime import datetime
 
 # Configure logging
-# Log file in the current working directory
+# Log file placed in the current working directory
 log_file = os.path.join(os.getcwd(), "lpd_debug.log") 
 logging.basicConfig(
     level=logging.DEBUG,
@@ -115,20 +123,16 @@ def clear_screen():
 
 clear_screen()
 
-print(f"Current working directory: {os.getcwd()}")
+global pwd
 pwd = os.getcwd()
 logger.info("                   *** Start ***")
 logger.info(pwd)
 
 def process_csv(input_file):
     try:
-        print(f"=" * 80)
-        print(f"{'Data Manipulation':^80}")
-        print(f"=" * 80)
-        print(f"Processing file: {input_file}")
         logger.info("fn process_csv -try")
         
-        # Open the file to check the first two lines
+        # Open the file to check the first line
         with open(input_file, "r") as file:
             # Read the first line and check if it matches the expected header
             first_line = file.readline().strip()
@@ -153,13 +157,14 @@ def process_csv(input_file):
 
         # Read the CSV file
         data = pd.read_csv(input_file)
-        print("CSV file read successfully.")
         logger.info("fn process_csv - read csv OK")
+        
         # Convert the 'date' and 'time' columns to a single datetime column
         data["datetime"] = pd.to_datetime(
             data["date"] + " " + data["time"], format="%Y-%m-%d %H:%M:%S.%f", errors="coerce"
         )
         logger.info("fn process_csv - datetime conversion OK")
+        
         # Store the initial row count
         initial_row_count = len(data)
         logger.info("initial row count %d", initial_row_count)
@@ -169,13 +174,10 @@ def process_csv(input_file):
         
         # Calculate the number of rows dropped
         rows_dropped = initial_row_count - len(data)
-        
-        # Print the number of rows dropped
-        print(f"Number of rows dropped (datetime): {rows_dropped}")
-        logger.info("rows dropped (datetime) %d", rows_dropped)
+        logger.info("rows dropped (datetime) calculated")
         
         if rows_dropped > 3:
-            logger.error("Too many rows dropped during datetime conversion: %d", rows_dropped)
+            logger.error("Too many rows dropped during datetime conversion, exiting.")
             raise ValueError("Too many rows dropped due to 'datetime' conversion failure. Exiting.")
             sys.exit(1)
             
@@ -193,13 +195,10 @@ def process_csv(input_file):
                 
         # Calculate the number of rows dropped
         rows_dropped = initial_row_count - len(data)
-        
-        # Print the number of rows dropped
-        print(f"Number of rows dropped (KW): {rows_dropped}")
-        logger.info("Rows dropped after kw conversion: %d", rows_dropped)
+        logger.info("Rows dropped after kw conversion calculated")
 
         if rows_dropped > 3:
-            logger.error("Too many rows dropped during kw conversion: %d", rows_dropped)
+            logger.error("Too many rows dropped during kw conversion, exiting.")
             raise ValueError("Too many rows dropped due to 'kw' conversion failure. Exiting.")
             sys.exit(1)
         
@@ -220,7 +219,6 @@ def process_csv(input_file):
         # Reset index to get 'datetime' back as a column
         logger.info("Resampling completed successfully.")
         load_profile = load_profile.reset_index()
-        logger.info("load_profile.reset_index()")
 
         # Rename columns for clarity
         load_profile.columns = ["datetime", "total_kw"]
@@ -228,54 +226,45 @@ def process_csv(input_file):
 
         # Find the datetime for the peak total_kw
         peak_row = load_profile.loc[load_profile["total_kw"].idxmax()]
-        logger.info("peak_row %d", peak_row)
+        logger.info("peak_row calculated")
         peak_datetime = peak_row["datetime"]
-        logger.info("peak_datetime ", peak_datetime)
+        logger.info("peak_datetime calculated")
         peak_load = peak_row["total_kw"]
-        logger.info("peak_load ", peak_load)
+        logger.info("peak_load calculated")
         
 
         # Create a DataFrame to include the peak information
         peak_info = pd.DataFrame({"datetime": [peak_datetime], "peak_total_kw": [peak_load]})
-        logger.info("peak_info ", peak_info)
+        logger.info("peak_info calculated")
+        
         # Calculate average load
         average_load = load_profile["total_kw"].mean()
-        logger.info("average_load ", average_load)
+        logger.info("average_load calculated")
         average_load_per_meter = data.groupby("meter")["kw"].mean()
-        logger.info("average_load_per_meter ",average_load_per_meter)
+        logger.info("average_load_per_meter calculated")
 
         # Calculate number of days and number of meters
         num_days = (data.index.max() - data.index.min()).days + 1
-        logger.info("num_days ",num_days)
+        logger.info("num_days calculated")
 
         # Calculate number of meters
         num_meters = data["meter"].nunique()
-        logger.info("num_meters ", num_meters)
-        print(f"=" * 80)
-        print(f"{'Calculations and Integrity Checks':^80}")
-        print(f"=" * 80)
+        logger.info("num_meters calculated")
                
         # Coincidence factor
         individual_maximum_demands = data.groupby("meter")["kw"].max()
-        logger.info("individual_maximum_demands ",individual_maximum_demands)
+        logger.info("Individual_maximum_demands calculated")
         sum_individual_maximum_demands = individual_maximum_demands.sum()
-        logger.info("sum_individual_maximum_demands ",sum_individual_maximum_demands)
+        logger.info("Sum_individual_maximum_demands calculated")
         coincidence_factor = peak_load / sum_individual_maximum_demands
-        logger.info("coincidence_factor ",coincidence_factor)
+        logger.info("Coincidence_factor calculated")
+        
         # Verify reasonability
         if coincidence_factor >= 1:
             raise ValueError("Coincidence factor exceeds the reasonability limit of 1.")
+            logger.error("Coincidence factor exceeds the reasonability limit of 1.")
         else:
-            print("Coincidence factor is within the expected range (<= 1).")
-
-        # Demand factor
-        #demand_factor = peak_load / total_conneced_load
-        
-        # Verify reasonability
-        #if demand_factor >= 1:
-        #  raise ValueError("Demand factor exceeds the reasonability limit of 1.")
-        #else:
-        #  print("Demand Factor is within the expected range (<= 1).")
+            logger.info("Coincidence factor is within the expected range (<= 1).")
 
         # Diversity factor
         diversity_factor = sum_individual_maximum_demands / peak_load
@@ -283,31 +272,53 @@ def process_csv(input_file):
         # Verify reasonability
         if diversity_factor <= 1:
             raise ValueError("Diversity factor exceeds the reasonability limit of 1.")
+            logger.error("Diversity factor exceeds the reasonability limit of 1.")
         else:
-            print("Diversity factor is within the expected range (>= 1).")
+            logger.info("Diversity factor is within the expected range (>= 1).")
 
         # Load factor
         load_factor = average_load / peak_load
+        
         # Verify reasonability
         if load_factor >= 1:
             raise ValueError("Load factor exceeds the reasonability limit of 1.")
+            logger.error("Load factor exceeds the reasonability limit of 1.")
         else:
-            print("Load factor is within the expected range (<= 1).")
-
-        # Cross-check that coincidence_factor == 1 / diversity_factor
-        #if coincidence_factor != 1 / diversity_factor:
-        #    raise ValueError("Inconsistency detected: coincidence factor is not equal to 1 / diversity factor.")
-        #else:
-        #    print("Cross-check passed: coincidence factor equals 1 / diversity_factor.")
+            logger.info("Load factor is within the expected range (<= 1).")
 
         # Average peak load for each meter
         average_peak_load_per_meter = sum_individual_maximum_demands / num_meters
+        logger.info("Average_peak_load_per_meter: %d", average_peak_load_per_meter)
+        
+        # 120V Amperage
+        amps120 = (peak_load * 1000)/(120)
+        # 208V Amperage
+        amps208 = (peak_load * 1000)/(208)
+        # 240V Amperage
+        amps240 = (peak_load * 1000)/(240)
         
         # Generate output filenames
         base, ext = os.path.splitext(input_file)
+        
+        #global base_name
         base_name = os.path.basename(input_file)
         load_profile_file = f"{base}_RESULTS-LP.csv"
         output_file = f"{base}_RESULTS.txt"
+        filename = os.path.basename(input_file)
+        load_distribution_output_file = f"{base_name}_RESULTS.txt"
+        
+        #Generate short filenames
+        logger.info("Current Directory: %s", pwd)
+        logger.info("Input: %s", base_name)
+        global results_file_short
+        results_file_short = base_name.replace(".csv", "_RESULTS.txt")
+        logger.info("Results: %s", results_file_short)
+        global lp_file_short
+        lp_file_short = base_name.replace(".csv", "_RESULTS-LP.csv")
+        logger.info("Load Profile: %s", lp_file_short)
+        global graph_file_short
+        graph_file_short = base_name.replace(".csv", "_RESULTS-GRAPH.csv")
+        logger.info("Graph: %s", graph_file_short)
         
         # Generate time stamp for report runtime.
         current_datetime = datetime.now()
@@ -315,8 +326,8 @@ def process_csv(input_file):
         def print_and_save(summary, filename=output_file):
             with open(filename, "w") as file:
                 # Redirect output to both the console and the file
-                with redirect_stdout(sys.stdout):  # Send to console
-                    print(summary)  # Print to console
+                #with redirect_stdout(sys.stdout):  # Send to console
+                    #print(summary)  # Print to console
                 with redirect_stdout(file):  # Send to file
                     print(summary)  # Print to file
 
@@ -336,17 +347,17 @@ def process_csv(input_file):
             "=" * calculation_summary_width,
             f"{'Results':^{calculation_summary_width}}",
             "=" * calculation_summary_width,
-            f"{'Average load (total): ':<30} {average_load:>20.2f} {'KW':<28}",
-            f"{'Average load (per meter): ':<30} {average_load_per_meter.mean():>20.2f} {'KW':<28}",
-            f"{'Peak load (total): ':<30} {peak_load:>20.2f} {'KW on ' + str(peak_datetime):<28}",
-            f"{'Peak load (per meter, average): ':<30} {average_peak_load_per_meter:>18.2f} {'KW':<28}",
+            f"{'Peak load (KW): ':<30} {peak_load:>20.2f} {'KW on ' + str(peak_datetime):<28}",
+            f"{'Peak load (120V, 1-phase, PF=1): ':<30} {amps120:>17.2f} {'amps':<28}",
+            f"{'Peak load (208V, 1-phase, PF=1): ':<30} {amps208:>17.2f} {'amps':<28}",
+            f"{'Peak load (240V, 1-phase, PF=1): ':<30} {amps240:>17.2f} {'amps':<28}",
             "=" * calculation_summary_width,
             f"{'Calculated Factors':^{calculation_summary_width}}",
             "=" * calculation_summary_width,
-            f"{'Load Factor: ':<25} {load_factor:>20.2f}",
-            f"{'Diversity Factor: ':<25} {diversity_factor:>20.2f}",
-            f"{'Coincidence Factor: ':<25} {coincidence_factor:>20.2f}",
-            f"{'Demand Factor: ':<42}{'indeterminate':<20}",
+            f"{'Load Factor: ':<30} {load_factor:>20.2f}",
+            f"{'Diversity Factor: ':<30} {diversity_factor:>20.2f}",
+            f"{'Coincidence Factor: ':<30} {coincidence_factor:>20.2f}",
+            f"{'Demand Factor: ':<47}{'indeterminate':<32}",
             "=" * calculation_summary_width,
             f"{'Interpretation of Results':^{calculation_summary_width}}",
             "=" * calculation_summary_width,
@@ -361,7 +372,7 @@ def process_csv(input_file):
             f"{'':<1}",
             "Coincidence Factor = peak_load / sum_individual_maximum_demands",
             f"{'':<1}1 / coincidence_factor = diversity_factor",
-            f"{'':<1}{coincidence_factor * 100:.0f}% of the sum total of maximum demands {sum_individual_maximum_demands:.2f}KW is realized during\n the peak load period of {peak_load:.2f}KW",
+            f"{'':<1}{coincidence_factor * 100:.0f}% of the sum total of maximum demands ({sum_individual_maximum_demands:.2f} KW) is realized during\n the peak load of {peak_load:.2f} KW",
             f"{'':<1}",
             "Demand Factor = peak_load / total_connected_load",
             f"{'':<1}Low demand factor requires less system capacity to serve total load.",
@@ -375,34 +386,44 @@ def process_csv(input_file):
 
         # Profile data to CSV
         load_profile.to_csv(load_profile_file, index=False)
-        print(f"Load profile saved to:")
-        print(f"{load_profile_file}")
-        print(f"="*80)
+        
         # Return the load_profile_file path for use outside the function
         return load_profile_file
 
-    except FileNotFoundError:
-        print(f"Error: The file '{input_file}' was not found.")
+    except FileNotFoundError as e:
+        error_message = f"Error: The file '{input_file}' was not found."
+        print(error_message)
+        logger.error(error_message)
+        raise e
+    class CustomValueError(ValueError):
+        pass
+
+    try:
+        raise CustomValueError("The provided value is invalid.")
+
+    except CustomValueError as e:
+        error_message = f"Custom value error: {e}"
+        print(error_message)
+        logger.error(error_message)
         sys.exit(1)
-    except ValueError as e:
-        print(f"Error: {e}")
-        sys.exit(1)
+
     except Exception as e:
-        print(f"An unexpected error occurred: {e}")
+        error_message = f"Unexpected error: {e}"
+        print(error_message)
+        logger.exception("Unhandled Exception")
         sys.exit(1)
 
 def transformer_load_analysis(load_profile_file, transformer_kva):
     try:
-        print(f"")
-        print(f"Starting transformer load analysis on file:")
-        print(f"{load_profile_file}\nusing transformer size {transformer_kva} KVA")
-
         # Load the load profile data from CSV file
         out_data = pd.read_csv(load_profile_file)
 
         # Ensure the 'total_kw' column exists in the data
         if "total_kw" not in out_data.columns:
-            raise ValueError("The load profile file must contain a 'total_kw' column representing load in KW.")
+            error_message = f"The load profile file must contain a 'total_kw' column representing load in KW."
+            print(error_message)
+            logger.error(error_message)
+            raise ValueError(error_message)
 
         # Calculate load as a percentage of transformer capacity
         out_data["load_percentage"] = (out_data["total_kw"] / transformer_kva) * 100
@@ -411,13 +432,12 @@ def transformer_load_analysis(load_profile_file, transformer_kva):
         # Convert to datetime
         out_data["datetime"] = pd.to_datetime(out_data["datetime"])
         total_time = (out_data["datetime"].max() - out_data["datetime"].min()).total_seconds()
+        
         # Convert seconds to hours
         total_hours = total_time / 3600
+        
         # Convert hours to days
         total_days = total_hours / 24
-
-        print(f"")
-        print(f"Total time of dataset: {total_days:.2f} days ({total_hours:.2f} hours)")
 
         # Determine time spent within different load ranges
         # Get time interval in hours
@@ -437,19 +457,10 @@ def transformer_load_analysis(load_profile_file, transformer_kva):
         percent_between_85_100 = (between_85_100 / total_hours) * 100
         percent_between_100_120 = (between_100_120 / total_hours) * 100
         percent_above_120 = (above_120 / total_hours) * 100
-        # Print results to console
-        print("=" * 80)
-        print(f"{'Transformer Capacity Distribution':^80}")
-        print("=" * 80)
-        print(f" {'LOAD RANGE':^30}| {'DAYS':^16}| {'HOURS':^17}| {'%':^10}")
-        print("-" * 80)
-        print(f" {'Below 85%':<30}| {(below_85 / 24):<10.2f} days | {below_85:<10.2f} hours | {percent_below_85:<7.2f} % ")
-        print(f" {'Between 85% and 100%':<30}| {(between_85_100 / 24):<10.2f} days | {between_85_100:<10.2f} hours | {percent_between_85_100:<7.2f} % ")
-        print(f" {'Between 100% and 120%':<30}| {(between_100_120 / 24):<10.2f} days | {between_100_120:<10.2f} hours | {percent_between_100_120:<7.2f} % ")
-        print(f" {'Exceeds 120%':<30}| {(above_120 / 24):<10.2f} days | {above_120:<10.2f} hours | {percent_above_120:<7.2f} % ")
-        print("=" * 80)
+
         # Remove the .csv extension
         base_name = os.path.splitext(input_file)[0]
+        
         # Declare output filename
         load_distribution_output_file = f"{base_name}_RESULTS.txt"
         graph_file = load_profile_file.replace("_RESULTS-LP.csv", "_RESULTS-GRAPH.png")
@@ -459,7 +470,6 @@ def transformer_load_analysis(load_profile_file, transformer_kva):
         kva_120 = transformer_kva * 1.2
         
         # Print to output file
-
         with open(load_distribution_output_file, "a") as f:
             f.write("=" * 80 + "\n")
             f.write(f"{'Transformer Calculations and Capacity Distribution':^80}\n")
@@ -474,15 +484,14 @@ def transformer_load_analysis(load_profile_file, transformer_kva):
             f.write(f" {'Between 100% and 120%':<30}| {(between_100_120 / 24):<10.2f} days | {between_100_120:<10.2f} hours | {percent_between_100_120:<7.2f} % \n")
             f.write(f" {'Exceeds 120%':<30}| {(above_120 / 24):<10.2f} days | {above_120:<10.2f} hours | {percent_above_120:<7.2f} % \n")
             f.write("=" * 80 + "\n")
-            f.write(f"{'Load Profile data saved to: ':<80}\n")
-            f.write(f"{load_profile_file:<80}\n")
-            f.write(f"{'Load Profile graph saved to: ':<80}\n")
-            f.write(f"{graph_file:<80}\n")
-            f.write(f"{'This file: ':<80}\n")
-            f.write(f"{load_distribution_output_file:<80}\n")
-            
-            # Confirm that the table has been saved
-            print(f"Output table saved to:\n {load_distribution_output_file}")
+            f.write(f"{'Current directory: ':<80}\n")
+            f.write(f"{pwd:<80}\n\n")
+            f.write(f"{'Input file: ':<80}\n")
+            f.write(f"{str(input_file):<80}\n\n")
+            f.write(f"{'Output written to same folder as input file.':<80}\n")
+            f.write(f"{'Results: ':<15}{results_file_short:<65}\n")
+            f.write(f"{'Load profile: ':<15}{lp_file_short:<65}\n")
+            f.write(f"{'Graph: ':<15}{graph_file_short:<65}\n")
 
     except FileNotFoundError:
         print(f"Error: The file '{load_profile_file}' was not found.")
@@ -503,6 +512,7 @@ def visualize_load_profile(load_profile_file, transformer_kva):
 
             # Ensure the necessary columns are present
             if "datetime" in data.columns and "total_kw" in data.columns:
+            
                 # Convert 'datetime' column to datetime type for plotting
                 data["datetime"] = pd.to_datetime(data["datetime"])
                 data.set_index("datetime", inplace=True)
@@ -528,9 +538,9 @@ def visualize_load_profile(load_profile_file, transformer_kva):
                 plt.legend()
 
                 # Save the plot to file
+                # Graph_file
                 graph_file = load_profile_file.replace("_RESULTS-LP.csv", "_RESULTS-GRAPH.png")
                 plt.savefig(graph_file)
-                print(f"Graph saved to:\n {graph_file}")
             else:
                 print("Error: Required columns 'datetime' and 'total_kw' are not present in the file.")
         except Exception as e:
@@ -551,6 +561,7 @@ if __name__ == "__main__":
 
     # Ensure the file was created successfully
     if load_profile_file and os.path.isfile(load_profile_file):
+    
         # Perform transformer load analysis only if transformer_kva is greater than 0
         if transformer_kva > 0:
             transformer_load_analysis(load_profile_file, transformer_kva)

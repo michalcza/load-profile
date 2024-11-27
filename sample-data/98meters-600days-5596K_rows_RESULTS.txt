@@ -1,0 +1,75 @@
+================================================================================
+                                Data Parameters                                 
+================================================================================
+Input filename:                                  98meters-600days-5596K_rows.csv
+Report run date/time:                                        2024-11-26 17:38:34
+Data START date/time:                                        2023-04-06 11:45:00
+Data END date/time:                                          2024-11-26 10:15:00
+Days in dataset:                                     600 days                   
+Meters in dataset:                                    98 meters                 
+Meter reads in dataset:                          5596955 rows                   
+Rows dropped during conversion:                        0 rows                   
+================================================================================
+                                    Results                                     
+================================================================================
+Peak load (KW):                              356.92 KW on 2024-08-02 18:15:00   
+Peak load (120V, 1-phase, PF=1):            2974.30 amps                        
+Peak load (208V, 1-phase, PF=1):            1715.94 amps                        
+Peak load (240V, 1-phase, PF=1):            1487.15 amps                        
+================================================================================
+                               Calculated Factors                               
+================================================================================
+Load Factor:                                   0.31
+Diversity Factor:                              2.57
+Coincidence Factor:                            0.39
+Demand Factor:                                 indeterminate                   
+================================================================================
+                           Interpretation of Results                            
+================================================================================
+Load Factor = average_load / peak_load
+ With constant load, LF -> 1. With variable load, LF -> 0
+ With LF -> 1, fixed costs are spread over more kWh of output.
+ LF is how efficiently the customer is using peak demand.
+ Example: Traffic light LF ~ 1, EV charger LF ~ 0
+  
+Diversity Factor = sum_individual_maximum_demands / peak_load
+ The system's simultaneous peak load (356.92 KW) is 2.57% of sum of individual
+ maximum demands (916.11 KW).
+ This suggests that 2.57% of loads are operating at their peak at the
+ same time. A low diversity factor implies that the infrastructure is likely
+ underutilized for a significant portion of its capacity. While this might
+ suggest the potential for downsizing, it also provides flexibility for
+ accommodating additional loads.
+ 
+Coincidence Factor = peak_load / sum_individual_maximum_demands
+ 1 / coincidence_factor = diversity_factor
+ 39% of the sum total of maximum demands (916.11 KW) is realized during
+ the peak load of 356.92 KW
+ 
+Demand Factor = peak_load / total_connected_load
+ Low demand factor requires less system capacity to serve total load.
+ Example: Sum of branch circuits in panel can exceed main breaker amps.
+ Indeterminate. We do not know the total theoretical total connected load.
+================================================================================
+               Transformer Calculations and Capacity Distribution               
+================================================================================
+Total time:                                       599.9 days (14398.50 hours)
+Transformer KVA:                                  300.0 KVA                     
+--------------------------------------------------------------------------------
+           LOAD RANGE          |       DAYS      |       HOURS      |     %     
+--------------------------------------------------------------------------------
+ Below 85%                     | 580.06     days | 13921.50   hours | 96.69   % 
+ Between 85% and 100%          | 15.93      days | 382.25     hours | 2.65    % 
+ Between 100% and 120%         | 3.96       days | 95.00      hours | 0.66    % 
+ Exceeds 120%                  | 0.00       days | 0.00       hours | 0.00    % 
+================================================================================
+Current directory:                                                              
+C:\Users\micha\AppData\Local\Temp\_MEI30762                                     
+
+Input file:                                                                     
+C:/Users/micha/GitHub/load-profile/sample-data/98meters-600days-5596K_rows.csv  
+
+Output written to same folder as input file.                                    
+Results:       98meters-600days-5596K_rows_RESULTS.txt                          
+Load profile:  98meters-600days-5596K_rows_RESULTS-LP.csv                       
+Graph:         98meters-600days-5596K_rows_RESULTS-GRAPH.csv                    
