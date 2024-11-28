@@ -47,6 +47,8 @@ Changelog:
         - Improved error handling for missing executable and invalid input.
         - Improve workflow and threading for background process (lpd-main.exe)
         - Cleared previous inputs/results on file browse and validation errors.
+    - 11/27/2024
+        - Cleanup and consolidate messaging feedback into single function.
 
 Compile instructions:
 IMPORTANT!!! Build lpd-main.exe first, and then build lpd-gui.exe second.
@@ -82,6 +84,7 @@ https://github.com/michalcza/load-profile
 """
 
 def browse_file():
+
     # Open file dialog to select CSV file
     file_path = filedialog.askopenfilename(
         title="Select CSV File",
@@ -89,57 +92,46 @@ def browse_file():
     )
     
     # If a file was selected
-    if file_path:  
+    if file_path:
+    
         # Clear any previous path
         csv_path_entry.delete(0, tk.END)  
         # Insert the selected file path
         csv_path_entry.insert(0, file_path)  
 
         # Clear previous content
-        clear_error_label()
-        clear_success_label()
+        root.after(0, clear_error_and_status_labels)
         clear_output_textbox()
 
         # Hide plot button if currently displayed
-        if plot_button.grid_info():  # Checks if the button is currently managed
-            plot_button.grid_remove()
+        #if plot_button.grid_info():
+        #   plot_button.configure(state=tk.NORMAL)
 
         # Hide print button if currently displayed
-        if print_button.grid_info():  # Checks if the button is currently managed
-            print_button.grid_remove()
+        #if print_button.grid_info():
+        #   print_button.configure(state=tk.NORMAL)
 
 def launch_analysis(csv_file, kva_value):
-
-    # Clear error and status labels at the start
-    root.after(0, clear_error_and_status_labels)
-    
-    def update_success_label():
-        root.after(0, lambda: success_label.config(text=" Running..."))
-
-    def update_error_label(message):
-        root.after(0, lambda: error_label.config(text=" Error."))
-
+   
     # Schedule GUI updates on the main thread
-    root.after(0, update_success_label)
+    update_status("Analysis started...", "success")
 
     # Clear previous content
-    root.after(0, clear_error_label)
-    root.after(0, clear_success_label)
     root.after(0, clear_output_textbox)
 
     # Check if the CSV file and KVA value are provided
     if not csv_file:
-        root.after(0, lambda: update_error_label(" Error. Please select a CSV file."))
+        update_status("Error. Please select a CSV file.", "error")
         return
     if not kva_value:
-        root.after(0, lambda: update_error_label(" Error. Please enter the transformer KVA size."))
+        update_status("Error. Please select a transformer KVA size, or '0' to skip transformer analysis.", "error")
         return
 
     try:
-        kva_value = float(kva_value)  # Convert KVA to float
+        # Convert KVA to float
+        kva_value = float(kva_value)  
     except ValueError:
-        root.after(0, lambda: update_error_label(" Error. Transformer KVA must be a numerical value."))
-        root.after(0, lambda: status_label.config(text=" Status: Failed - Invalid KVA value."))
+        update_status("Error. Transformer KVA must be a numerical value.", "error")
         return
 
     try:
@@ -153,32 +145,32 @@ def launch_analysis(csv_file, kva_value):
 
         # Process output
         global base_name
-        base_name = os.path.splitext(csv_file)[0]  # Clear csv extension
+        
+        # Clear csv extension
+        base_name = os.path.splitext(csv_file)[0]
         global output_file
         output_file = f"{base_name}_RESULTS.txt"
 
         if os.path.isfile(output_file):
             with open(output_file, "r") as file:
-                output_textbox.delete(1.0, tk.END)  # Clear previous content
+                # Clear previous content
+                output_textbox.delete(1.0, tk.END)
                 output_textbox.insert(tk.END, file.read())
+                update_status("")
         else:
             output_textbox.delete(1.0, tk.END)
             output_textbox.insert(tk.END, f"Output file '{output_file}' not found.")
 
         # Display print and open plot buttons
-        root.after(0, lambda: plot_button.grid(row=4, column=3, pady=10, padx=10))
-        root.after(0, lambda: print_button.grid(row=4, column=4, pady=10, padx=10))
-        root.after(0, lambda: success_label.config(text=" Load analysis completed successfully."))
+        update_status("Analysis completed.", "success")
+        plot_button.configure(state=tk.NORMAL)
+        print_button.configure(state=tk.NORMAL)
 
     except subprocess.CalledProcessError as e:
-        root.after(0, lambda e=e: error_label.config(text=f" Subprocess Error: {e}"))
+        update_status(f"Subprocess Error: {e}", "error")
     except Exception as e:
-        root.after(0, lambda e=e: error_label.config(text=f" An error occurred: {e}"))
+        update_status(f"An error occurred: {e}", "error")
 
-def clear_success_label():
-    error_label.config(text="")
-def clear_error_label():
-    error_label.config(text="")
 def clear_output_textbox():
     output_textbox.delete(1.0, tk.END)
 def clear_csv_path_entry():
@@ -186,39 +178,45 @@ def clear_csv_path_entry():
 def clear_kva_entry():
     csv_path_entry.delete(0, tk.END)
 def open_plot():
-    plot_file = f"{base_name}_RESULTS-GRAPH.png"  # Define the plot file path based on base_name
+    # Define the plot file path based on base_name
+    plot_file = f"{base_name}_RESULTS-GRAPH.png"
+    
     # Check if the plot file exists
     if not os.path.isfile(plot_file):
-        clear_error_label()
-        clear_success_label()
+        update_status("")
         messagebox.showerror("Open File Error", "Error! Could not open plot file.\nTime based visualization not generated when KVA = 0.",)
         return
     try:
-        if os.name == 'nt':  # Windows
+        # Windows
+        if os.name == 'nt':  
             os.startfile(plot_file)
-        elif os.name == 'posix':  # macOS
+        # macOS
+        elif os.name == 'posix':  
             os.system(f"open '{plot_file}'")
         else:
             raise OSError("Unsupported operating system for opening the plot file.")
     except Exception as e:
         print(f"Could not open the file: {e}")
-        error_label.config(text=" Error! Could not open plot file.")
+        update_status("Error! Could not open plot file.", "error")
 def print_output_file():
     # Check if the output file exists
     if not os.path.isfile(output_file):
-        error_label.config(text=" Error! Output file not found.")
+        update_status("Error! Output file not found.", "error")
         return
     try:
-        if os.name == 'nt':  # Windows
+        # Windows
+        if os.name == 'nt':  
             subprocess.run(["notepad.exe", "/p", output_file], check=True)
-        elif os.name == 'posix':  # macOS and Linux
+        # macOS and Linux
+        elif os.name == 'posix':  
             subprocess.run(["lp", output_file], check=True)
         else:
-            error_label.config(text=" Unsupported OS for printing.")
+            update_status("Unsupported OS for printing.", "error")
     except Exception as e:
-        error_label.config(text=" An error occured while printing.")
+        update_status(f"An error occurred while printing: {e}", "error")
 
 def start_analysis_thread():
+
     # Retrieve widget values in the main thread
     csv_file = csv_path_entry.get()
     kva_value = kva_entry.get()
@@ -227,75 +225,83 @@ def start_analysis_thread():
     threading.Thread(target=launch_analysis, args=(csv_file, kva_value), daemon=True).start()
     
 def clear_all():
-    csv_path_entry.delete(0, tk.END)    # Clear CSV path entry
-    kva_entry.delete(0, tk.END)         # Clear KVA entry
-    error_label.config(text="")         # Clear error label
-    success_label.config(text="")       # Clear success label
-    status_label.config(text="")        # Clear success label
-    output_textbox.delete(1.0, tk.END)  # Clear output textbox
+    csv_path_entry.delete(0, tk.END)
+    kva_entry.delete(0, tk.END)
+    output_textbox.delete(1.0, tk.END)
     output_textbox.insert(tk.END, default_text)
-    plot_button.grid_remove()           # Hide plot button
-    print_button.grid_remove()          # Hide print button
+    plot_button.configure(state=tk.DISABLED)
+    print_button.configure(state=tk.DISABLED)
+    update_status("")
     
 def clear_error_and_status_labels():
-    error_label.config(text="")
-    status_label.config(text="")
+    update_status("")
     
+def update_status(message, status_type="info"):
+    """
+    Update the status label with a message and style based on status type.
+    
+    :param message: The feedback message to display.
+    :param status_type: Type of message ("info", "success", "error", "warning").
+    """
+    if status_type == "success":
+        status_label.config(text=f"✔️ {message}", fg="green")
+    elif status_type == "error":
+        status_label.config(text=f"❌ {message}", fg="red")
+    elif status_type == "warning":
+        status_label.config(text=message, fg="orange")
+    else:
+        status_label.config(text=message, fg="black")
+
 # Create the main window
 root = tk.Tk()
 root.title("Transformer Load Analysis")
 root.resizable(False, False)  # Lock the window size
 
+# Top row
 # CSV File selection
-tk.Label(root, text="Select Input CSV File:").grid(row=0, column=0, padx=1, pady=10, sticky="w")
+tk.Label(root, text="Select Input CSV File:").grid(row=0, column=0, padx=10, pady=2, sticky="w")
 csv_path_entry = tk.Entry(root, width=35)
-csv_path_entry.grid(row=0, column=1, padx=10, pady=10)
+csv_path_entry.grid(row=0, column=1, padx=5, pady=2)
 browse_button = tk.Button(root, text="Browse...", command=browse_file)
-browse_button.grid(row=0, column=2, padx=1, pady=10)
+browse_button.grid(row=0, column=2, padx=5, pady=2)
 
 # Transformer KVA input
 tk.Label(root, text="Transformer KVA:").grid(row=0, column=3, padx=1, pady=1, sticky="w")
 kva_entry = tk.Entry(root, width=10)
-kva_entry.grid(row=0, column=4, padx=1, pady=10)
+kva_entry.grid(row=0, column=4, padx=5, pady=2)
 
 # Run Analysis button
 run_button = tk.Button(root, text="Run Analysis", command=start_analysis_thread)
-run_button.grid(row=0, column=5, padx=1, pady=10)
+run_button.grid(row=0, column=5, padx=5, pady=2)
 
-# Success label (to display the status message)
-success_label = tk.Label(root, text="", fg="green")
-success_label.grid(row=1, column=2, columnspan=5, padx=1, pady=1, sticky="w")
-
-# Error label (to display the status message)
-error_label = tk.Label(root, text="", fg="red")
-error_label.grid(row=1, column=2, columnspan=5, padx=1, pady=1, sticky="w")
-
-# Status label (to display the status message)
-status_label = tk.Label(root, text="", fg="black")
-status_label.grid(row=2, column=2, columnspan=5, padx=1, pady=1, sticky="w")
+# Unified status label
+status_label = tk.Label(root, text="", anchor="w")
+status_label.grid(row=2, column=1, columnspan=7, sticky="w", padx=5, pady=1)
 
 # Output Text Box to display the content of the output file
 output_textbox = scrolledtext.ScrolledText(root, width=80, height=25, wrap=tk.WORD)
-output_textbox.grid(row=3, column=0, columnspan=7, padx=1, pady=1)
+output_textbox.grid(row=3, column=0, columnspan=7, padx=5, pady=2)
 output_textbox.insert(tk.END, default_text)
 
-# Close button
-close_button = tk.Button(root, text="Close", command=root.destroy)
-close_button.grid(row=4, column=6, pady=10, padx=10)
+# Bottom row buttons
 
 # Visualize button
-plot_button = tk.Button(root, text="Open Plot", command=open_plot)
-plot_button.grid(row=4, column=3, pady=10, padx=10)
-plot_button.grid_remove()  # Hide initially
+plot_button = tk.Button(root, text="Open Graph", command=open_plot)
+plot_button.grid(row=4, column=2, pady=5, padx=2)
+plot_button.configure(state=tk.DISABLED)  # Hide initially
 
 # Print button
-print_button = tk.Button(root, text="Print Output File", command=print_output_file)
-print_button.grid(row=4, column=4, pady=10, padx=10)
-print_button.grid_remove()  # Hide initially
+print_button = tk.Button(root, text="Print Results", command=print_output_file)
+print_button.grid(row=4, column=3, pady=5, padx=2)
+print_button.configure(state=tk.DISABLED)  # Hide initially
 
 # Clear All button
 clear_all_button = tk.Button(root, text="Clear All", command=clear_all)
-clear_all_button.grid(row=4, column=5, pady=10, padx=10)
+clear_all_button.grid(row=4, column=4, pady=5, padx=2)
+
+# Close button
+close_button = tk.Button(root, text="Close", command=root.destroy)
+close_button.grid(row=4, column=5, pady=5, padx=2)
 
 root.mainloop()
 

@@ -3417,3 +3417,579 @@
 2024-11-26 17:22:15,012 - INFO - Results: 22meters-365days-731K_rows_RESULTS.txt
 2024-11-26 17:22:15,012 - INFO - Load Profile: 22meters-365days-731K_rows_RESULTS-LP.csv
 2024-11-26 17:22:15,012 - INFO - Graph: 22meters-365days-731K_rows_RESULTS-GRAPH.csv
+2024-11-27 17:20:39,050 - INFO -                    *** Start ***
+2024-11-27 17:20:39,050 - INFO - C:\Users\micha\GitHub\load-profile\src
+2024-11-27 17:20:39,051 - INFO - fn process_csv -try
+2024-11-27 17:20:39,059 - INFO - fn process_csv - read csv OK
+2024-11-27 17:20:39,067 - INFO - fn process_csv - datetime conversion OK
+2024-11-27 17:20:39,067 - INFO - initial row count 10752
+2024-11-27 17:20:39,069 - INFO - rows dropped (datetime) calculated
+2024-11-27 17:20:39,070 - INFO - Rows dropped after kw conversion calculated
+2024-11-27 17:20:39,070 - INFO - Start and end dates calculated
+2024-11-27 17:20:39,073 - INFO - resample to 15-minute intervals - OK
+2024-11-27 17:20:39,074 - INFO - Resampling completed successfully.
+2024-11-27 17:20:39,074 - INFO - Rename columns for clarity.
+2024-11-27 17:20:39,074 - INFO - peak_row calculated
+2024-11-27 17:20:39,074 - INFO - peak_datetime calculated
+2024-11-27 17:20:39,075 - INFO - peak_load calculated
+2024-11-27 17:20:39,075 - INFO - peak_info calculated
+2024-11-27 17:20:39,075 - INFO - average_load calculated
+2024-11-27 17:20:39,076 - INFO - average_load_per_meter calculated
+2024-11-27 17:20:39,076 - INFO - num_days calculated
+2024-11-27 17:20:39,076 - INFO - num_meters calculated
+2024-11-27 17:20:39,077 - INFO - Individual_maximum_demands calculated
+2024-11-27 17:20:39,077 - INFO - Sum_individual_maximum_demands calculated
+2024-11-27 17:20:39,077 - INFO - Coincidence_factor calculated
+2024-11-27 17:20:39,077 - INFO - Coincidence factor is within the expected range (<= 1).
+2024-11-27 17:20:39,077 - INFO - Diversity factor is within the expected range (>= 1).
+2024-11-27 17:20:39,077 - INFO - Load factor is within the expected range (<= 1).
+2024-11-27 17:20:39,077 - INFO - Average_peak_load_per_meter: 4
+2024-11-27 17:20:39,077 - INFO - Current Directory: C:\Users\micha\GitHub\load-profile\src
+2024-11-27 17:20:39,077 - INFO - Input: 8meters-14days-10K_rows.csv
+2024-11-27 17:20:39,077 - INFO - Results: 8meters-14days-10K_rows_RESULTS.txt
+2024-11-27 17:20:39,078 - INFO - Load Profile: 8meters-14days-10K_rows_RESULTS-LP.csv
+2024-11-27 17:20:39,078 - INFO - Graph: 8meters-14days-10K_rows_RESULTS-GRAPH.csv
+2024-11-27 17:20:39,520 - INFO -                    *** Start ***
+2024-11-27 17:20:39,520 - INFO - C:\Users\micha\GitHub\load-profile\src
+2024-11-27 17:20:39,521 - INFO - fn process_csv -try
+2024-11-27 17:20:39,528 - INFO - fn process_csv - read csv OK
+2024-11-27 17:20:39,536 - INFO - fn process_csv - datetime conversion OK
+2024-11-27 17:20:39,537 - INFO - initial row count 10752
+2024-11-27 17:20:39,537 - INFO - rows dropped (datetime) calculated
+2024-11-27 17:20:39,539 - INFO - Rows dropped after kw conversion calculated
+2024-11-27 17:20:39,539 - INFO - Start and end dates calculated
+2024-11-27 17:20:39,542 - INFO - resample to 15-minute intervals - OK
+2024-11-27 17:20:39,542 - INFO - Resampling completed successfully.
+2024-11-27 17:20:39,542 - INFO - Rename columns for clarity.
+2024-11-27 17:20:39,542 - INFO - peak_row calculated
+2024-11-27 17:20:39,542 - INFO - peak_datetime calculated
+2024-11-27 17:20:39,542 - INFO - peak_load calculated
+2024-11-27 17:20:39,543 - INFO - peak_info calculated
+2024-11-27 17:20:39,543 - INFO - average_load calculated
+2024-11-27 17:20:39,543 - INFO - average_load_per_meter calculated
+2024-11-27 17:20:39,544 - INFO - num_days calculated
+2024-11-27 17:20:39,544 - INFO - num_meters calculated
+2024-11-27 17:20:39,544 - INFO - Individual_maximum_demands calculated
+2024-11-27 17:20:39,544 - INFO - Sum_individual_maximum_demands calculated
+2024-11-27 17:20:39,544 - INFO - Coincidence_factor calculated
+2024-11-27 17:20:39,545 - INFO - Coincidence factor is within the expected range (<= 1).
+2024-11-27 17:20:39,545 - INFO - Diversity factor is within the expected range (>= 1).
+2024-11-27 17:20:39,545 - INFO - Load factor is within the expected range (<= 1).
+2024-11-27 17:20:39,545 - INFO - Average_peak_load_per_meter: 4
+2024-11-27 17:20:39,545 - INFO - Current Directory: C:\Users\micha\GitHub\load-profile\src
+2024-11-27 17:20:39,545 - INFO - Input: 8meters-14days-10K_rows.csv
+2024-11-27 17:20:39,545 - INFO - Results: 8meters-14days-10K_rows_RESULTS.txt
+2024-11-27 17:20:39,546 - INFO - Load Profile: 8meters-14days-10K_rows_RESULTS-LP.csv
+2024-11-27 17:20:39,546 - INFO - Graph: 8meters-14days-10K_rows_RESULTS-GRAPH.csv
+2024-11-27 17:24:25,565 - INFO -                    *** Start ***
+2024-11-27 17:24:25,565 - INFO - C:\Users\micha\GitHub\load-profile\src
+2024-11-27 17:24:25,566 - INFO - fn process_csv -try
+2024-11-27 17:24:25,574 - INFO - fn process_csv - read csv OK
+2024-11-27 17:24:25,581 - INFO - fn process_csv - datetime conversion OK
+2024-11-27 17:24:25,581 - INFO - initial row count 10752
+2024-11-27 17:24:25,583 - INFO - rows dropped (datetime) calculated
+2024-11-27 17:24:25,584 - INFO - Rows dropped after kw conversion calculated
+2024-11-27 17:24:25,585 - INFO - Start and end dates calculated
+2024-11-27 17:24:25,587 - INFO - resample to 15-minute intervals - OK
+2024-11-27 17:24:25,587 - INFO - Resampling completed successfully.
+2024-11-27 17:24:25,588 - INFO - Rename columns for clarity.
+2024-11-27 17:24:25,588 - INFO - peak_row calculated
+2024-11-27 17:24:25,590 - INFO - peak_datetime calculated
+2024-11-27 17:24:25,590 - INFO - peak_load calculated
+2024-11-27 17:24:25,590 - INFO - peak_info calculated
+2024-11-27 17:24:25,590 - INFO - average_load calculated
+2024-11-27 17:24:25,591 - INFO - average_load_per_meter calculated
+2024-11-27 17:24:25,592 - INFO - num_days calculated
+2024-11-27 17:24:25,592 - INFO - num_meters calculated
+2024-11-27 17:24:25,593 - INFO - Individual_maximum_demands calculated
+2024-11-27 17:24:25,593 - INFO - Sum_individual_maximum_demands calculated
+2024-11-27 17:24:25,593 - INFO - Coincidence_factor calculated
+2024-11-27 17:24:25,593 - INFO - Coincidence factor is within the expected range (<= 1).
+2024-11-27 17:24:25,593 - INFO - Diversity factor is within the expected range (>= 1).
+2024-11-27 17:24:25,593 - INFO - Load factor is within the expected range (<= 1).
+2024-11-27 17:24:25,593 - INFO - Average_peak_load_per_meter: 4
+2024-11-27 17:24:25,593 - INFO - Current Directory: C:\Users\micha\GitHub\load-profile\src
+2024-11-27 17:24:25,593 - INFO - Input: 8meters-14days-10K_rows.csv
+2024-11-27 17:24:25,594 - INFO - Results: 8meters-14days-10K_rows_RESULTS.txt
+2024-11-27 17:24:25,594 - INFO - Load Profile: 8meters-14days-10K_rows_RESULTS-LP.csv
+2024-11-27 17:24:25,594 - INFO - Graph: 8meters-14days-10K_rows_RESULTS-GRAPH.csv
+2024-11-27 17:24:40,685 - INFO -                    *** Start ***
+2024-11-27 17:24:40,685 - INFO - C:\Users\micha\GitHub\load-profile\src
+2024-11-27 17:24:40,685 - INFO - fn process_csv -try
+2024-11-27 17:24:40,693 - INFO - fn process_csv - read csv OK
+2024-11-27 17:24:40,701 - INFO - fn process_csv - datetime conversion OK
+2024-11-27 17:24:40,701 - INFO - initial row count 10752
+2024-11-27 17:24:40,703 - INFO - rows dropped (datetime) calculated
+2024-11-27 17:24:40,704 - INFO - Rows dropped after kw conversion calculated
+2024-11-27 17:24:40,705 - INFO - Start and end dates calculated
+2024-11-27 17:24:40,708 - INFO - resample to 15-minute intervals - OK
+2024-11-27 17:24:40,708 - INFO - Resampling completed successfully.
+2024-11-27 17:24:40,708 - INFO - Rename columns for clarity.
+2024-11-27 17:24:40,709 - INFO - peak_row calculated
+2024-11-27 17:24:40,709 - INFO - peak_datetime calculated
+2024-11-27 17:24:40,709 - INFO - peak_load calculated
+2024-11-27 17:24:40,710 - INFO - peak_info calculated
+2024-11-27 17:24:40,710 - INFO - average_load calculated
+2024-11-27 17:24:40,711 - INFO - average_load_per_meter calculated
+2024-11-27 17:24:40,711 - INFO - num_days calculated
+2024-11-27 17:24:40,711 - INFO - num_meters calculated
+2024-11-27 17:24:40,712 - INFO - Individual_maximum_demands calculated
+2024-11-27 17:24:40,712 - INFO - Sum_individual_maximum_demands calculated
+2024-11-27 17:24:40,712 - INFO - Coincidence_factor calculated
+2024-11-27 17:24:40,713 - INFO - Coincidence factor is within the expected range (<= 1).
+2024-11-27 17:24:40,713 - INFO - Diversity factor is within the expected range (>= 1).
+2024-11-27 17:24:40,713 - INFO - Load factor is within the expected range (<= 1).
+2024-11-27 17:24:40,713 - INFO - Average_peak_load_per_meter: 4
+2024-11-27 17:24:40,713 - INFO - Current Directory: C:\Users\micha\GitHub\load-profile\src
+2024-11-27 17:24:40,713 - INFO - Input: 8meters-14days-10K_rows.csv
+2024-11-27 17:24:40,713 - INFO - Results: 8meters-14days-10K_rows_RESULTS.txt
+2024-11-27 17:24:40,713 - INFO - Load Profile: 8meters-14days-10K_rows_RESULTS-LP.csv
+2024-11-27 17:24:40,713 - INFO - Graph: 8meters-14days-10K_rows_RESULTS-GRAPH.csv
+2024-11-27 17:25:47,320 - INFO -                    *** Start ***
+2024-11-27 17:25:47,320 - INFO - C:\Users\micha\GitHub\load-profile\src
+2024-11-27 17:25:47,321 - INFO - fn process_csv -try
+2024-11-27 17:25:47,328 - INFO - fn process_csv - read csv OK
+2024-11-27 17:25:47,336 - INFO - fn process_csv - datetime conversion OK
+2024-11-27 17:25:47,336 - INFO - initial row count 10752
+2024-11-27 17:25:47,337 - INFO - rows dropped (datetime) calculated
+2024-11-27 17:25:47,339 - INFO - Rows dropped after kw conversion calculated
+2024-11-27 17:25:47,339 - INFO - Start and end dates calculated
+2024-11-27 17:25:47,342 - INFO - resample to 15-minute intervals - OK
+2024-11-27 17:25:47,342 - INFO - Resampling completed successfully.
+2024-11-27 17:25:47,342 - INFO - Rename columns for clarity.
+2024-11-27 17:25:47,343 - INFO - peak_row calculated
+2024-11-27 17:25:47,343 - INFO - peak_datetime calculated
+2024-11-27 17:25:47,343 - INFO - peak_load calculated
+2024-11-27 17:25:47,344 - INFO - peak_info calculated
+2024-11-27 17:25:47,344 - INFO - average_load calculated
+2024-11-27 17:25:47,345 - INFO - average_load_per_meter calculated
+2024-11-27 17:25:47,345 - INFO - num_days calculated
+2024-11-27 17:25:47,345 - INFO - num_meters calculated
+2024-11-27 17:25:47,346 - INFO - Individual_maximum_demands calculated
+2024-11-27 17:25:47,346 - INFO - Sum_individual_maximum_demands calculated
+2024-11-27 17:25:47,346 - INFO - Coincidence_factor calculated
+2024-11-27 17:25:47,346 - INFO - Coincidence factor is within the expected range (<= 1).
+2024-11-27 17:25:47,346 - INFO - Diversity factor is within the expected range (>= 1).
+2024-11-27 17:25:47,346 - INFO - Load factor is within the expected range (<= 1).
+2024-11-27 17:25:47,346 - INFO - Average_peak_load_per_meter: 4
+2024-11-27 17:25:47,346 - INFO - Current Directory: C:\Users\micha\GitHub\load-profile\src
+2024-11-27 17:25:47,346 - INFO - Input: 8meters-14days-10K_rows.csv
+2024-11-27 17:25:47,346 - INFO - Results: 8meters-14days-10K_rows_RESULTS.txt
+2024-11-27 17:25:47,347 - INFO - Load Profile: 8meters-14days-10K_rows_RESULTS-LP.csv
+2024-11-27 17:25:47,348 - INFO - Graph: 8meters-14days-10K_rows_RESULTS-GRAPH.csv
+2024-11-27 17:28:39,652 - INFO -                    *** Start ***
+2024-11-27 17:28:39,652 - INFO - C:\Users\micha\GitHub\load-profile\src
+2024-11-27 17:28:39,653 - INFO - fn process_csv -try
+2024-11-27 17:28:39,661 - INFO - fn process_csv - read csv OK
+2024-11-27 17:28:39,668 - INFO - fn process_csv - datetime conversion OK
+2024-11-27 17:28:39,669 - INFO - initial row count 10752
+2024-11-27 17:28:39,670 - INFO - rows dropped (datetime) calculated
+2024-11-27 17:28:39,671 - INFO - Rows dropped after kw conversion calculated
+2024-11-27 17:28:39,671 - INFO - Start and end dates calculated
+2024-11-27 17:28:39,674 - INFO - resample to 15-minute intervals - OK
+2024-11-27 17:28:39,675 - INFO - Resampling completed successfully.
+2024-11-27 17:28:39,675 - INFO - Rename columns for clarity.
+2024-11-27 17:28:39,676 - INFO - peak_row calculated
+2024-11-27 17:28:39,676 - INFO - peak_datetime calculated
+2024-11-27 17:28:39,676 - INFO - peak_load calculated
+2024-11-27 17:28:39,677 - INFO - peak_info calculated
+2024-11-27 17:28:39,677 - INFO - average_load calculated
+2024-11-27 17:28:39,677 - INFO - average_load_per_meter calculated
+2024-11-27 17:28:39,678 - INFO - num_days calculated
+2024-11-27 17:28:39,678 - INFO - num_meters calculated
+2024-11-27 17:28:39,678 - INFO - Individual_maximum_demands calculated
+2024-11-27 17:28:39,678 - INFO - Sum_individual_maximum_demands calculated
+2024-11-27 17:28:39,678 - INFO - Coincidence_factor calculated
+2024-11-27 17:28:39,679 - INFO - Coincidence factor is within the expected range (<= 1).
+2024-11-27 17:28:39,679 - INFO - Diversity factor is within the expected range (>= 1).
+2024-11-27 17:28:39,679 - INFO - Load factor is within the expected range (<= 1).
+2024-11-27 17:28:39,679 - INFO - Average_peak_load_per_meter: 4
+2024-11-27 17:28:39,679 - INFO - Current Directory: C:\Users\micha\GitHub\load-profile\src
+2024-11-27 17:28:39,679 - INFO - Input: 8meters-14days-10K_rows.csv
+2024-11-27 17:28:39,679 - INFO - Results: 8meters-14days-10K_rows_RESULTS.txt
+2024-11-27 17:28:39,679 - INFO - Load Profile: 8meters-14days-10K_rows_RESULTS-LP.csv
+2024-11-27 17:28:39,679 - INFO - Graph: 8meters-14days-10K_rows_RESULTS-GRAPH.csv
+2024-11-27 17:34:32,402 - INFO -                    *** Start ***
+2024-11-27 17:34:32,403 - INFO - C:\Users\micha\GitHub\load-profile\src
+2024-11-27 17:34:32,403 - INFO - fn process_csv -try
+2024-11-27 17:34:32,411 - INFO - fn process_csv - read csv OK
+2024-11-27 17:34:32,418 - INFO - fn process_csv - datetime conversion OK
+2024-11-27 17:34:32,419 - INFO - initial row count 10752
+2024-11-27 17:34:32,419 - INFO - rows dropped (datetime) calculated
+2024-11-27 17:34:32,421 - INFO - Rows dropped after kw conversion calculated
+2024-11-27 17:34:32,422 - INFO - Start and end dates calculated
+2024-11-27 17:34:32,424 - INFO - resample to 15-minute intervals - OK
+2024-11-27 17:34:32,425 - INFO - Resampling completed successfully.
+2024-11-27 17:34:32,425 - INFO - Rename columns for clarity.
+2024-11-27 17:34:32,425 - INFO - peak_row calculated
+2024-11-27 17:34:32,427 - INFO - peak_datetime calculated
+2024-11-27 17:34:32,427 - INFO - peak_load calculated
+2024-11-27 17:34:32,427 - INFO - peak_info calculated
+2024-11-27 17:34:32,427 - INFO - average_load calculated
+2024-11-27 17:34:32,428 - INFO - average_load_per_meter calculated
+2024-11-27 17:34:32,428 - INFO - num_days calculated
+2024-11-27 17:34:32,428 - INFO - num_meters calculated
+2024-11-27 17:34:32,429 - INFO - Individual_maximum_demands calculated
+2024-11-27 17:34:32,429 - INFO - Sum_individual_maximum_demands calculated
+2024-11-27 17:34:32,429 - INFO - Coincidence_factor calculated
+2024-11-27 17:34:32,429 - INFO - Coincidence factor is within the expected range (<= 1).
+2024-11-27 17:34:32,429 - INFO - Diversity factor is within the expected range (>= 1).
+2024-11-27 17:34:32,429 - INFO - Load factor is within the expected range (<= 1).
+2024-11-27 17:34:32,429 - INFO - Average_peak_load_per_meter: 4
+2024-11-27 17:34:32,429 - INFO - Current Directory: C:\Users\micha\GitHub\load-profile\src
+2024-11-27 17:34:32,430 - INFO - Input: 8meters-14days-10K_rows.csv
+2024-11-27 17:34:32,430 - INFO - Results: 8meters-14days-10K_rows_RESULTS.txt
+2024-11-27 17:34:32,430 - INFO - Load Profile: 8meters-14days-10K_rows_RESULTS-LP.csv
+2024-11-27 17:34:32,430 - INFO - Graph: 8meters-14days-10K_rows_RESULTS-GRAPH.csv
+2024-11-27 17:42:15,654 - INFO -                    *** Start ***
+2024-11-27 17:42:15,654 - INFO - C:\Users\micha\GitHub\load-profile\src
+2024-11-27 17:42:15,655 - INFO - fn process_csv -try
+2024-11-27 17:42:15,663 - INFO - fn process_csv - read csv OK
+2024-11-27 17:42:15,670 - INFO - fn process_csv - datetime conversion OK
+2024-11-27 17:42:15,670 - INFO - initial row count 10752
+2024-11-27 17:42:15,672 - INFO - rows dropped (datetime) calculated
+2024-11-27 17:42:15,673 - INFO - Rows dropped after kw conversion calculated
+2024-11-27 17:42:15,674 - INFO - Start and end dates calculated
+2024-11-27 17:42:15,676 - INFO - resample to 15-minute intervals - OK
+2024-11-27 17:42:15,677 - INFO - Resampling completed successfully.
+2024-11-27 17:42:15,677 - INFO - Rename columns for clarity.
+2024-11-27 17:42:15,677 - INFO - peak_row calculated
+2024-11-27 17:42:15,678 - INFO - peak_datetime calculated
+2024-11-27 17:42:15,678 - INFO - peak_load calculated
+2024-11-27 17:42:15,678 - INFO - peak_info calculated
+2024-11-27 17:42:15,678 - INFO - average_load calculated
+2024-11-27 17:42:15,679 - INFO - average_load_per_meter calculated
+2024-11-27 17:42:15,679 - INFO - num_days calculated
+2024-11-27 17:42:15,679 - INFO - num_meters calculated
+2024-11-27 17:42:15,680 - INFO - Individual_maximum_demands calculated
+2024-11-27 17:42:15,680 - INFO - Sum_individual_maximum_demands calculated
+2024-11-27 17:42:15,680 - INFO - Coincidence_factor calculated
+2024-11-27 17:42:15,680 - INFO - Coincidence factor is within the expected range (<= 1).
+2024-11-27 17:42:15,680 - INFO - Diversity factor is within the expected range (>= 1).
+2024-11-27 17:42:15,680 - INFO - Load factor is within the expected range (<= 1).
+2024-11-27 17:42:15,680 - INFO - Average_peak_load_per_meter: 4
+2024-11-27 17:42:15,681 - INFO - Current Directory: C:\Users\micha\GitHub\load-profile\src
+2024-11-27 17:42:15,681 - INFO - Input: 8meters-14days-10K_rows.csv
+2024-11-27 17:42:15,681 - INFO - Results: 8meters-14days-10K_rows_RESULTS.txt
+2024-11-27 17:42:15,681 - INFO - Load Profile: 8meters-14days-10K_rows_RESULTS-LP.csv
+2024-11-27 17:42:15,681 - INFO - Graph: 8meters-14days-10K_rows_RESULTS-GRAPH.csv
+2024-11-27 17:42:27,256 - INFO -                    *** Start ***
+2024-11-27 17:42:27,256 - INFO - C:\Users\micha\GitHub\load-profile\src
+2024-11-27 17:42:27,257 - INFO - fn process_csv -try
+2024-11-27 17:42:27,265 - INFO - fn process_csv - read csv OK
+2024-11-27 17:42:27,273 - INFO - fn process_csv - datetime conversion OK
+2024-11-27 17:42:27,273 - INFO - initial row count 10752
+2024-11-27 17:42:27,274 - INFO - rows dropped (datetime) calculated
+2024-11-27 17:42:27,276 - INFO - Rows dropped after kw conversion calculated
+2024-11-27 17:42:27,276 - INFO - Start and end dates calculated
+2024-11-27 17:42:27,279 - INFO - resample to 15-minute intervals - OK
+2024-11-27 17:42:27,279 - INFO - Resampling completed successfully.
+2024-11-27 17:42:27,280 - INFO - Rename columns for clarity.
+2024-11-27 17:42:27,280 - INFO - peak_row calculated
+2024-11-27 17:42:27,281 - INFO - peak_datetime calculated
+2024-11-27 17:42:27,281 - INFO - peak_load calculated
+2024-11-27 17:42:27,282 - INFO - peak_info calculated
+2024-11-27 17:42:27,282 - INFO - average_load calculated
+2024-11-27 17:42:27,283 - INFO - average_load_per_meter calculated
+2024-11-27 17:42:27,284 - INFO - num_days calculated
+2024-11-27 17:42:27,284 - INFO - num_meters calculated
+2024-11-27 17:42:27,285 - INFO - Individual_maximum_demands calculated
+2024-11-27 17:42:27,285 - INFO - Sum_individual_maximum_demands calculated
+2024-11-27 17:42:27,285 - INFO - Coincidence_factor calculated
+2024-11-27 17:42:27,285 - INFO - Coincidence factor is within the expected range (<= 1).
+2024-11-27 17:42:27,285 - INFO - Diversity factor is within the expected range (>= 1).
+2024-11-27 17:42:27,285 - INFO - Load factor is within the expected range (<= 1).
+2024-11-27 17:42:27,285 - INFO - Average_peak_load_per_meter: 4
+2024-11-27 17:42:27,285 - INFO - Current Directory: C:\Users\micha\GitHub\load-profile\src
+2024-11-27 17:42:27,286 - INFO - Input: 8meters-14days-10K_rows.csv
+2024-11-27 17:42:27,286 - INFO - Results: 8meters-14days-10K_rows_RESULTS.txt
+2024-11-27 17:42:27,286 - INFO - Load Profile: 8meters-14days-10K_rows_RESULTS-LP.csv
+2024-11-27 17:42:27,286 - INFO - Graph: 8meters-14days-10K_rows_RESULTS-GRAPH.csv
+2024-11-27 17:42:38,367 - INFO -                    *** Start ***
+2024-11-27 17:42:38,368 - INFO - C:\Users\micha\GitHub\load-profile\src
+2024-11-27 17:42:38,369 - INFO - fn process_csv -try
+2024-11-27 17:42:38,375 - INFO - fn process_csv - read csv OK
+2024-11-27 17:42:38,383 - INFO - fn process_csv - datetime conversion OK
+2024-11-27 17:42:38,383 - INFO - initial row count 10752
+2024-11-27 17:42:38,385 - INFO - rows dropped (datetime) calculated
+2024-11-27 17:42:38,386 - INFO - Rows dropped after kw conversion calculated
+2024-11-27 17:42:38,387 - INFO - Start and end dates calculated
+2024-11-27 17:42:38,391 - INFO - resample to 15-minute intervals - OK
+2024-11-27 17:42:38,392 - INFO - Resampling completed successfully.
+2024-11-27 17:42:38,392 - INFO - Rename columns for clarity.
+2024-11-27 17:42:38,392 - INFO - peak_row calculated
+2024-11-27 17:42:38,392 - INFO - peak_datetime calculated
+2024-11-27 17:42:38,392 - INFO - peak_load calculated
+2024-11-27 17:42:38,394 - INFO - peak_info calculated
+2024-11-27 17:42:38,394 - INFO - average_load calculated
+2024-11-27 17:42:38,394 - INFO - average_load_per_meter calculated
+2024-11-27 17:42:38,395 - INFO - num_days calculated
+2024-11-27 17:42:38,395 - INFO - num_meters calculated
+2024-11-27 17:42:38,395 - INFO - Individual_maximum_demands calculated
+2024-11-27 17:42:38,395 - INFO - Sum_individual_maximum_demands calculated
+2024-11-27 17:42:38,395 - INFO - Coincidence_factor calculated
+2024-11-27 17:42:38,395 - INFO - Coincidence factor is within the expected range (<= 1).
+2024-11-27 17:42:38,395 - INFO - Diversity factor is within the expected range (>= 1).
+2024-11-27 17:42:38,395 - INFO - Load factor is within the expected range (<= 1).
+2024-11-27 17:42:38,395 - INFO - Average_peak_load_per_meter: 4
+2024-11-27 17:42:38,395 - INFO - Current Directory: C:\Users\micha\GitHub\load-profile\src
+2024-11-27 17:42:38,395 - INFO - Input: 8meters-14days-10K_rows.csv
+2024-11-27 17:42:38,395 - INFO - Results: 8meters-14days-10K_rows_RESULTS.txt
+2024-11-27 17:42:38,396 - INFO - Load Profile: 8meters-14days-10K_rows_RESULTS-LP.csv
+2024-11-27 17:42:38,396 - INFO - Graph: 8meters-14days-10K_rows_RESULTS-GRAPH.csv
+2024-11-27 17:42:43,833 - INFO -                    *** Start ***
+2024-11-27 17:42:43,834 - INFO - C:\Users\micha\GitHub\load-profile\src
+2024-11-27 17:42:43,834 - INFO - fn process_csv -try
+2024-11-27 17:42:43,841 - INFO - fn process_csv - read csv OK
+2024-11-27 17:42:43,849 - INFO - fn process_csv - datetime conversion OK
+2024-11-27 17:42:43,849 - INFO - initial row count 10752
+2024-11-27 17:42:43,851 - INFO - rows dropped (datetime) calculated
+2024-11-27 17:42:43,852 - INFO - Rows dropped after kw conversion calculated
+2024-11-27 17:42:43,852 - INFO - Start and end dates calculated
+2024-11-27 17:42:43,855 - INFO - resample to 15-minute intervals - OK
+2024-11-27 17:42:43,855 - INFO - Resampling completed successfully.
+2024-11-27 17:42:43,855 - INFO - Rename columns for clarity.
+2024-11-27 17:42:43,856 - INFO - peak_row calculated
+2024-11-27 17:42:43,856 - INFO - peak_datetime calculated
+2024-11-27 17:42:43,856 - INFO - peak_load calculated
+2024-11-27 17:42:43,857 - INFO - peak_info calculated
+2024-11-27 17:42:43,857 - INFO - average_load calculated
+2024-11-27 17:42:43,858 - INFO - average_load_per_meter calculated
+2024-11-27 17:42:43,858 - INFO - num_days calculated
+2024-11-27 17:42:43,859 - INFO - num_meters calculated
+2024-11-27 17:42:43,859 - INFO - Individual_maximum_demands calculated
+2024-11-27 17:42:43,859 - INFO - Sum_individual_maximum_demands calculated
+2024-11-27 17:42:43,859 - INFO - Coincidence_factor calculated
+2024-11-27 17:42:43,859 - INFO - Coincidence factor is within the expected range (<= 1).
+2024-11-27 17:42:43,860 - INFO - Diversity factor is within the expected range (>= 1).
+2024-11-27 17:42:43,860 - INFO - Load factor is within the expected range (<= 1).
+2024-11-27 17:42:43,860 - INFO - Average_peak_load_per_meter: 4
+2024-11-27 17:42:43,860 - INFO - Current Directory: C:\Users\micha\GitHub\load-profile\src
+2024-11-27 17:42:43,860 - INFO - Input: 8meters-14days-10K_rows.csv
+2024-11-27 17:42:43,860 - INFO - Results: 8meters-14days-10K_rows_RESULTS.txt
+2024-11-27 17:42:43,860 - INFO - Load Profile: 8meters-14days-10K_rows_RESULTS-LP.csv
+2024-11-27 17:42:43,861 - INFO - Graph: 8meters-14days-10K_rows_RESULTS-GRAPH.csv
+2024-11-27 17:42:49,740 - INFO -                    *** Start ***
+2024-11-27 17:42:49,740 - INFO - C:\Users\micha\GitHub\load-profile\src
+2024-11-27 17:42:49,741 - INFO - fn process_csv -try
+2024-11-27 17:42:49,748 - INFO - fn process_csv - read csv OK
+2024-11-27 17:42:49,755 - INFO - fn process_csv - datetime conversion OK
+2024-11-27 17:42:49,757 - INFO - initial row count 10752
+2024-11-27 17:42:49,758 - INFO - rows dropped (datetime) calculated
+2024-11-27 17:42:49,759 - INFO - Rows dropped after kw conversion calculated
+2024-11-27 17:42:49,759 - INFO - Start and end dates calculated
+2024-11-27 17:42:49,761 - INFO - resample to 15-minute intervals - OK
+2024-11-27 17:42:49,762 - INFO - Resampling completed successfully.
+2024-11-27 17:42:49,762 - INFO - Rename columns for clarity.
+2024-11-27 17:42:49,762 - INFO - peak_row calculated
+2024-11-27 17:42:49,763 - INFO - peak_datetime calculated
+2024-11-27 17:42:49,763 - INFO - peak_load calculated
+2024-11-27 17:42:49,763 - INFO - peak_info calculated
+2024-11-27 17:42:49,763 - INFO - average_load calculated
+2024-11-27 17:42:49,764 - INFO - average_load_per_meter calculated
+2024-11-27 17:42:49,765 - INFO - num_days calculated
+2024-11-27 17:42:49,765 - INFO - num_meters calculated
+2024-11-27 17:42:49,766 - INFO - Individual_maximum_demands calculated
+2024-11-27 17:42:49,766 - INFO - Sum_individual_maximum_demands calculated
+2024-11-27 17:42:49,766 - INFO - Coincidence_factor calculated
+2024-11-27 17:42:49,767 - INFO - Coincidence factor is within the expected range (<= 1).
+2024-11-27 17:42:49,767 - INFO - Diversity factor is within the expected range (>= 1).
+2024-11-27 17:42:49,767 - INFO - Load factor is within the expected range (<= 1).
+2024-11-27 17:42:49,767 - INFO - Average_peak_load_per_meter: 4
+2024-11-27 17:42:49,767 - INFO - Current Directory: C:\Users\micha\GitHub\load-profile\src
+2024-11-27 17:42:49,767 - INFO - Input: 8meters-14days-10K_rows.csv
+2024-11-27 17:42:49,767 - INFO - Results: 8meters-14days-10K_rows_RESULTS.txt
+2024-11-27 17:42:49,768 - INFO - Load Profile: 8meters-14days-10K_rows_RESULTS-LP.csv
+2024-11-27 17:42:49,768 - INFO - Graph: 8meters-14days-10K_rows_RESULTS-GRAPH.csv
+2024-11-27 17:43:03,137 - INFO -                    *** Start ***
+2024-11-27 17:43:03,137 - INFO - C:\Users\micha\GitHub\load-profile\src
+2024-11-27 17:43:03,138 - INFO - fn process_csv -try
+2024-11-27 17:43:03,145 - INFO - fn process_csv - read csv OK
+2024-11-27 17:43:03,153 - INFO - fn process_csv - datetime conversion OK
+2024-11-27 17:43:03,154 - INFO - initial row count 10752
+2024-11-27 17:43:03,155 - INFO - rows dropped (datetime) calculated
+2024-11-27 17:43:03,156 - INFO - Rows dropped after kw conversion calculated
+2024-11-27 17:43:03,156 - INFO - Start and end dates calculated
+2024-11-27 17:43:03,159 - INFO - resample to 15-minute intervals - OK
+2024-11-27 17:43:03,159 - INFO - Resampling completed successfully.
+2024-11-27 17:43:03,160 - INFO - Rename columns for clarity.
+2024-11-27 17:43:03,160 - INFO - peak_row calculated
+2024-11-27 17:43:03,160 - INFO - peak_datetime calculated
+2024-11-27 17:43:03,161 - INFO - peak_load calculated
+2024-11-27 17:43:03,161 - INFO - peak_info calculated
+2024-11-27 17:43:03,161 - INFO - average_load calculated
+2024-11-27 17:43:03,162 - INFO - average_load_per_meter calculated
+2024-11-27 17:43:03,162 - INFO - num_days calculated
+2024-11-27 17:43:03,163 - INFO - num_meters calculated
+2024-11-27 17:43:03,163 - INFO - Individual_maximum_demands calculated
+2024-11-27 17:43:03,164 - INFO - Sum_individual_maximum_demands calculated
+2024-11-27 17:43:03,164 - INFO - Coincidence_factor calculated
+2024-11-27 17:43:03,164 - INFO - Coincidence factor is within the expected range (<= 1).
+2024-11-27 17:43:03,164 - INFO - Diversity factor is within the expected range (>= 1).
+2024-11-27 17:43:03,164 - INFO - Load factor is within the expected range (<= 1).
+2024-11-27 17:43:03,164 - INFO - Average_peak_load_per_meter: 4
+2024-11-27 17:43:03,165 - INFO - Current Directory: C:\Users\micha\GitHub\load-profile\src
+2024-11-27 17:43:03,165 - INFO - Input: 8meters-14days-10K_rows.csv
+2024-11-27 17:43:03,165 - INFO - Results: 8meters-14days-10K_rows_RESULTS.txt
+2024-11-27 17:43:03,166 - INFO - Load Profile: 8meters-14days-10K_rows_RESULTS-LP.csv
+2024-11-27 17:43:03,166 - INFO - Graph: 8meters-14days-10K_rows_RESULTS-GRAPH.csv
+2024-11-27 17:44:35,404 - INFO -                    *** Start ***
+2024-11-27 17:44:35,404 - INFO - C:\Users\micha\GitHub\load-profile\src
+2024-11-27 17:44:35,405 - INFO - fn process_csv -try
+2024-11-27 17:44:35,412 - INFO - fn process_csv - read csv OK
+2024-11-27 17:44:35,420 - INFO - fn process_csv - datetime conversion OK
+2024-11-27 17:44:35,420 - INFO - initial row count 10752
+2024-11-27 17:44:35,421 - INFO - rows dropped (datetime) calculated
+2024-11-27 17:44:35,423 - INFO - Rows dropped after kw conversion calculated
+2024-11-27 17:44:35,424 - INFO - Start and end dates calculated
+2024-11-27 17:44:35,426 - INFO - resample to 15-minute intervals - OK
+2024-11-27 17:44:35,426 - INFO - Resampling completed successfully.
+2024-11-27 17:44:35,427 - INFO - Rename columns for clarity.
+2024-11-27 17:44:35,428 - INFO - peak_row calculated
+2024-11-27 17:44:35,428 - INFO - peak_datetime calculated
+2024-11-27 17:44:35,428 - INFO - peak_load calculated
+2024-11-27 17:44:35,428 - INFO - peak_info calculated
+2024-11-27 17:44:35,429 - INFO - average_load calculated
+2024-11-27 17:44:35,429 - INFO - average_load_per_meter calculated
+2024-11-27 17:44:35,430 - INFO - num_days calculated
+2024-11-27 17:44:35,430 - INFO - num_meters calculated
+2024-11-27 17:44:35,431 - INFO - Individual_maximum_demands calculated
+2024-11-27 17:44:35,431 - INFO - Sum_individual_maximum_demands calculated
+2024-11-27 17:44:35,431 - INFO - Coincidence_factor calculated
+2024-11-27 17:44:35,431 - INFO - Coincidence factor is within the expected range (<= 1).
+2024-11-27 17:44:35,431 - INFO - Diversity factor is within the expected range (>= 1).
+2024-11-27 17:44:35,431 - INFO - Load factor is within the expected range (<= 1).
+2024-11-27 17:44:35,431 - INFO - Average_peak_load_per_meter: 4
+2024-11-27 17:44:35,431 - INFO - Current Directory: C:\Users\micha\GitHub\load-profile\src
+2024-11-27 17:44:35,432 - INFO - Input: 8meters-14days-10K_rows.csv
+2024-11-27 17:44:35,432 - INFO - Results: 8meters-14days-10K_rows_RESULTS.txt
+2024-11-27 17:44:35,432 - INFO - Load Profile: 8meters-14days-10K_rows_RESULTS-LP.csv
+2024-11-27 17:44:35,432 - INFO - Graph: 8meters-14days-10K_rows_RESULTS-GRAPH.csv
+2024-11-27 17:44:49,056 - INFO -                    *** Start ***
+2024-11-27 17:44:49,057 - INFO - C:\Users\micha\GitHub\load-profile\src
+2024-11-27 17:44:49,057 - INFO - fn process_csv -try
+2024-11-27 17:44:49,066 - INFO - fn process_csv - read csv OK
+2024-11-27 17:44:49,074 - INFO - fn process_csv - datetime conversion OK
+2024-11-27 17:44:49,074 - INFO - initial row count 10752
+2024-11-27 17:44:49,075 - INFO - rows dropped (datetime) calculated
+2024-11-27 17:44:49,077 - INFO - Rows dropped after kw conversion calculated
+2024-11-27 17:44:49,077 - INFO - Start and end dates calculated
+2024-11-27 17:44:49,080 - INFO - resample to 15-minute intervals - OK
+2024-11-27 17:44:49,081 - INFO - Resampling completed successfully.
+2024-11-27 17:44:49,081 - INFO - Rename columns for clarity.
+2024-11-27 17:44:49,081 - INFO - peak_row calculated
+2024-11-27 17:44:49,082 - INFO - peak_datetime calculated
+2024-11-27 17:44:49,082 - INFO - peak_load calculated
+2024-11-27 17:44:49,082 - INFO - peak_info calculated
+2024-11-27 17:44:49,082 - INFO - average_load calculated
+2024-11-27 17:44:49,083 - INFO - average_load_per_meter calculated
+2024-11-27 17:44:49,083 - INFO - num_days calculated
+2024-11-27 17:44:49,084 - INFO - num_meters calculated
+2024-11-27 17:44:49,084 - INFO - Individual_maximum_demands calculated
+2024-11-27 17:44:49,084 - INFO - Sum_individual_maximum_demands calculated
+2024-11-27 17:44:49,084 - INFO - Coincidence_factor calculated
+2024-11-27 17:44:49,084 - INFO - Coincidence factor is within the expected range (<= 1).
+2024-11-27 17:44:49,084 - INFO - Diversity factor is within the expected range (>= 1).
+2024-11-27 17:44:49,084 - INFO - Load factor is within the expected range (<= 1).
+2024-11-27 17:44:49,084 - INFO - Average_peak_load_per_meter: 4
+2024-11-27 17:44:49,086 - INFO - Current Directory: C:\Users\micha\GitHub\load-profile\src
+2024-11-27 17:44:49,086 - INFO - Input: 8meters-14days-10K_rows.csv
+2024-11-27 17:44:49,086 - INFO - Results: 8meters-14days-10K_rows_RESULTS.txt
+2024-11-27 17:44:49,086 - INFO - Load Profile: 8meters-14days-10K_rows_RESULTS-LP.csv
+2024-11-27 17:44:49,086 - INFO - Graph: 8meters-14days-10K_rows_RESULTS-GRAPH.csv
+2024-11-27 17:50:25,806 - INFO -                    *** Start ***
+2024-11-27 17:50:25,806 - INFO - C:\Users\micha\GitHub\load-profile\src
+2024-11-27 17:50:25,807 - INFO - fn process_csv -try
+2024-11-27 17:50:25,814 - INFO - fn process_csv - read csv OK
+2024-11-27 17:50:25,822 - INFO - fn process_csv - datetime conversion OK
+2024-11-27 17:50:25,822 - INFO - initial row count 10752
+2024-11-27 17:50:25,824 - INFO - rows dropped (datetime) calculated
+2024-11-27 17:50:25,825 - INFO - Rows dropped after kw conversion calculated
+2024-11-27 17:50:25,826 - INFO - Start and end dates calculated
+2024-11-27 17:50:25,829 - INFO - resample to 15-minute intervals - OK
+2024-11-27 17:50:25,829 - INFO - Resampling completed successfully.
+2024-11-27 17:50:25,829 - INFO - Rename columns for clarity.
+2024-11-27 17:50:25,830 - INFO - peak_row calculated
+2024-11-27 17:50:25,830 - INFO - peak_datetime calculated
+2024-11-27 17:50:25,830 - INFO - peak_load calculated
+2024-11-27 17:50:25,831 - INFO - peak_info calculated
+2024-11-27 17:50:25,831 - INFO - average_load calculated
+2024-11-27 17:50:25,832 - INFO - average_load_per_meter calculated
+2024-11-27 17:50:25,832 - INFO - num_days calculated
+2024-11-27 17:50:25,833 - INFO - num_meters calculated
+2024-11-27 17:50:25,833 - INFO - Individual_maximum_demands calculated
+2024-11-27 17:50:25,834 - INFO - Sum_individual_maximum_demands calculated
+2024-11-27 17:50:25,834 - INFO - Coincidence_factor calculated
+2024-11-27 17:50:25,834 - INFO - Coincidence factor is within the expected range (<= 1).
+2024-11-27 17:50:25,834 - INFO - Diversity factor is within the expected range (>= 1).
+2024-11-27 17:50:25,834 - INFO - Load factor is within the expected range (<= 1).
+2024-11-27 17:50:25,834 - INFO - Average_peak_load_per_meter: 4
+2024-11-27 17:50:25,835 - INFO - Current Directory: C:\Users\micha\GitHub\load-profile\src
+2024-11-27 17:50:25,835 - INFO - Input: 8meters-14days-10K_rows.csv
+2024-11-27 17:50:25,835 - INFO - Results: 8meters-14days-10K_rows_RESULTS.txt
+2024-11-27 17:50:25,835 - INFO - Load Profile: 8meters-14days-10K_rows_RESULTS-LP.csv
+2024-11-27 17:50:25,835 - INFO - Graph: 8meters-14days-10K_rows_RESULTS-GRAPH.csv
+2024-11-27 18:01:58,098 - INFO -                    *** Start ***
+2024-11-27 18:01:58,098 - INFO - C:\Users\micha\GitHub\load-profile\src
+2024-11-27 18:01:58,099 - INFO - fn process_csv -try
+2024-11-27 18:01:58,106 - INFO - fn process_csv - read csv OK
+2024-11-27 18:01:58,114 - INFO - fn process_csv - datetime conversion OK
+2024-11-27 18:01:58,115 - INFO - initial row count 10752
+2024-11-27 18:01:58,116 - INFO - rows dropped (datetime) calculated
+2024-11-27 18:01:58,118 - INFO - Rows dropped after kw conversion calculated
+2024-11-27 18:01:58,118 - INFO - Start and end dates calculated
+2024-11-27 18:01:58,122 - INFO - resample to 15-minute intervals - OK
+2024-11-27 18:01:58,122 - INFO - Resampling completed successfully.
+2024-11-27 18:01:58,122 - INFO - Rename columns for clarity.
+2024-11-27 18:01:58,123 - INFO - peak_row calculated
+2024-11-27 18:01:58,123 - INFO - peak_datetime calculated
+2024-11-27 18:01:58,123 - INFO - peak_load calculated
+2024-11-27 18:01:58,123 - INFO - peak_info calculated
+2024-11-27 18:01:58,123 - INFO - average_load calculated
+2024-11-27 18:01:58,124 - INFO - average_load_per_meter calculated
+2024-11-27 18:01:58,124 - INFO - num_days calculated
+2024-11-27 18:01:58,124 - INFO - num_meters calculated
+2024-11-27 18:01:58,125 - INFO - Individual_maximum_demands calculated
+2024-11-27 18:01:58,125 - INFO - Sum_individual_maximum_demands calculated
+2024-11-27 18:01:58,125 - INFO - Coincidence_factor calculated
+2024-11-27 18:01:58,125 - INFO - Coincidence factor is within the expected range (<= 1).
+2024-11-27 18:01:58,125 - INFO - Diversity factor is within the expected range (>= 1).
+2024-11-27 18:01:58,125 - INFO - Load factor is within the expected range (<= 1).
+2024-11-27 18:01:58,125 - INFO - Average_peak_load_per_meter: 4
+2024-11-27 18:01:58,125 - INFO - Current Directory: C:\Users\micha\GitHub\load-profile\src
+2024-11-27 18:01:58,125 - INFO - Input: 8meters-14days-10K_rows.csv
+2024-11-27 18:01:58,125 - INFO - Results: 8meters-14days-10K_rows_RESULTS.txt
+2024-11-27 18:01:58,125 - INFO - Load Profile: 8meters-14days-10K_rows_RESULTS-LP.csv
+2024-11-27 18:01:58,125 - INFO - Graph: 8meters-14days-10K_rows_RESULTS-GRAPH.csv
+2024-11-27 18:11:12,054 - INFO -                    *** Start ***
+2024-11-27 18:11:12,055 - INFO - C:\Users\micha\GitHub\load-profile\src
+2024-11-27 18:11:12,056 - INFO - fn process_csv -try
+2024-11-27 18:11:12,063 - INFO - fn process_csv - read csv OK
+2024-11-27 18:11:12,071 - INFO - fn process_csv - datetime conversion OK
+2024-11-27 18:11:12,071 - INFO - initial row count 10752
+2024-11-27 18:11:12,073 - INFO - rows dropped (datetime) calculated
+2024-11-27 18:11:12,074 - INFO - Rows dropped after kw conversion calculated
+2024-11-27 18:11:12,075 - INFO - Start and end dates calculated
+2024-11-27 18:11:12,078 - INFO - resample to 15-minute intervals - OK
+2024-11-27 18:11:12,078 - INFO - Resampling completed successfully.
+2024-11-27 18:11:12,078 - INFO - Rename columns for clarity.
+2024-11-27 18:11:12,079 - INFO - peak_row calculated
+2024-11-27 18:11:12,079 - INFO - peak_datetime calculated
+2024-11-27 18:11:12,079 - INFO - peak_load calculated
+2024-11-27 18:11:12,080 - INFO - peak_info calculated
+2024-11-27 18:11:12,080 - INFO - average_load calculated
+2024-11-27 18:11:12,081 - INFO - average_load_per_meter calculated
+2024-11-27 18:11:12,081 - INFO - num_days calculated
+2024-11-27 18:11:12,082 - INFO - num_meters calculated
+2024-11-27 18:11:12,083 - INFO - Individual_maximum_demands calculated
+2024-11-27 18:11:12,083 - INFO - Sum_individual_maximum_demands calculated
+2024-11-27 18:11:12,083 - INFO - Coincidence_factor calculated
+2024-11-27 18:11:12,083 - INFO - Coincidence factor is within the expected range (<= 1).
+2024-11-27 18:11:12,083 - INFO - Diversity factor is within the expected range (>= 1).
+2024-11-27 18:11:12,084 - INFO - Load factor is within the expected range (<= 1).
+2024-11-27 18:11:12,084 - INFO - Average_peak_load_per_meter: 4
+2024-11-27 18:11:12,084 - INFO - Current Directory: C:\Users\micha\GitHub\load-profile\src
+2024-11-27 18:11:12,084 - INFO - Input: 8meters-14days-10K_rows.csv
+2024-11-27 18:11:12,084 - INFO - Results: 8meters-14days-10K_rows_RESULTS.txt
+2024-11-27 18:11:12,084 - INFO - Load Profile: 8meters-14days-10K_rows_RESULTS-LP.csv
+2024-11-27 18:11:12,084 - INFO - Graph: 8meters-14days-10K_rows_RESULTS-GRAPH.csv
