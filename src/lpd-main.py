@@ -86,6 +86,14 @@ Example: 98meters-300days-2788K_rows.csv
 -Refactoring how output files are listed at end of report to limit
  80-column overflow.
 -Commenting out non-error prints to screen
+
+- 12/03/2024
+    - Adding:
+    -Coincidental peak load for given date and time (system peak).
+    -Non-coincidental peak load for the entire day that was given.
+    -List datetime for rows where KW < 0.5
+    THIS WORKS, BUT GRAPH != OUTPUT CSV FILE
+    -Add primary voltage amperage calculations for 1-phase.
 """
 import logging
 import pandas as pd
@@ -97,6 +105,9 @@ import os
 import matplotlib.pyplot as plt
 from contextlib import redirect_stdout
 from datetime import datetime
+import plotly.graph_objects as go
+from bokeh.plotting import figure, show, output_file
+from bokeh.models import Span
 
 # Configure logging
 # Log file placed in the current working directory
@@ -130,8 +141,7 @@ logger.info(pwd)
 
 def process_csv(input_file):
     try:
-        logger.info("fn process_csv -try")
-        
+        logger.info("fn process_csv - try")
         # Open the file to check the first line
         with open(input_file, "r") as file:
             # Read the first line and check if it matches the expected header
@@ -141,19 +151,6 @@ def process_csv(input_file):
                 logger.error("Header mismatch! Expected: %s, Found: %s", expected_header, first_line)
                 raise ValueError(f"Expected header '{expected_header}' but got '{first_line}'")
                 sys.exit(1)
-            # Read the second line and check if it matches the expected pattern
-            # second_line = file.readline().strip()
-            # Define a regex pattern for the example format
-            # Line 1            # meter,date,time,kw
-            # Line 2            # 85400796,2024-01-01,00:15:00.000,0.052
-            # pattern = r"^\d{8},(20[1-9][0-9])-([0-1][0-9])-([0-3][0-9]),([0-2][0-9]):(00|15|30|45):([0-5][0-9]\.\d{3}),\d+\.\d{3}$"
-            # pattern = r"^\d{8},(20[1-9][0-9])-([0-1][0-9])-([0-3][0-9]),([0-2][0-9]):(00|15|30|45):00\.000,0\.\d{3}$"
-            # pattern = r"/^\d{8},(20[1-9][0-9])-([0-1][0-9])-([0-3][0-9]),([0-2][0-9]):(00|15|30|45):00\.000,\d+(\.\d{1,3})?$"
-
-            #if not re.match(pattern, second_line):
-            #    logger.error("Second line does not match the expected pattern: %s", second_line)
-            #    raise ValueError(f"Second line '{second_line}' does not match the expected pattern")
-            #    sys.exit(1)
 
         # Read the CSV file
         data = pd.read_csv(input_file)
@@ -232,7 +229,6 @@ def process_csv(input_file):
         peak_load = peak_row["total_kw"]
         logger.info("peak_load calculated")
         
-
         # Create a DataFrame to include the peak information
         peak_info = pd.DataFrame({"datetime": [peak_datetime], "peak_total_kw": [peak_load]})
         logger.info("peak_info calculated")
@@ -290,12 +286,62 @@ def process_csv(input_file):
         average_peak_load_per_meter = sum_individual_maximum_demands / num_meters
         logger.info("Average_peak_load_per_meter: %d", average_peak_load_per_meter)
         
+        #List datetime when sum of loads < 0.5 KW
+        no_load_data = data.groupby("datetime")["kw"].sum()
+        no_load_times = no_load_data[no_load_data < 0.5].reset_index()
+        if no_load_times.empty:
+            logger.info("No times found where the total KW less than 0.5 KW.")
+        else:
+            # Save the results to a CSV file or print them
+            no_load_file = f"{os.path.splitext(input_file)[0]}_NO LOAD.csv"
+            no_load_times.to_csv(no_load_file, index=False)
+            logger.info(f"Times with total KW < 0.5 saved to: {no_load_file}")
+            print(f"Found {len(no_load_times)} instances where total KW < 0.5. Results saved to: {no_load_file}")
+        
+        # Calculate coincidental peaks based on given datetime
+        # Target datetime from commandline argument --datetime
+        #sample_target_datetime = "2024-08-05 16:15:00"
+ 
+        # Convert columns to datetime
+        data["datetime"] = pd.to_datetime(data["date"] + " " + data["time"], errors="coerce")
+        data["date"] = pd.to_datetime(data["date"], errors="coerce")
+
+        # Check if target_datetime is within the dataset
+        if pd.Timestamp(target_datetime) not in data.index:
+            print(f"Out of bounds: {target_datetime} is not in the dataset!")
+            target_peak_datetime = "OUTSIDE OF DATASET!"
+            target_peak_load = 0
+            target_load = 0
+        else:
+            # Extract the target date
+            target_date = datetime.strptime(target_datetime, "%Y-%m-%d %H:%M:%S").date()
+
+            # Calculate load at the target datetime
+            target_load = data[data["datetime"] == target_datetime]["kw"].sum()
+            print(f"Load at {target_datetime}: {target_load} kW")
+
+            # Filter data for the target date
+            filtered_data = data[data["datetime"].dt.date == target_date]
+            filtered_data.set_index("datetime", inplace=True)
+
+            # Resample data to 15-minute intervals
+            resampled_data = filtered_data["kw"].resample("15min").sum()
+
+            # Find the peak load and its time
+            target_peak_datetime = resampled_data.idxmax()
+            target_peak_load = resampled_data.max()
+
+            print(f"Peak load for {target_date}: {target_peak_load} kW at {target_peak_datetime}")
+
+        # Calculate amperages at various voltage levels
         # 120V Amperage
         amps120 = (peak_load * 1000)/(120)
         # 208V Amperage
         amps208 = (peak_load * 1000)/(208)
         # 240V Amperage
         amps240 = (peak_load * 1000)/(240)
+        # 7200V Amperage
+        amps7200 = (peak_load * 1000)/(7200)
         
         # Generate output filenames
         base, ext = os.path.splitext(input_file)
@@ -317,17 +363,17 @@ def process_csv(input_file):
         lp_file_short = base_name.replace(".csv", "_RESULTS-LP.csv")
         logger.info("Load Profile: %s", lp_file_short)
         global graph_file_short
-        graph_file_short = base_name.replace(".csv", "_RESULTS-GRAPH.csv")
+        graph_file_short = base_name.replace(".csv", "_RESULTS-GRAPH.png")
         logger.info("Graph: %s", graph_file_short)
+        global no_load_file_short
+        no_load_file_short = base_name.replace(".csv", "_NO LOAD.csv")
+        logger.info("No Load: %s", no_load_file_short)
         
         # Generate time stamp for report runtime.
         current_datetime = datetime.now()
         
         def print_and_save(summary, filename=output_file):
             with open(filename, "w") as file:
-                # Redirect output to both the console and the file
-                #with redirect_stdout(sys.stdout):  # Send to console
-                    #print(summary)  # Print to console
                 with redirect_stdout(file):  # Send to file
                     print(summary)  # Print to file
 
@@ -351,6 +397,12 @@ def process_csv(input_file):
             f"{'Peak load (120V, 1-phase, PF=1): ':<30} {amps120:>17.2f} {'amps':<28}",
             f"{'Peak load (208V, 1-phase, PF=1): ':<30} {amps208:>17.2f} {'amps':<28}",
             f"{'Peak load (240V, 1-phase, PF=1): ':<30} {amps240:>17.2f} {'amps':<28}",
+            f"{'Peak load (7200V (L-N), 1-phase, PF=1): ':<30} {amps7200:>10.2f} {'amps':<28}",
+            "-" * calculation_summary_width,
+            f"{'Coincidental Peaks':^{calculation_summary_width}}",
+            f"{'Target datetime (given): ':<45}{str(target_datetime):<}",
+            f"{'Coincidental peak (KW) for target datetime: ':<44} {target_load:>5.2f} {'KW on ' + str(target_datetime):<}",
+            f"{'Non-coincidental peak (KW) for target date: ':<44} {target_peak_load:>5.2f} {'KW on ' + str(target_peak_datetime):<}",
             "=" * calculation_summary_width,
             f"{'Calculated Factors':^{calculation_summary_width}}",
             "=" * calculation_summary_width,
@@ -464,6 +516,8 @@ def transformer_load_analysis(load_profile_file, transformer_kva):
         # Declare output filename
         load_distribution_output_file = f"{base_name}_RESULTS.txt"
         graph_file = load_profile_file.replace("_RESULTS-LP.csv", "_RESULTS-GRAPH.png")
+        global graph_file_interactive
+        graph_file_interactive = load_profile_file.replace("_RESULTS-LP.csv", "_RESULTS-GRAPH-INTERACTIVE.png")
         
         # Calculate absolute transformer KVA loads at 85% and 120%.
         kva_85 = transformer_kva * 0.85
@@ -489,9 +543,10 @@ def transformer_load_analysis(load_profile_file, transformer_kva):
             f.write(f"{'Input file: ':<80}\n")
             f.write(f"{str(input_file):<80}\n\n")
             f.write(f"{'Output written to same folder as input file.':<80}\n")
-            f.write(f"{'Results: ':<15}{results_file_short:<65}\n")
-            f.write(f"{'Load profile: ':<15}{lp_file_short:<65}\n")
-            f.write(f"{'Graph: ':<15}{graph_file_short:<65}\n")
+            f.write(f"{'Results: ':<15}{'./':>2}{results_file_short:<63}\n")
+            f.write(f"{'Load profile: ':<15}{'./':>2}{lp_file_short:<63}\n")
+            f.write(f"{'Graph: ':<15}{'./':>2}{graph_file_short:<63}\n")
+            f.write(f"{'Load < 0.5 KW: ':<15}{'./':>2}{no_load_file_short:<63}\n")
 
     except FileNotFoundError:
         print(f"Error: The file '{load_profile_file}' was not found.")
@@ -546,28 +601,145 @@ def visualize_load_profile(load_profile_file, transformer_kva):
         except Exception as e:
             print(f"An error occurred while generating the visualization: {e}")
 
+def visualize_load_profile_interactive(load_profile_file, transformer_kva):
+    """
+    Generates an interactive time-based plot using Plotly with load thresholds.
+    
+    Parameters:
+        load_profile_file (str): Path to the CSV file containing load profile data.
+        transformer_kva (float): Transformer rating in kVA.
+        
+    The CSV file should contain at least two columns:
+        - 'datetime': Timestamps of the load measurements.
+        - 'total_kw': Load in kW.
+    """
+    try:
+        # Load the data
+        data = pd.read_csv(load_profile_file)
+
+        # Ensure the necessary columns are present
+        if "datetime" in data.columns and "total_kw" in data.columns:
+            # Convert 'datetime' column to datetime type
+            data["datetime"] = pd.to_datetime(data["datetime"])
+
+            # Define thresholds for 85%, 100%, and 120% of transformer load
+            load_85 = transformer_kva * 0.85
+            load_100 = transformer_kva
+            load_120 = transformer_kva * 1.2
+
+            # Create a Plotly figure
+            fig = go.Figure()
+
+            # Add the main load trace
+            fig.add_trace(go.Scatter(
+                x=data["datetime"],
+                y=data["total_kw"],
+                mode='lines',
+                name='Load (kW)'
+            ))
+
+            # Add horizontal lines for thresholds
+            fig.add_shape(
+                type="line",
+                x0=data["datetime"].min(),
+                x1=data["datetime"].max(),
+                y0=load_85,
+                y1=load_85,
+                line=dict(color='orange', dash='dash'),
+                name='85% Load'
+            )
+            fig.add_shape(
+                type="line",
+                x0=data["datetime"].min(),
+                x1=data["datetime"].max(),
+                y0=load_100,
+                y1=load_100,
+                line=dict(color='green', dash='dash'),
+                name='100% Load'
+            )
+            fig.add_shape(
+                type="line",
+                x0=data["datetime"].min(),
+                x1=data["datetime"].max(),
+                y0=load_120,
+                y1=load_120,
+                line=dict(color='red', dash='dash'),
+                name='120% Load'
+            )
+
+            # Customize layout
+            fig.update_layout(
+                title="Time-Based Load Profile Visualization",
+                xaxis_title="Time",
+                yaxis_title="Load (kW)",
+                legend_title="Legend",
+                hovermode="x",
+                template="plotly_white"
+            )
+
+            # Show the interactive plot
+            fig.show()
+        else:
+            print("Error: Required columns 'datetime' and 'total_kw' are not present in the file.")
+    except Exception as e:
+        print(f"An error occurred while generating the interactive visualization: {e}")
+
+
 if __name__ == "__main__":
-    # Assume process_csv, transformer_load_analysis, and visualize_load_profile are defined elsewhere
     # Parse command-line arguments
-    parser = argparse.ArgumentParser(description="Process a CSV file with date, time, and kw columns and perform transformer load analysis.")
+    parser = argparse.ArgumentParser(description="Process a CSV file for load profile analysis.")
     parser.add_argument("filename", type=str, help="Path to the input CSV file")
-    parser.add_argument("--transformer_kva", type=float, default=0, help="Transformer size in KVA for load analysis (default is 0)")
+    parser.add_argument("--transformer_kva", type=float, default=0, help="Transformer size in KVA")
+    parser.add_argument("--datetime", type=str, help="DateTime for total load calculation (format: YYYY-MM-DD HH:MM:SS)")
     args = parser.parse_args()
 
-    # Process the CSV file and capture the output file name
     input_file = args.filename
     transformer_kva = args.transformer_kva
-    load_profile_file = process_csv(input_file)
+    target_datetime = args.datetime
 
-    # Ensure the file was created successfully
-    if load_profile_file and os.path.isfile(load_profile_file):
-    
-        # Perform transformer load analysis only if transformer_kva is greater than 0
-        if transformer_kva > 0:
+    # Validate file existence
+    if not os.path.isfile(input_file):
+        print(f"Error: File '{input_file}' does not exist.")
+        sys.exit(1)
+
+    # Validate datetime argument  NEEDS REPAIRS
+    # if target_datetime:
+        # try:
+            # target_datetime = datetime.strptime(target_datetime, "%Y-%m-%d %H:%M:%S")
+            # print(f"Valid datetime provided: {target_datetime}")
+        # except ValueError:
+            # print(f"Error: Invalid datetime format '{args.datetime}'. Use 'YYYY-MM-DD HH:MM:SS'.")
+            # sys.exit(1)
+
+    # Process the CSV file
+    try:
+        #data, load_profile_file = process_csv(input_file) # NEEDS REPAIRS, RUNS TWICE TO WORK.
+        load_profile_file = process_csv(input_file)
+        print(f"CSV processing complete. Output file: {load_profile_file}")
+        data = process_csv(input_file)
+        print(f"CSV processing complete. Output file: {data}")
+    except ValueError as e:
+        print(f"ValueError: {e}")
+        sys.exit(1)
+    except Exception as e:
+        print(f"Unexpected error processing CSV file '{input_file}': {e}")
+        sys.exit(1)
+
+    # Transformer load analysis and visualization
+    if transformer_kva > 0:
+        try:
             transformer_load_analysis(load_profile_file, transformer_kva)
             visualize_load_profile(load_profile_file, transformer_kva)
-        else:
-            print("Transformer KVA not specified or is zero. Skipping transformer load analysis and visualization.")
+            visualize_load_profile_interactive(load_profile_file, transformer_kva)
+        except FileNotFoundError:
+            print(f"Error: The file '{load_profile_file}' was not found.")
+        except ValueError as e:
+            print(f"Error: {e}")
+        except Exception as e:
+            print(f"Error during transformer load analysis or visualization: {e}")
+            sys.exit(1)
     else:
-        print(f"Error: The file '{load_profile_file}' was not created or found.")
-        sys.exit(1)
+        print("Transformer KVA not specified or is zero. Skipping analysis and visualization.")
+
+
+
