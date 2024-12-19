@@ -25,68 +25,99 @@ def visualize_load_profile_interactive(load_profile_file, transformer_kva, targe
             # Convert 'datetime' column to datetime type
             data["datetime"] = pd.to_datetime(data["datetime"])
 
+            # Check if target_datetime is within the dataset range
+            min_datetime = data["datetime"].min()
+            max_datetime = data["datetime"].max()
+
+            # Initialize the Plotly figure
+            fig = go.Figure()
+
+        if target_datetime:
+            if target_datetime < min_datetime or target_datetime > max_datetime:
+                print(f"Warning: The provided datetime '{target_datetime}' is outside the dataset range ({min_datetime} to {max_datetime}).")
+                
+                # Add a visible warning annotation to the figure
+                fig.add_annotation(
+                    xref="paper", yref="paper",
+                    x=0.5, y=1.05,
+                    text=f"Warning: The provided datetime '{target_datetime}' is outside the dataset range ({min_datetime} to {max_datetime}).",
+                    showarrow=False,
+                    font=dict(size=14, color="red"),
+                    align="center",
+                    bgcolor="yellow",
+                    bordercolor="red",
+                    borderwidth=2
+                )
+            else:
+                # Add the main load trace here to make sure it renders on bottom
+                fig.add_trace(go.Scatter(
+                    x=data["datetime"],
+                    y=data["total_kw"],
+                    mode='lines',
+                    line=dict(color='lightgrey', dash='solid', width=1),
+                    name='Load (kW)'
+                ))
+                
+                # Find the closest data point to the target_datetime
+                closest_row = data.iloc[(data['datetime'] - target_datetime).abs().argmin()]
+                closest_datetime = closest_row['datetime']
+                closest_load = closest_row['total_kw']
+                
+
+
+                # Add a vertical line at the target_datetime
+                fig.add_trace(go.Scatter(
+                    x=[closest_datetime, closest_datetime],
+                    y=[0, max(data['total_kw'])],
+                    mode='lines',
+                    line=dict(color='blue', dash='solid', width=2),
+                    name='Target Datetime'
+                ))
+
+                # Add an annotation for the target_datetime
+                fig.add_annotation(
+                    x=closest_datetime,
+                    y=closest_load,
+                    text=f"Target: {closest_datetime.strftime('%Y-%m-%d %H:%M:%S')}<br>{closest_load:.2f} kW",
+                    showarrow=True,
+                    arrowhead=5,
+                    arrowcolor='blue',
+                    font=dict(size=12, color="blue"),
+                    bgcolor="lightgray",
+                    bordercolor="blue",
+                    borderwidth=1
+                )
+
+
             # Define thresholds for 85%, 100%, and 120% of transformer load
             load_85 = transformer_kva * 0.85
             load_100 = transformer_kva
             load_120 = transformer_kva * 1.2
 
-            # Create a Plotly figure
-            fig = go.Figure()
 
-            # Add the main load trace
-            fig.add_trace(go.Scatter(
-                x=data["datetime"],
-                y=data["total_kw"],
-                mode='lines',
-                name='Load (kW)'
-            ))
 
             # Add horizontal threshold traces
             fig.add_trace(go.Scatter(
                 x=[data["datetime"].min(), data["datetime"].max()],
                 y=[load_85, load_85],
                 mode='lines',
-                line=dict(color='orange', dash='dash'),
+                line=dict(color='green', dash='dash', width=2),
                 name='85% Load'
             ))
             fig.add_trace(go.Scatter(
                 x=[data["datetime"].min(), data["datetime"].max()],
                 y=[load_100, load_100],
                 mode='lines',
-                line=dict(color='green', dash='dash'),
+                line=dict(color='orange', dash='dash', width=2),
                 name='100% Load'
             ))
             fig.add_trace(go.Scatter(
                 x=[data["datetime"].min(), data["datetime"].max()],
                 y=[load_120, load_120],
                 mode='lines',
-                line=dict(color='red', dash='dash'),
+                line=dict(color='red', dash='dash', width=2),
                 name='120% Load'
             ))
-
-            # Highlight the target datetime if specified
-            if target_datetime:
-                # Find the closest data point to the specified datetime
-                closest_row = data.iloc[(data['datetime'] - target_datetime).abs().argmin()]
-                closest_datetime = closest_row['datetime']
-                closest_load = closest_row['total_kw']
-
-                # Add a vertical line and annotation
-                fig.add_trace(go.Scatter(
-                    x=[closest_datetime, closest_datetime],
-                    y=[0, max(data['total_kw'])],
-                    mode='lines',
-                    line=dict(color='red', dash='solid'),
-                    name='Target Datetime'
-                ))
-                fig.add_annotation(
-                    x=closest_datetime,
-                    y=closest_load,
-                    text=f"{closest_datetime.strftime('%Y-%m-%d %H:%M:%S')}<br>{closest_load:.2f} kW",
-                    showarrow=True,
-                    arrowhead=2,
-                    arrowcolor='blue'
-                )
 
             # Highlight the maximum load value
             max_row = data.loc[data['total_kw'].idxmax()]
@@ -98,16 +129,21 @@ def visualize_load_profile_interactive(load_profile_file, transformer_kva, targe
                 x=[max_datetime, max_datetime],
                 y=[0, max(data['total_kw'])],
                 mode='lines',
-                line=dict(color='orange', dash='solid'),
+                line=dict(color='red', dash='solid', width=2),
                 name='Max Load'
             ))
+
             fig.add_annotation(
                 x=max_datetime,
                 y=max_load,
-                text=f"Max Load:<br>{max_datetime.strftime('%Y-%m-%d %H:%M:%S')}<br>{max_load:.2f} kW",
+                text=f"Peak: {max_datetime.strftime('%Y-%m-%d %H:%M:%S')}<br>{closest_load:.2f} kW",
                 showarrow=True,
-                arrowhead=2,
-                arrowcolor='purple'
+                arrowhead=5,
+                arrowcolor='red',
+                font=dict(size=12, color="red"),
+                bgcolor="lightgray",
+                bordercolor="blue",
+                borderwidth=1
             )
 
             # Customize layout
@@ -116,9 +152,18 @@ def visualize_load_profile_interactive(load_profile_file, transformer_kva, targe
                 xaxis_title="Time",
                 yaxis_title="Load (kW)",
                 legend_title="Legend",
+                #legend_subtitle="Click to turn ON/OFF",
                 hovermode="x",
                 template="plotly_white"
             )
+            fig.add_annotation(
+            xref="paper", yref="paper",  # Reference relative to the paper size
+            x=1.02, y=1.01,             # Position near the legend
+            text="Click to turn ON/OFF", # Subtitle text
+            showarrow=False,
+            font=dict(size=10, color="gray"),
+            align="left"
+)
 
             # Show the interactive plot
             fig.show()
@@ -126,6 +171,8 @@ def visualize_load_profile_interactive(load_profile_file, transformer_kva, targe
             print("Error: Required columns 'datetime' and 'total_kw' are not present in the file.")
     except Exception as e:
         print(f"An error occurred while generating the interactive visualization: {e}")
+
+
 
 if __name__ == "__main__":
     # Parse command-line arguments
