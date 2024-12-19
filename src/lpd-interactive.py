@@ -6,13 +6,12 @@ from datetime import datetime
 import argparse
 
 #cd C:\Users\micha\GitHub\load-profile\src
-#python lpd-interactive2.py ..\sample-data\22meters-736days-1470K_rows.csv --transformer_kva 75 --datetime "2024-10-08 16:45:00"
-
+#python lpd-interactive.py ..\sample-data\22meters-736days-1470K_rows.csv --transformer_kva 75 --datetime "2024-10-08 16:45:00"
+#python lpd-interactive.py ..\sample-data\OCD226826-700days.csv --transformer_kva 75 --datetime "2024-10-10 16:45:00"
 def process_csv(input_file):
     base, _ = os.path.splitext(input_file)
     load_profile_file = f"{base}_RESULTS-LP.csv"
     data = pd.read_csv(input_file)
-    # data.to_csv(load_profile_file, index=False)
     return data, load_profile_file
 
 def visualize_load_profile_interactive(load_profile_file, transformer_kva, target_datetime):
@@ -32,10 +31,11 @@ def visualize_load_profile_interactive(load_profile_file, transformer_kva, targe
             # Initialize the Plotly figure
             fig = go.Figure()
 
+        # Verify that --datetime is within dataset
         if target_datetime:
             if target_datetime < min_datetime or target_datetime > max_datetime:
                 print(f"Warning: The provided datetime '{target_datetime}' is outside the dataset range ({min_datetime} to {max_datetime}).")
-                
+
                 # Add a visible warning annotation to the figure
                 fig.add_annotation(
                     xref="paper", yref="paper",
@@ -49,6 +49,11 @@ def visualize_load_profile_interactive(load_profile_file, transformer_kva, targe
                     borderwidth=2
                 )
             else:
+                # Find the closest data point to the target_datetime
+                closest_row = data.iloc[(data['datetime'] - target_datetime).abs().argmin()]
+                closest_datetime = closest_row['datetime']
+                closest_load = closest_row['total_kw']
+                
                 # Add the main load trace here to make sure it renders on bottom
                 fig.add_trace(go.Scatter(
                     x=data["datetime"],
@@ -57,13 +62,6 @@ def visualize_load_profile_interactive(load_profile_file, transformer_kva, targe
                     line=dict(color='lightgrey', dash='solid', width=1),
                     name='Load (kW)'
                 ))
-                
-                # Find the closest data point to the target_datetime
-                closest_row = data.iloc[(data['datetime'] - target_datetime).abs().argmin()]
-                closest_datetime = closest_row['datetime']
-                closest_load = closest_row['total_kw']
-                
-
 
                 # Add a vertical line at the target_datetime
                 fig.add_trace(go.Scatter(
@@ -88,15 +86,12 @@ def visualize_load_profile_interactive(load_profile_file, transformer_kva, targe
                     borderwidth=1
                 )
 
-
             # Define thresholds for 85%, 100%, and 120% of transformer load
             load_85 = transformer_kva * 0.85
             load_100 = transformer_kva
             load_120 = transformer_kva * 1.2
 
-
-
-            # Add horizontal threshold traces
+            # Add horizontal transformer threshold traces
             fig.add_trace(go.Scatter(
                 x=[data["datetime"].min(), data["datetime"].max()],
                 y=[load_85, load_85],
@@ -119,7 +114,7 @@ def visualize_load_profile_interactive(load_profile_file, transformer_kva, targe
                 name='120% Load'
             ))
 
-            # Highlight the maximum load value
+            # Annotate the maximum load value
             max_row = data.loc[data['total_kw'].idxmax()]
             max_datetime = max_row['datetime']
             max_load = max_row['total_kw']
@@ -133,6 +128,7 @@ def visualize_load_profile_interactive(load_profile_file, transformer_kva, targe
                 name='Max Load'
             ))
 
+            # Add peak load annotation
             fig.add_annotation(
                 x=max_datetime,
                 y=max_load,
@@ -151,30 +147,22 @@ def visualize_load_profile_interactive(load_profile_file, transformer_kva, targe
                 title="Time-Based Load Profile Visualization",
                 xaxis_title="Time",
                 yaxis_title="Load (kW)",
-                legend_title="Legend",
-                #legend_subtitle="Click to turn ON/OFF",
+                legend_title=dict(text="Legend<br>Click to turn ON/OFF"),
                 hovermode="x",
-                template="plotly_white"
+                template="plotly_white",
+                dragmode="pan",  # Enable panning 'zoom' is also an option.
+                meta=dict(locale="en"),  # Set locale explicitly
             )
-            fig.add_annotation(
-            xref="paper", yref="paper",  # Reference relative to the paper size
-            x=1.02, y=1.01,             # Position near the legend
-            text="Click to turn ON/OFF", # Subtitle text
-            showarrow=False,
-            font=dict(size=10, color="gray"),
-            align="left"
-)
 
-            # Show the interactive plot
-            fig.show()
+            # Display the visualization
+            fig.show(config={"scrollZoom": True})
         else:
             print("Error: Required columns 'datetime' and 'total_kw' are not present in the file.")
     except Exception as e:
         print(f"An error occurred while generating the interactive visualization: {e}")
 
-
-
 if __name__ == "__main__":
+
     # Parse command-line arguments
     parser = argparse.ArgumentParser(description="Process a CSV file for load profile analysis.")
     parser.add_argument("filename", type=str, help="Path to the input CSV file")
@@ -182,6 +170,7 @@ if __name__ == "__main__":
     parser.add_argument("--datetime", type=str, help="DateTime for total load calculation (format: YYYY-MM-DD HH:MM:SS)")
     args = parser.parse_args()
 
+    # Create variables from arguments
     input_file = args.filename
     transformer_kva = args.transformer_kva
     target_datetime = args.datetime
@@ -200,7 +189,7 @@ if __name__ == "__main__":
             print(f"Error: Invalid datetime format '{args.datetime}'. Use 'YYYY-MM-DD HH:MM:SS'.")
             sys.exit(1)
 
-    # Process the CSV file
+    # Process the load profile CSV file
     try:
         data, load_profile_file = process_csv(input_file)
         print(f"CSV processing complete: {load_profile_file}")
