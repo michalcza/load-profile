@@ -225,6 +225,18 @@ def start_analysis_thread():
     # Start the background thread, passing these values
     threading.Thread(target=launch_analysis, args=(csv_file, kva_value), daemon=True).start()
     
+def start_interactive():
+    csv_file = csv_path_entry.get()
+    base, ext = os.path.splitext(csv_file)
+    load_profile_file = f"{base}_RESULTS-LP.csv"
+
+    # Retrieve widget values in the main thread
+    kva_value = kva_entry.get()
+
+    # Start the background thread, passing these values
+    threading.Thread(target=launch_analysis, args=(load_profile_file, kva_value), daemon=True).start()
+
+    
 def clear_all():
     csv_path_entry.delete(0, tk.END)
     kva_entry.delete(0, tk.END)
@@ -287,7 +299,7 @@ output_textbox.insert(tk.END, default_text)
 # Bottom row buttons
 
 # Visualize button
-plot_button = tk.Button(root, text="Open Graph", command=open_plot)
+plot_button = tk.Button(root, text="Open Graph", command=start_interactive)
 plot_button.grid(row=4, column=2, pady=5, padx=2)
 plot_button.configure(state=tk.DISABLED)  # Hide initially
 

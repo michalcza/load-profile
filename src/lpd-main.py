@@ -92,8 +92,12 @@ Example: 98meters-300days-2788K_rows.csv
     -Coincidental peak load for given date and time (system peak).
     -Non-coincidental peak load for the entire day that was given.
     -List datetime for rows where KW < 0.5
-    THIS WORKS, BUT GRAPH != OUTPUT CSV FILE
     -Add primary voltage amperage calculations for 1-phase.
+    -Split display of interactive graph from funciton into lpd-interactive.py
+    that way we can launh it from GUI with button and not as part of lpd-main.py
+    
+    
+python lpd-main.py ..\sample-data\OCD226826-700days.csv --transformer_kva 75 --datetime "2024-10-08 16:15:00"
 """
 import logging
 import pandas as pd
@@ -136,7 +140,7 @@ clear_screen()
 
 global pwd
 pwd = os.getcwd()
-logger.info("                   *** Start ***")
+logger.info("#                   *** Start ***                   #")
 logger.info(pwd)
 
 def process_csv(input_file):
@@ -287,21 +291,19 @@ def process_csv(input_file):
         logger.info("Average_peak_load_per_meter: %d", average_peak_load_per_meter)
         
         #List datetime when sum of loads < 0.5 KW
-        no_load_data = data.groupby("datetime")["kw"].sum()
+        #no_load_data = data.groupby("datetime")["kw"].sum()
+        no_load_data = data["kw"].resample("15min").sum()
         no_load_times = no_load_data[no_load_data < 0.5].reset_index()
         if no_load_times.empty:
             logger.info("No times found where the total KW less than 0.5 KW.")
         else:
             # Save the results to a CSV file or print them
-            no_load_file = f"{os.path.splitext(input_file)[0]}_NO LOAD.csv"
+            no_load_file = f"{os.path.splitext(input_file)[0]}_NO-LOAD.csv"
             no_load_times.to_csv(no_load_file, index=False)
             logger.info(f"Times with total KW < 0.5 saved to: {no_load_file}")
             print(f"Found {len(no_load_times)} instances where total KW < 0.5. Results saved to: {no_load_file}")
         
-        # Calculate coincidental peaks based on given datetime
-        # Target datetime from commandline argument --datetime
-        #sample_target_datetime = "2024-08-05 16:15:00"
- 
+        # Calculate coincidental peaks based on given datetime 
         # Convert columns to datetime
         data["datetime"] = pd.to_datetime(data["date"] + " " + data["time"], errors="coerce")
         data["date"] = pd.to_datetime(data["date"], errors="coerce")
@@ -334,14 +336,15 @@ def process_csv(input_file):
             print(f"Peak load for {target_date}: {target_peak_load} kW at {target_peak_datetime}")
 
         # Calculate amperages at various voltage levels
-        # 120V Amperage
         amps120 = (peak_load * 1000)/(120)
-        # 208V Amperage
         amps208 = (peak_load * 1000)/(208)
-        # 240V Amperage
         amps240 = (peak_load * 1000)/(240)
-        # 7200V Amperage
         amps7200 = (peak_load * 1000)/(7200)
+        
+        target_amps120 = (target_load * 1000)/(120)
+        target_amps208 = (target_load * 1000)/(208)
+        target_amps240 = (target_load * 1000)/(240)
+        target_amps7200 = (target_load * 1000)/(7200)
         
         # Generate output filenames
         base, ext = os.path.splitext(input_file)
@@ -366,7 +369,7 @@ def process_csv(input_file):
         graph_file_short = base_name.replace(".csv", "_RESULTS-GRAPH.png")
         logger.info("Graph: %s", graph_file_short)
         global no_load_file_short
-        no_load_file_short = base_name.replace(".csv", "_NO LOAD.csv")
+        no_load_file_short = base_name.replace(".csv", "_NO-LOAD.csv")
         logger.info("No Load: %s", no_load_file_short)
         
         # Generate time stamp for report runtime.
@@ -401,7 +404,13 @@ def process_csv(input_file):
             "-" * calculation_summary_width,
             f"{'Coincidental Peaks':^{calculation_summary_width}}",
             f"{'Target datetime (given): ':<45}{str(target_datetime):<}",
-            f"{'Coincidental peak (KW) for target datetime: ':<44} {target_load:>5.2f} {'KW on ' + str(target_datetime):<}",
+            #f"{'Coincidental peak (KW) for target datetime: ':<44} {target_load:>5.2f} {'KW on ' + str(target_datetime):<}",
+            f"{'Coincidental peak (KW) for target datetime: ':<44} {target_load:>5.2f} KW",
+            f"{'Target load (120V, 1-phase, PF=1): ':<30} {target_amps120:>17.2f} {'amps':<28}",
+            f"{'Target load (208V, 1-phase, PF=1): ':<30} {target_amps208:>17.2f} {'amps':<28}",
+            f"{'Target load (240V, 1-phase, PF=1): ':<30} {target_amps240:>17.2f} {'amps':<28}",
+            f"{'Target load (7200V (L-N), 1-phase, PF=1): ':<30} {target_amps7200:>10.2f} {'amps':<28}",
+            f"",
             f"{'Non-coincidental peak (KW) for target date: ':<44} {target_peak_load:>5.2f} {'KW on ' + str(target_peak_datetime):<}",
             "=" * calculation_summary_width,
             f"{'Calculated Factors':^{calculation_summary_width}}",
@@ -440,7 +449,7 @@ def process_csv(input_file):
         load_profile.to_csv(load_profile_file, index=False)
         
         # Return the load_profile_file path for use outside the function
-        return load_profile_file
+        return data, load_profile_file
 
     except FileNotFoundError as e:
         error_message = f"Error: The file '{input_file}' was not found."
@@ -684,7 +693,6 @@ def visualize_load_profile_interactive(load_profile_file, transformer_kva):
     except Exception as e:
         print(f"An error occurred while generating the interactive visualization: {e}")
 
-
 if __name__ == "__main__":
     # Parse command-line arguments
     parser = argparse.ArgumentParser(description="Process a CSV file for load profile analysis.")
@@ -702,7 +710,9 @@ if __name__ == "__main__":
         print(f"Error: File '{input_file}' does not exist.")
         sys.exit(1)
 
-    # Validate datetime argument  NEEDS REPAIRS
+# Validate datetime argument  NEEDS REPAIRS WE NEED DATETIME AS BOTH STRING
+#AND DATETIME. WE SHOULD SPLIT THIS INTO TWO FUNCTIONS. ONE IS 
+# target_datetime AND THE OTHER IS target_datetime_str        
     # if target_datetime:
         # try:
             # target_datetime = datetime.strptime(target_datetime, "%Y-%m-%d %H:%M:%S")
@@ -713,10 +723,10 @@ if __name__ == "__main__":
 
     # Process the CSV file
     try:
-        #data, load_profile_file = process_csv(input_file) # NEEDS REPAIRS, RUNS TWICE TO WORK.
-        load_profile_file = process_csv(input_file)
+        data, load_profile_file = process_csv(input_file) # NEEDS REPAIRS, RUNS TWICE TO WORK.
+        #load_profile_file = process_csv(input_file)
         print(f"CSV processing complete. Output file: {load_profile_file}")
-        data = process_csv(input_file)
+        #data = process_csv(input_file)
         print(f"CSV processing complete. Output file: {data}")
     except ValueError as e:
         print(f"ValueError: {e}")

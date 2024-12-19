@@ -44,3 +44,6 @@ src/pwd.py
 src/lpd_debug.log
 src/lpd_debug.log
 src/lpd_debug.log
+*.png
+*.log
+src/python
