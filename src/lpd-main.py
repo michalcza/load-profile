@@ -739,8 +739,8 @@ if __name__ == "__main__":
     if transformer_kva > 0:
         try:
             transformer_load_analysis(load_profile_file, transformer_kva)
-            visualize_load_profile(load_profile_file, transformer_kva)
-            visualize_load_profile_interactive(load_profile_file, transformer_kva)
+            #visualize_load_profile(load_profile_file, transformer_kva)
+            #visualize_load_profile_interactive(load_profile_file, transformer_kva)
         except FileNotFoundError:
             print(f"Error: The file '{load_profile_file}' was not found.")
         except ValueError as e:
