@@ -277,7 +277,7 @@ def finalize_plot(fig):
         xaxis_title="Time",
         yaxis_title="Load (kW)",
         legend_title=dict(
-            text="Legend<br>Click to toggle traces"
+            text="Legend<br>Click to toggle traces<br>Double-click to isolate"
         ),
         hovermode="x",
         template="plotly_white",

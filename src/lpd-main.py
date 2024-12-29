@@ -38,9 +38,6 @@ Output:
     98meters-300days-2788K_rows_RESULTS-LP.csv
     Output file with time based aggregated load profile.
     
-    98meters-300days-2788K_rows_RESULTS-GRAPH.png
-    Visualization based on time based load profile data.
-    
 
 Compile instructions:
 Syntax:
@@ -62,7 +59,6 @@ test on KW value with multiple iterations of XXX.XXX coming from Yukon.
 -Renamed output file suffix to 
     _RESULTS.txt
     _RESULTS-LP.csv
-    _RESULTS-GRAPH.png
 -Renamed sample data filenames to more descriptive titles.
 Example: 98meters-300days-2788K_rows.csv
 -Tested on the following datasets:
@@ -739,8 +735,6 @@ if __name__ == "__main__":
     if transformer_kva > 0:
         try:
             transformer_load_analysis(load_profile_file, transformer_kva)
-            #visualize_load_profile(load_profile_file, transformer_kva)
-            #visualize_load_profile_interactive(load_profile_file, transformer_kva)
         except FileNotFoundError:
             print(f"Error: The file '{load_profile_file}' was not found.")
         except ValueError as e:

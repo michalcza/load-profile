@@ -13984,3 +13984,235 @@
 2024-12-27 15:07:24,928 - INFO - Load Profile: OCD226826-700days_RESULTS-LP.csv
 2024-12-27 15:07:24,929 - INFO - Graph: OCD226826-700days_RESULTS-GRAPH.png
 2024-12-27 15:07:24,929 - INFO - No Load: OCD226826-700days_NO-LOAD.csv
+2024-12-28 17:03:43,388 - INFO - #                   *** Start ***                   #
+2024-12-28 17:03:43,388 - INFO - C:\Users\micha\GitHub\load-profile\src
+2024-12-28 17:03:43,389 - INFO - fn process_csv - try
+2024-12-28 17:03:45,240 - INFO - fn process_csv - read csv OK
+2024-12-28 17:03:49,060 - INFO - fn process_csv - datetime conversion OK
+2024-12-28 17:03:49,061 - INFO - initial row count 6605392
+2024-12-28 17:03:49,165 - INFO - rows dropped (datetime) calculated
+2024-12-28 17:03:49,278 - INFO - Rows dropped after kw conversion calculated
+2024-12-28 17:03:49,306 - INFO - Start and end dates calculated
+2024-12-28 17:03:50,025 - INFO - resample to 15-minute intervals - OK
+2024-12-28 17:03:50,025 - INFO - Resampling completed successfully.
+2024-12-28 17:03:50,026 - INFO - Rename columns for clarity.
+2024-12-28 17:03:50,026 - INFO - peak_row calculated
+2024-12-28 17:03:50,027 - INFO - peak_datetime calculated
+2024-12-28 17:03:50,027 - INFO - peak_load calculated
+2024-12-28 17:03:50,027 - INFO - peak_info calculated
+2024-12-28 17:03:50,027 - INFO - average_load calculated
+2024-12-28 17:03:50,116 - INFO - average_load_per_meter calculated
+2024-12-28 17:03:50,141 - INFO - num_days calculated
+2024-12-28 17:03:50,170 - INFO - num_meters calculated
+2024-12-28 17:03:50,245 - INFO - Individual_maximum_demands calculated
+2024-12-28 17:03:50,246 - INFO - Sum_individual_maximum_demands calculated
+2024-12-28 17:03:50,246 - INFO - Coincidence_factor calculated
+2024-12-28 17:03:50,246 - INFO - Coincidence factor is within the expected range (<= 1).
+2024-12-28 17:03:50,247 - INFO - Diversity factor is within the expected range (>= 1).
+2024-12-28 17:03:50,247 - INFO - Load factor is within the expected range (<= 1).
+2024-12-28 17:03:50,247 - INFO - Average_peak_load_per_meter: 6
+2024-12-28 17:03:50,972 - INFO - Times with total KW < 0.5 saved to: C:/Users/micha/GitHub/load-profile/sample-data/OCD226826-700days_NO-LOAD.csv
+2024-12-28 17:04:09,586 - INFO - #                   *** Start ***                   #
+2024-12-28 17:04:09,586 - INFO - C:\Users\micha\GitHub\load-profile\src
+2024-12-28 17:04:09,587 - INFO - fn process_csv - try
+2024-12-28 17:04:11,357 - INFO - fn process_csv - read csv OK
+2024-12-28 17:04:14,709 - INFO - fn process_csv - datetime conversion OK
+2024-12-28 17:04:14,711 - INFO - initial row count 6605392
+2024-12-28 17:04:14,814 - INFO - rows dropped (datetime) calculated
+2024-12-28 17:04:14,924 - INFO - Rows dropped after kw conversion calculated
+2024-12-28 17:04:14,952 - INFO - Start and end dates calculated
+2024-12-28 17:04:15,684 - INFO - resample to 15-minute intervals - OK
+2024-12-28 17:04:15,684 - INFO - Resampling completed successfully.
+2024-12-28 17:04:15,685 - INFO - Rename columns for clarity.
+2024-12-28 17:04:15,686 - INFO - peak_row calculated
+2024-12-28 17:04:15,686 - INFO - peak_datetime calculated
+2024-12-28 17:04:15,686 - INFO - peak_load calculated
+2024-12-28 17:04:15,688 - INFO - peak_info calculated
+2024-12-28 17:04:15,688 - INFO - average_load calculated
+2024-12-28 17:04:15,784 - INFO - average_load_per_meter calculated
+2024-12-28 17:04:15,809 - INFO - num_days calculated
+2024-12-28 17:04:15,841 - INFO - num_meters calculated
+2024-12-28 17:04:15,923 - INFO - Individual_maximum_demands calculated
+2024-12-28 17:04:15,923 - INFO - Sum_individual_maximum_demands calculated
+2024-12-28 17:04:15,923 - INFO - Coincidence_factor calculated
+2024-12-28 17:04:15,923 - INFO - Coincidence factor is within the expected range (<= 1).
+2024-12-28 17:04:15,923 - INFO - Diversity factor is within the expected range (>= 1).
+2024-12-28 17:04:15,924 - INFO - Load factor is within the expected range (<= 1).
+2024-12-28 17:04:15,924 - INFO - Average_peak_load_per_meter: 6
+2024-12-28 17:04:16,675 - INFO - Times with total KW < 0.5 saved to: C:/Users/micha/GitHub/load-profile/sample-data/OCD226826-700days_NO-LOAD.csv
+2024-12-28 17:04:21,451 - INFO - Current Directory: C:\Users\micha\GitHub\load-profile\src
+2024-12-28 17:04:21,451 - INFO - Input: OCD226826-700days.csv
+2024-12-28 17:04:21,451 - INFO - Results: OCD226826-700days_RESULTS.txt
+2024-12-28 17:04:21,451 - INFO - Load Profile: OCD226826-700days_RESULTS-LP.csv
+2024-12-28 17:04:21,451 - INFO - Graph: OCD226826-700days_RESULTS-GRAPH.png
+2024-12-28 17:04:21,451 - INFO - No Load: OCD226826-700days_NO-LOAD.csv
+2024-12-28 17:12:14,523 - INFO - #                   *** Start ***                   #
+2024-12-28 17:12:14,524 - INFO - C:\Users\micha\GitHub\load-profile\src
+2024-12-28 17:12:14,525 - INFO - fn process_csv - try
+2024-12-28 17:12:16,300 - INFO - fn process_csv - read csv OK
+2024-12-28 17:12:19,659 - INFO - fn process_csv - datetime conversion OK
+2024-12-28 17:12:19,660 - INFO - initial row count 6605392
+2024-12-28 17:12:19,766 - INFO - rows dropped (datetime) calculated
+2024-12-28 17:12:19,877 - INFO - Rows dropped after kw conversion calculated
+2024-12-28 17:12:19,905 - INFO - Start and end dates calculated
+2024-12-28 17:12:20,631 - INFO - resample to 15-minute intervals - OK
+2024-12-28 17:12:20,632 - INFO - Resampling completed successfully.
+2024-12-28 17:12:20,632 - INFO - Rename columns for clarity.
+2024-12-28 17:12:20,633 - INFO - peak_row calculated
+2024-12-28 17:12:20,633 - INFO - peak_datetime calculated
+2024-12-28 17:12:20,633 - INFO - peak_load calculated
+2024-12-28 17:12:20,634 - INFO - peak_info calculated
+2024-12-28 17:12:20,634 - INFO - average_load calculated
+2024-12-28 17:12:20,720 - INFO - average_load_per_meter calculated
+2024-12-28 17:12:20,744 - INFO - num_days calculated
+2024-12-28 17:12:20,772 - INFO - num_meters calculated
+2024-12-28 17:12:20,848 - INFO - Individual_maximum_demands calculated
+2024-12-28 17:12:20,849 - INFO - Sum_individual_maximum_demands calculated
+2024-12-28 17:12:20,849 - INFO - Coincidence_factor calculated
+2024-12-28 17:12:20,849 - INFO - Coincidence factor is within the expected range (<= 1).
+2024-12-28 17:12:20,850 - INFO - Diversity factor is within the expected range (>= 1).
+2024-12-28 17:12:20,850 - INFO - Load factor is within the expected range (<= 1).
+2024-12-28 17:12:20,850 - INFO - Average_peak_load_per_meter: 6
+2024-12-28 17:12:21,567 - INFO - Times with total KW < 0.5 saved to: C:/Users/micha/GitHub/load-profile/sample-data/OCD226826-700days_NO-LOAD.csv
+2024-12-28 17:12:26,367 - INFO - Current Directory: C:\Users\micha\GitHub\load-profile\src
+2024-12-28 17:12:26,367 - INFO - Input: OCD226826-700days.csv
+2024-12-28 17:12:26,367 - INFO - Results: OCD226826-700days_RESULTS.txt
+2024-12-28 17:12:26,367 - INFO - Load Profile: OCD226826-700days_RESULTS-LP.csv
+2024-12-28 17:12:26,367 - INFO - Graph: OCD226826-700days_RESULTS-GRAPH.png
+2024-12-28 17:12:26,367 - INFO - No Load: OCD226826-700days_NO-LOAD.csv
+2024-12-28 17:12:51,555 - INFO - #                   *** Start ***                   #
+2024-12-28 17:12:51,555 - INFO - C:\Users\micha\GitHub\load-profile\src
+2024-12-28 17:12:51,556 - INFO - fn process_csv - try
+2024-12-28 17:12:53,328 - INFO - fn process_csv - read csv OK
+2024-12-28 17:12:56,774 - INFO - fn process_csv - datetime conversion OK
+2024-12-28 17:12:56,774 - INFO - initial row count 6605392
+2024-12-28 17:12:56,896 - INFO - rows dropped (datetime) calculated
+2024-12-28 17:12:57,027 - INFO - Rows dropped after kw conversion calculated
+2024-12-28 17:12:57,062 - INFO - Start and end dates calculated
+2024-12-28 17:12:57,838 - INFO - resample to 15-minute intervals - OK
+2024-12-28 17:12:57,839 - INFO - Resampling completed successfully.
+2024-12-28 17:12:57,840 - INFO - Rename columns for clarity.
+2024-12-28 17:12:57,841 - INFO - peak_row calculated
+2024-12-28 17:12:57,841 - INFO - peak_datetime calculated
+2024-12-28 17:12:57,841 - INFO - peak_load calculated
+2024-12-28 17:12:57,842 - INFO - peak_info calculated
+2024-12-28 17:12:57,842 - INFO - average_load calculated
+2024-12-28 17:12:57,934 - INFO - average_load_per_meter calculated
+2024-12-28 17:12:57,958 - INFO - num_days calculated
+2024-12-28 17:12:57,986 - INFO - num_meters calculated
+2024-12-28 17:12:58,067 - INFO - Individual_maximum_demands calculated
+2024-12-28 17:12:58,068 - INFO - Sum_individual_maximum_demands calculated
+2024-12-28 17:12:58,068 - INFO - Coincidence_factor calculated
+2024-12-28 17:12:58,068 - INFO - Coincidence factor is within the expected range (<= 1).
+2024-12-28 17:12:58,069 - INFO - Diversity factor is within the expected range (>= 1).
+2024-12-28 17:12:58,069 - INFO - Load factor is within the expected range (<= 1).
+2024-12-28 17:12:58,069 - INFO - Average_peak_load_per_meter: 6
+2024-12-28 17:12:58,864 - INFO - Times with total KW < 0.5 saved to: C:/Users/micha/GitHub/load-profile/sample-data/OCD226826-700days_NO-LOAD.csv
+2024-12-28 17:13:04,674 - INFO - Current Directory: C:\Users\micha\GitHub\load-profile\src
+2024-12-28 17:13:04,674 - INFO - Input: OCD226826-700days.csv
+2024-12-28 17:13:04,674 - INFO - Results: OCD226826-700days_RESULTS.txt
+2024-12-28 17:13:04,675 - INFO - Load Profile: OCD226826-700days_RESULTS-LP.csv
+2024-12-28 17:13:04,675 - INFO - Graph: OCD226826-700days_RESULTS-GRAPH.png
+2024-12-28 17:13:04,675 - INFO - No Load: OCD226826-700days_NO-LOAD.csv
+2024-12-28 17:21:10,920 - INFO - #                   *** Start ***                   #
+2024-12-28 17:21:10,920 - INFO - C:\Users\micha\GitHub\load-profile\src
+2024-12-28 17:21:10,921 - INFO - fn process_csv - try
+2024-12-28 17:21:12,700 - INFO - fn process_csv - read csv OK
+2024-12-28 17:21:16,055 - INFO - fn process_csv - datetime conversion OK
+2024-12-28 17:21:16,056 - INFO - initial row count 6605392
+2024-12-28 17:21:16,160 - INFO - rows dropped (datetime) calculated
+2024-12-28 17:21:16,273 - INFO - Rows dropped after kw conversion calculated
+2024-12-28 17:21:16,301 - INFO - Start and end dates calculated
+2024-12-28 17:21:17,017 - INFO - resample to 15-minute intervals - OK
+2024-12-28 17:21:17,018 - INFO - Resampling completed successfully.
+2024-12-28 17:21:17,018 - INFO - Rename columns for clarity.
+2024-12-28 17:21:17,019 - INFO - peak_row calculated
+2024-12-28 17:21:17,020 - INFO - peak_datetime calculated
+2024-12-28 17:21:17,020 - INFO - peak_load calculated
+2024-12-28 17:21:17,020 - INFO - peak_info calculated
+2024-12-28 17:21:17,020 - INFO - average_load calculated
+2024-12-28 17:21:17,108 - INFO - average_load_per_meter calculated
+2024-12-28 17:21:17,131 - INFO - num_days calculated
+2024-12-28 17:21:17,159 - INFO - num_meters calculated
+2024-12-28 17:21:17,233 - INFO - Individual_maximum_demands calculated
+2024-12-28 17:21:17,234 - INFO - Sum_individual_maximum_demands calculated
+2024-12-28 17:21:17,234 - INFO - Coincidence_factor calculated
+2024-12-28 17:21:17,234 - INFO - Coincidence factor is within the expected range (<= 1).
+2024-12-28 17:21:17,234 - INFO - Diversity factor is within the expected range (>= 1).
+2024-12-28 17:21:17,234 - INFO - Load factor is within the expected range (<= 1).
+2024-12-28 17:21:17,234 - INFO - Average_peak_load_per_meter: 6
+2024-12-28 17:21:17,948 - INFO - Times with total KW < 0.5 saved to: C:/Users/micha/GitHub/load-profile/sample-data/OCD226826-700days_NO-LOAD.csv
+2024-12-28 17:21:22,710 - INFO - Current Directory: C:\Users\micha\GitHub\load-profile\src
+2024-12-28 17:21:22,710 - INFO - Input: OCD226826-700days.csv
+2024-12-28 17:21:22,710 - INFO - Results: OCD226826-700days_RESULTS.txt
+2024-12-28 17:21:22,710 - INFO - Load Profile: OCD226826-700days_RESULTS-LP.csv
+2024-12-28 17:21:22,710 - INFO - Graph: OCD226826-700days_RESULTS-GRAPH.png
+2024-12-28 17:21:22,710 - INFO - No Load: OCD226826-700days_NO-LOAD.csv
+2024-12-28 17:30:43,197 - INFO - #                   *** Start ***                   #
+2024-12-28 17:30:43,197 - INFO - C:\Users\micha\GitHub\load-profile\src
+2024-12-28 17:30:43,199 - INFO - fn process_csv - try
+2024-12-28 17:30:44,972 - INFO - fn process_csv - read csv OK
+2024-12-28 17:30:48,315 - INFO - fn process_csv - datetime conversion OK
+2024-12-28 17:30:48,316 - INFO - initial row count 6605392
+2024-12-28 17:30:48,418 - INFO - rows dropped (datetime) calculated
+2024-12-28 17:30:48,527 - INFO - Rows dropped after kw conversion calculated
+2024-12-28 17:30:48,555 - INFO - Start and end dates calculated
+2024-12-28 17:30:49,271 - INFO - resample to 15-minute intervals - OK
+2024-12-28 17:30:49,272 - INFO - Resampling completed successfully.
+2024-12-28 17:30:49,272 - INFO - Rename columns for clarity.
+2024-12-28 17:30:49,273 - INFO - peak_row calculated
+2024-12-28 17:30:49,273 - INFO - peak_datetime calculated
+2024-12-28 17:30:49,273 - INFO - peak_load calculated
+2024-12-28 17:30:49,274 - INFO - peak_info calculated
+2024-12-28 17:30:49,274 - INFO - average_load calculated
+2024-12-28 17:30:49,361 - INFO - average_load_per_meter calculated
+2024-12-28 17:30:49,384 - INFO - num_days calculated
+2024-12-28 17:30:49,412 - INFO - num_meters calculated
+2024-12-28 17:30:49,487 - INFO - Individual_maximum_demands calculated
+2024-12-28 17:30:49,488 - INFO - Sum_individual_maximum_demands calculated
+2024-12-28 17:30:49,488 - INFO - Coincidence_factor calculated
+2024-12-28 17:30:49,488 - INFO - Coincidence factor is within the expected range (<= 1).
+2024-12-28 17:30:49,488 - INFO - Diversity factor is within the expected range (>= 1).
+2024-12-28 17:30:49,488 - INFO - Load factor is within the expected range (<= 1).
+2024-12-28 17:30:49,488 - INFO - Average_peak_load_per_meter: 6
+2024-12-28 17:30:50,236 - INFO - Times with total KW < 0.5 saved to: C:/Users/micha/GitHub/load-profile/sample-data/OCD226826-700days_NO-LOAD.csv
+2024-12-28 17:30:55,039 - INFO - Current Directory: C:\Users\micha\GitHub\load-profile\src
+2024-12-28 17:30:55,039 - INFO - Input: OCD226826-700days.csv
+2024-12-28 17:30:55,039 - INFO - Results: OCD226826-700days_RESULTS.txt
+2024-12-28 17:30:55,039 - INFO - Load Profile: OCD226826-700days_RESULTS-LP.csv
+2024-12-28 17:30:55,040 - INFO - Graph: OCD226826-700days_RESULTS-GRAPH.png
+2024-12-28 17:30:55,040 - INFO - No Load: OCD226826-700days_NO-LOAD.csv
+2024-12-28 17:34:14,312 - INFO - #                   *** Start ***                   #
+2024-12-28 17:34:14,313 - INFO - C:\Users\micha\GitHub\load-profile\src
+2024-12-28 17:34:14,314 - INFO - fn process_csv - try
+2024-12-28 17:34:16,082 - INFO - fn process_csv - read csv OK
+2024-12-28 17:34:19,515 - INFO - fn process_csv - datetime conversion OK
+2024-12-28 17:34:19,516 - INFO - initial row count 6605392
+2024-12-28 17:34:19,621 - INFO - rows dropped (datetime) calculated
+2024-12-28 17:34:19,728 - INFO - Rows dropped after kw conversion calculated
+2024-12-28 17:34:19,757 - INFO - Start and end dates calculated
+2024-12-28 17:34:20,467 - INFO - resample to 15-minute intervals - OK
+2024-12-28 17:34:20,467 - INFO - Resampling completed successfully.
+2024-12-28 17:34:20,468 - INFO - Rename columns for clarity.
+2024-12-28 17:34:20,469 - INFO - peak_row calculated
+2024-12-28 17:34:20,469 - INFO - peak_datetime calculated
+2024-12-28 17:34:20,469 - INFO - peak_load calculated
+2024-12-28 17:34:20,470 - INFO - peak_info calculated
+2024-12-28 17:34:20,470 - INFO - average_load calculated
+2024-12-28 17:34:20,560 - INFO - average_load_per_meter calculated
+2024-12-28 17:34:20,584 - INFO - num_days calculated
+2024-12-28 17:34:20,614 - INFO - num_meters calculated
+2024-12-28 17:34:20,687 - INFO - Individual_maximum_demands calculated
+2024-12-28 17:34:20,687 - INFO - Sum_individual_maximum_demands calculated
+2024-12-28 17:34:20,687 - INFO - Coincidence_factor calculated
+2024-12-28 17:34:20,687 - INFO - Coincidence factor is within the expected range (<= 1).
+2024-12-28 17:34:20,689 - INFO - Diversity factor is within the expected range (>= 1).
+2024-12-28 17:34:20,689 - INFO - Load factor is within the expected range (<= 1).
+2024-12-28 17:34:20,689 - INFO - Average_peak_load_per_meter: 6
+2024-12-28 17:34:21,413 - INFO - Times with total KW < 0.5 saved to: C:/Users/micha/GitHub/load-profile/sample-data/OCD226826-700days_NO-LOAD.csv
+2024-12-28 17:34:26,183 - INFO - Current Directory: C:\Users\micha\GitHub\load-profile\src
+2024-12-28 17:34:26,183 - INFO - Input: OCD226826-700days.csv
+2024-12-28 17:34:26,183 - INFO - Results: OCD226826-700days_RESULTS.txt
+2024-12-28 17:34:26,183 - INFO - Load Profile: OCD226826-700days_RESULTS-LP.csv
+2024-12-28 17:34:26,183 - INFO - Graph: OCD226826-700days_RESULTS-GRAPH.png
+2024-12-28 17:34:26,183 - INFO - No Load: OCD226826-700days_NO-LOAD.csv
