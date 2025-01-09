@@ -101,7 +101,10 @@ Ensure the following Python libraries are installed:
    - Analysis summary saved in `<input_file>_RESULTS.txt`.
    - Load profile saved in `<input_file>_RESULTS-LP.csv`.
    - Graph saved in `<input_file>_RESULTS-GRAPH.png`.
-
+3. Compile command
+	```bash
+	pyinstaller --onefile --add-data "lpd-main.exe;lpd-main.exe" --add-data "lpd-interactive.exe;lpd-interactive.exe" --distpath . lpd-gui.py
+	```
 ---
 
 ## Input Data Format
