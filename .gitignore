@@ -37,13 +37,10 @@ src/*.spec
 
 *.log
 src/__pycache__/
-
-lpd-main.py.bak25NOV2024
-src/lpd_debug.log
 src/pwd.py
 src/lpd_debug.log
-src/lpd_debug.log
-src/lpd_debug.log
-*.png
-*.log
 src/python
+src/config.py !API key for weather goes here.
+src/lpd-gui.exe
+src/config.py
+src/lpd_debug.log
