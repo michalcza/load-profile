@@ -90,6 +90,32 @@ def browse_file():
         clear_output_textbox()
         update_status("")
 
+# def save_arguments_to_file(csv_file, kva_value, datetime_value):
+    # """Save the arguments to a file."""
+    # try:
+        # args_file = "arguments.txt"
+        # with open(args_file, "w") as file:
+            # file.write(f"CSV File: {csv_file}\n")
+            # file.write(f"Transformer KVA: {kva_value}\n")
+            # file.write(f"Datetime: {datetime_value if datetime_value else 'None'}\n")
+        # print(f"Arguments saved to {args_file}.")
+    # except Exception as e:
+        # print(f"An error occurred while saving arguments to file: {e}")
+
+def save_arguments_to_file(csv_file, kva_value, datetime_value):
+    """Save the arguments to a file in a format suitable for other applications."""
+    try:
+        args_file = "arguments.txt"
+        with open(args_file, "w") as file:
+            # Write the arguments in a command-line-friendly format
+            file.write(f'"{csv_file}" --transformer_kva {kva_value}')
+            if datetime_value:
+                file.write(f' --datetime "{datetime_value}"')
+            file.write("\n")
+        print(f"Arguments saved to {args_file} in command-line format.")
+    except Exception as e:
+        print(f"An error occurred while saving arguments to file: {e}")
+
 def launch_analysis(csv_file, kva_value, datetime_value=None):
     """Run `lpd-main.py` first, then `lpd-interactive.py` last."""
     try:
@@ -118,6 +144,8 @@ def launch_analysis(csv_file, kva_value, datetime_value=None):
             except ValueError:
                 update_status("Error: Invalid datetime format. Use YYYY-MM-DD HH:MM[:SS].", "error")
                 return
+
+        save_arguments_to_file(csv_file, kva_value, datetime_value)
 
         os.chdir(os.path.dirname(__file__))
         base_command = [csv_file, "--transformer_kva", str(kva_value)]

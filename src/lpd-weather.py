@@ -6,7 +6,20 @@ from config import OPENWEATHER_API_KEY #Import API key from config.py
 
 # Usage
 """
+Will load weather data 
 >python weather.py 84660 2024-01-01 2024-12-31
+"""
+
+"""
+- Run GUI
+- GUI writes to arguments.txt
+"C:/Users/micha/GitHub/load-profile/wellsfargo/LP_comma_head_202501091050_TR6919.csv" --transformer_kva 75 --datetime "2024-10-10 16:45:00"
+- Read filename [LP_comma_head_202501091050_TR6919_]RESULTS-LP.csv (inside first set of quotes)
+- Read min, max datetime of RESULTS-LP.csv (including hours)
+    weather_data = fetch_weather_for_date_range(lat, lon, start_date, end_date, start_hour=8, end_hour=18)
+    create variables start_date, end_date, start_hour=8, end_hour=18
+    
+
 """
 
 # Constants

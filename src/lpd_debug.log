@@ -14577,3 +14577,275 @@
 2025-01-09 10:59:38,019 - INFO - Load Profile: LP_comma_head_202501091050_TR6919_RESULTS-LP.csv
 2025-01-09 10:59:38,020 - INFO - Graph: LP_comma_head_202501091050_TR6919_RESULTS-GRAPH.png
 2025-01-09 10:59:38,020 - INFO - No Load: LP_comma_head_202501091050_TR6919_NO-LOAD.csv
+2025-01-14 09:19:21,396 - INFO - #                   *** Start ***                   #
+2025-01-14 09:19:21,397 - INFO - C:\Users\micha\GitHub\load-profile\src
+2025-01-14 09:19:21,398 - INFO - fn process_csv - try
+2025-01-14 09:19:21,823 - INFO - fn process_csv - read csv OK
+2025-01-14 09:19:22,605 - INFO - fn process_csv - datetime conversion OK
+2025-01-14 09:19:22,605 - INFO - initial row count 1381223
+2025-01-14 09:19:22,630 - INFO - rows dropped (datetime) calculated
+2025-01-14 09:19:22,657 - INFO - Rows dropped after kw conversion calculated
+2025-01-14 09:19:22,663 - INFO - Start and end dates calculated
+2025-01-14 09:19:22,821 - INFO - resample to 15-minute intervals - OK
+2025-01-14 09:19:22,822 - INFO - Resampling completed successfully.
+2025-01-14 09:19:22,823 - INFO - Rename columns for clarity.
+2025-01-14 09:19:22,823 - INFO - peak_row calculated
+2025-01-14 09:19:22,823 - INFO - peak_datetime calculated
+2025-01-14 09:19:22,824 - INFO - peak_load calculated
+2025-01-14 09:19:22,824 - INFO - peak_info calculated
+2025-01-14 09:19:22,824 - INFO - average_load calculated
+2025-01-14 09:19:22,845 - INFO - average_load_per_meter calculated
+2025-01-14 09:19:22,851 - INFO - num_days calculated
+2025-01-14 09:19:22,858 - INFO - num_meters calculated
+2025-01-14 09:19:22,875 - INFO - Individual_maximum_demands calculated
+2025-01-14 09:19:22,875 - INFO - Sum_individual_maximum_demands calculated
+2025-01-14 09:19:22,875 - INFO - Coincidence_factor calculated
+2025-01-14 09:19:22,875 - INFO - Coincidence factor is within the expected range (<= 1).
+2025-01-14 09:19:22,875 - INFO - Diversity factor is within the expected range (>= 1).
+2025-01-14 09:19:22,875 - INFO - Load factor is within the expected range (<= 1).
+2025-01-14 09:19:22,875 - INFO - Average_peak_load_per_meter: 8
+2025-01-14 09:19:23,024 - INFO - Times with total KW < 0.5 saved to: C:/Users/micha/GitHub/load-profile/wellsfargo/LP_comma_head_202501091050_TR6919_NO-LOAD.csv
+2025-01-14 09:19:24,122 - INFO - Current Directory: C:\Users\micha\GitHub\load-profile\src
+2025-01-14 09:19:24,123 - INFO - Input: LP_comma_head_202501091050_TR6919.csv
+2025-01-14 09:19:24,123 - INFO - Results: LP_comma_head_202501091050_TR6919_RESULTS.txt
+2025-01-14 09:19:24,123 - INFO - Load Profile: LP_comma_head_202501091050_TR6919_RESULTS-LP.csv
+2025-01-14 09:19:24,123 - INFO - Graph: LP_comma_head_202501091050_TR6919_RESULTS-GRAPH.png
+2025-01-14 09:19:24,123 - INFO - No Load: LP_comma_head_202501091050_TR6919_NO-LOAD.csv
+2025-01-14 10:37:23,028 - INFO - #                   *** Start ***                   #
+2025-01-14 10:37:23,028 - INFO - C:\Users\micha\GitHub\load-profile\src
+2025-01-14 10:37:23,029 - INFO - fn process_csv - try
+2025-01-14 10:37:23,457 - INFO - fn process_csv - read csv OK
+2025-01-14 10:37:24,251 - INFO - fn process_csv - datetime conversion OK
+2025-01-14 10:37:24,251 - INFO - initial row count 1381223
+2025-01-14 10:37:24,279 - INFO - rows dropped (datetime) calculated
+2025-01-14 10:37:24,306 - INFO - Rows dropped after kw conversion calculated
+2025-01-14 10:37:24,312 - INFO - Start and end dates calculated
+2025-01-14 10:37:24,476 - INFO - resample to 15-minute intervals - OK
+2025-01-14 10:37:24,476 - INFO - Resampling completed successfully.
+2025-01-14 10:37:24,477 - INFO - Rename columns for clarity.
+2025-01-14 10:37:24,478 - INFO - peak_row calculated
+2025-01-14 10:37:24,478 - INFO - peak_datetime calculated
+2025-01-14 10:37:24,479 - INFO - peak_load calculated
+2025-01-14 10:37:24,479 - INFO - peak_info calculated
+2025-01-14 10:37:24,479 - INFO - average_load calculated
+2025-01-14 10:37:24,502 - INFO - average_load_per_meter calculated
+2025-01-14 10:37:24,508 - INFO - num_days calculated
+2025-01-14 10:37:24,515 - INFO - num_meters calculated
+2025-01-14 10:37:24,534 - INFO - Individual_maximum_demands calculated
+2025-01-14 10:37:24,535 - INFO - Sum_individual_maximum_demands calculated
+2025-01-14 10:37:24,535 - INFO - Coincidence_factor calculated
+2025-01-14 10:37:24,535 - INFO - Coincidence factor is within the expected range (<= 1).
+2025-01-14 10:37:24,535 - INFO - Diversity factor is within the expected range (>= 1).
+2025-01-14 10:37:24,535 - INFO - Load factor is within the expected range (<= 1).
+2025-01-14 10:37:24,536 - INFO - Average_peak_load_per_meter: 8
+2025-01-14 10:37:24,689 - INFO - Times with total KW < 0.5 saved to: C:/Users/micha/GitHub/load-profile/wellsfargo/LP_comma_head_202501091050_TR6919_NO-LOAD.csv
+2025-01-14 10:37:25,753 - INFO - Current Directory: C:\Users\micha\GitHub\load-profile\src
+2025-01-14 10:37:25,754 - INFO - Input: LP_comma_head_202501091050_TR6919.csv
+2025-01-14 10:37:25,754 - INFO - Results: LP_comma_head_202501091050_TR6919_RESULTS.txt
+2025-01-14 10:37:25,754 - INFO - Load Profile: LP_comma_head_202501091050_TR6919_RESULTS-LP.csv
+2025-01-14 10:37:25,755 - INFO - Graph: LP_comma_head_202501091050_TR6919_RESULTS-GRAPH.png
+2025-01-14 10:37:25,755 - INFO - No Load: LP_comma_head_202501091050_TR6919_NO-LOAD.csv
+2025-01-14 10:39:22,999 - INFO - #                   *** Start ***                   #
+2025-01-14 10:39:22,999 - INFO - C:\Users\micha\GitHub\load-profile\src
+2025-01-14 10:39:23,000 - INFO - fn process_csv - try
+2025-01-14 10:39:23,391 - INFO - fn process_csv - read csv OK
+2025-01-14 10:39:24,130 - INFO - fn process_csv - datetime conversion OK
+2025-01-14 10:39:24,131 - INFO - initial row count 1381223
+2025-01-14 10:39:24,157 - INFO - rows dropped (datetime) calculated
+2025-01-14 10:39:24,183 - INFO - Rows dropped after kw conversion calculated
+2025-01-14 10:39:24,189 - INFO - Start and end dates calculated
+2025-01-14 10:39:24,337 - INFO - resample to 15-minute intervals - OK
+2025-01-14 10:39:24,337 - INFO - Resampling completed successfully.
+2025-01-14 10:39:24,338 - INFO - Rename columns for clarity.
+2025-01-14 10:39:24,339 - INFO - peak_row calculated
+2025-01-14 10:39:24,339 - INFO - peak_datetime calculated
+2025-01-14 10:39:24,339 - INFO - peak_load calculated
+2025-01-14 10:39:24,339 - INFO - peak_info calculated
+2025-01-14 10:39:24,340 - INFO - average_load calculated
+2025-01-14 10:39:24,361 - INFO - average_load_per_meter calculated
+2025-01-14 10:39:24,366 - INFO - num_days calculated
+2025-01-14 10:39:24,373 - INFO - num_meters calculated
+2025-01-14 10:39:24,390 - INFO - Individual_maximum_demands calculated
+2025-01-14 10:39:24,390 - INFO - Sum_individual_maximum_demands calculated
+2025-01-14 10:39:24,391 - INFO - Coincidence_factor calculated
+2025-01-14 10:39:24,391 - INFO - Coincidence factor is within the expected range (<= 1).
+2025-01-14 10:39:24,391 - INFO - Diversity factor is within the expected range (>= 1).
+2025-01-14 10:39:24,391 - INFO - Load factor is within the expected range (<= 1).
+2025-01-14 10:39:24,391 - INFO - Average_peak_load_per_meter: 8
+2025-01-14 10:39:24,537 - INFO - Times with total KW < 0.5 saved to: C:/Users/micha/GitHub/load-profile/wellsfargo/LP_comma_head_202501091050_TR6919_NO-LOAD.csv
+2025-01-14 10:39:25,618 - INFO - Current Directory: C:\Users\micha\GitHub\load-profile\src
+2025-01-14 10:39:25,618 - INFO - Input: LP_comma_head_202501091050_TR6919.csv
+2025-01-14 10:39:25,618 - INFO - Results: LP_comma_head_202501091050_TR6919_RESULTS.txt
+2025-01-14 10:39:25,618 - INFO - Load Profile: LP_comma_head_202501091050_TR6919_RESULTS-LP.csv
+2025-01-14 10:39:25,619 - INFO - Graph: LP_comma_head_202501091050_TR6919_RESULTS-GRAPH.png
+2025-01-14 10:39:25,619 - INFO - No Load: LP_comma_head_202501091050_TR6919_NO-LOAD.csv
+2025-01-14 10:40:22,231 - INFO - #                   *** Start ***                   #
+2025-01-14 10:40:22,232 - INFO - C:\Users\micha\GitHub\load-profile\src
+2025-01-14 10:40:22,233 - INFO - fn process_csv - try
+2025-01-14 10:40:22,627 - INFO - fn process_csv - read csv OK
+2025-01-14 10:40:23,359 - INFO - fn process_csv - datetime conversion OK
+2025-01-14 10:40:23,359 - INFO - initial row count 1381223
+2025-01-14 10:40:23,385 - INFO - rows dropped (datetime) calculated
+2025-01-14 10:40:23,411 - INFO - Rows dropped after kw conversion calculated
+2025-01-14 10:40:23,418 - INFO - Start and end dates calculated
+2025-01-14 10:40:23,553 - INFO - resample to 15-minute intervals - OK
+2025-01-14 10:40:23,554 - INFO - Resampling completed successfully.
+2025-01-14 10:40:23,555 - INFO - Rename columns for clarity.
+2025-01-14 10:40:23,555 - INFO - peak_row calculated
+2025-01-14 10:40:23,556 - INFO - peak_datetime calculated
+2025-01-14 10:40:23,556 - INFO - peak_load calculated
+2025-01-14 10:40:23,556 - INFO - peak_info calculated
+2025-01-14 10:40:23,557 - INFO - average_load calculated
+2025-01-14 10:40:23,577 - INFO - average_load_per_meter calculated
+2025-01-14 10:40:23,582 - INFO - num_days calculated
+2025-01-14 10:40:23,588 - INFO - num_meters calculated
+2025-01-14 10:40:23,607 - INFO - Individual_maximum_demands calculated
+2025-01-14 10:40:23,607 - INFO - Sum_individual_maximum_demands calculated
+2025-01-14 10:40:23,607 - INFO - Coincidence_factor calculated
+2025-01-14 10:40:23,607 - INFO - Coincidence factor is within the expected range (<= 1).
+2025-01-14 10:40:23,607 - INFO - Diversity factor is within the expected range (>= 1).
+2025-01-14 10:40:23,607 - INFO - Load factor is within the expected range (<= 1).
+2025-01-14 10:40:23,607 - INFO - Average_peak_load_per_meter: 8
+2025-01-14 10:40:23,751 - INFO - Times with total KW < 0.5 saved to: C:/Users/micha/GitHub/load-profile/wellsfargo/LP_comma_head_202501091050_TR6919_NO-LOAD.csv
+2025-01-14 10:40:24,803 - INFO - Current Directory: C:\Users\micha\GitHub\load-profile\src
+2025-01-14 10:40:24,804 - INFO - Input: LP_comma_head_202501091050_TR6919.csv
+2025-01-14 10:40:24,804 - INFO - Results: LP_comma_head_202501091050_TR6919_RESULTS.txt
+2025-01-14 10:40:24,804 - INFO - Load Profile: LP_comma_head_202501091050_TR6919_RESULTS-LP.csv
+2025-01-14 10:40:24,805 - INFO - Graph: LP_comma_head_202501091050_TR6919_RESULTS-GRAPH.png
+2025-01-14 10:40:24,805 - INFO - No Load: LP_comma_head_202501091050_TR6919_NO-LOAD.csv
+2025-01-14 10:41:58,722 - INFO - #                   *** Start ***                   #
+2025-01-14 10:41:58,722 - INFO - C:\Users\micha\GitHub\load-profile\src
+2025-01-14 10:41:58,723 - INFO - fn process_csv - try
+2025-01-14 10:41:59,122 - INFO - fn process_csv - read csv OK
+2025-01-14 10:41:59,867 - INFO - fn process_csv - datetime conversion OK
+2025-01-14 10:41:59,867 - INFO - initial row count 1381223
+2025-01-14 10:41:59,895 - INFO - rows dropped (datetime) calculated
+2025-01-14 10:41:59,928 - INFO - Rows dropped after kw conversion calculated
+2025-01-14 10:41:59,936 - INFO - Start and end dates calculated
+2025-01-14 10:42:00,104 - INFO - resample to 15-minute intervals - OK
+2025-01-14 10:42:00,105 - INFO - Resampling completed successfully.
+2025-01-14 10:42:00,106 - INFO - Rename columns for clarity.
+2025-01-14 10:42:00,106 - INFO - peak_row calculated
+2025-01-14 10:42:00,106 - INFO - peak_datetime calculated
+2025-01-14 10:42:00,106 - INFO - peak_load calculated
+2025-01-14 10:42:00,107 - INFO - peak_info calculated
+2025-01-14 10:42:00,107 - INFO - average_load calculated
+2025-01-14 10:42:00,129 - INFO - average_load_per_meter calculated
+2025-01-14 10:42:00,135 - INFO - num_days calculated
+2025-01-14 10:42:00,144 - INFO - num_meters calculated
+2025-01-14 10:42:00,163 - INFO - Individual_maximum_demands calculated
+2025-01-14 10:42:00,164 - INFO - Sum_individual_maximum_demands calculated
+2025-01-14 10:42:00,164 - INFO - Coincidence_factor calculated
+2025-01-14 10:42:00,164 - INFO - Coincidence factor is within the expected range (<= 1).
+2025-01-14 10:42:00,164 - INFO - Diversity factor is within the expected range (>= 1).
+2025-01-14 10:42:00,164 - INFO - Load factor is within the expected range (<= 1).
+2025-01-14 10:42:00,164 - INFO - Average_peak_load_per_meter: 8
+2025-01-14 10:42:00,320 - INFO - Times with total KW < 0.5 saved to: C:/Users/micha/GitHub/load-profile/wellsfargo/LP_comma_head_202501091050_TR6919_NO-LOAD.csv
+2025-01-14 10:42:01,368 - INFO - Current Directory: C:\Users\micha\GitHub\load-profile\src
+2025-01-14 10:42:01,368 - INFO - Input: LP_comma_head_202501091050_TR6919.csv
+2025-01-14 10:42:01,368 - INFO - Results: LP_comma_head_202501091050_TR6919_RESULTS.txt
+2025-01-14 10:42:01,368 - INFO - Load Profile: LP_comma_head_202501091050_TR6919_RESULTS-LP.csv
+2025-01-14 10:42:01,369 - INFO - Graph: LP_comma_head_202501091050_TR6919_RESULTS-GRAPH.png
+2025-01-14 10:42:01,369 - INFO - No Load: LP_comma_head_202501091050_TR6919_NO-LOAD.csv
+2025-01-14 10:42:50,493 - INFO - #                   *** Start ***                   #
+2025-01-14 10:42:50,493 - INFO - C:\Users\micha\GitHub\load-profile\src
+2025-01-14 10:42:50,494 - INFO - fn process_csv - try
+2025-01-14 10:42:50,886 - INFO - fn process_csv - read csv OK
+2025-01-14 10:42:51,627 - INFO - fn process_csv - datetime conversion OK
+2025-01-14 10:42:51,627 - INFO - initial row count 1381223
+2025-01-14 10:42:51,651 - INFO - rows dropped (datetime) calculated
+2025-01-14 10:42:51,676 - INFO - Rows dropped after kw conversion calculated
+2025-01-14 10:42:51,682 - INFO - Start and end dates calculated
+2025-01-14 10:42:51,825 - INFO - resample to 15-minute intervals - OK
+2025-01-14 10:42:51,825 - INFO - Resampling completed successfully.
+2025-01-14 10:42:51,826 - INFO - Rename columns for clarity.
+2025-01-14 10:42:51,826 - INFO - peak_row calculated
+2025-01-14 10:42:51,826 - INFO - peak_datetime calculated
+2025-01-14 10:42:51,826 - INFO - peak_load calculated
+2025-01-14 10:42:51,827 - INFO - peak_info calculated
+2025-01-14 10:42:51,827 - INFO - average_load calculated
+2025-01-14 10:42:51,847 - INFO - average_load_per_meter calculated
+2025-01-14 10:42:51,853 - INFO - num_days calculated
+2025-01-14 10:42:51,859 - INFO - num_meters calculated
+2025-01-14 10:42:51,878 - INFO - Individual_maximum_demands calculated
+2025-01-14 10:42:51,878 - INFO - Sum_individual_maximum_demands calculated
+2025-01-14 10:42:51,878 - INFO - Coincidence_factor calculated
+2025-01-14 10:42:51,878 - INFO - Coincidence factor is within the expected range (<= 1).
+2025-01-14 10:42:51,878 - INFO - Diversity factor is within the expected range (>= 1).
+2025-01-14 10:42:51,879 - INFO - Load factor is within the expected range (<= 1).
+2025-01-14 10:42:51,879 - INFO - Average_peak_load_per_meter: 8
+2025-01-14 10:42:52,015 - INFO - Times with total KW < 0.5 saved to: C:/Users/micha/GitHub/load-profile/wellsfargo/LP_comma_head_202501091050_TR6919_NO-LOAD.csv
+2025-01-14 10:42:53,075 - INFO - Current Directory: C:\Users\micha\GitHub\load-profile\src
+2025-01-14 10:42:53,075 - INFO - Input: LP_comma_head_202501091050_TR6919.csv
+2025-01-14 10:42:53,076 - INFO - Results: LP_comma_head_202501091050_TR6919_RESULTS.txt
+2025-01-14 10:42:53,076 - INFO - Load Profile: LP_comma_head_202501091050_TR6919_RESULTS-LP.csv
+2025-01-14 10:42:53,076 - INFO - Graph: LP_comma_head_202501091050_TR6919_RESULTS-GRAPH.png
+2025-01-14 10:42:53,076 - INFO - No Load: LP_comma_head_202501091050_TR6919_NO-LOAD.csv
+2025-01-14 10:44:00,226 - INFO - #                   *** Start ***                   #
+2025-01-14 10:44:00,227 - INFO - C:\Users\micha\GitHub\load-profile\src
+2025-01-14 10:44:00,228 - INFO - fn process_csv - try
+2025-01-14 10:44:00,629 - INFO - fn process_csv - read csv OK
+2025-01-14 10:44:01,364 - INFO - fn process_csv - datetime conversion OK
+2025-01-14 10:44:01,364 - INFO - initial row count 1381223
+2025-01-14 10:44:01,389 - INFO - rows dropped (datetime) calculated
+2025-01-14 10:44:01,415 - INFO - Rows dropped after kw conversion calculated
+2025-01-14 10:44:01,421 - INFO - Start and end dates calculated
+2025-01-14 10:44:01,561 - INFO - resample to 15-minute intervals - OK
+2025-01-14 10:44:01,562 - INFO - Resampling completed successfully.
+2025-01-14 10:44:01,562 - INFO - Rename columns for clarity.
+2025-01-14 10:44:01,563 - INFO - peak_row calculated
+2025-01-14 10:44:01,563 - INFO - peak_datetime calculated
+2025-01-14 10:44:01,563 - INFO - peak_load calculated
+2025-01-14 10:44:01,564 - INFO - peak_info calculated
+2025-01-14 10:44:01,564 - INFO - average_load calculated
+2025-01-14 10:44:01,585 - INFO - average_load_per_meter calculated
+2025-01-14 10:44:01,590 - INFO - num_days calculated
+2025-01-14 10:44:01,596 - INFO - num_meters calculated
+2025-01-14 10:44:01,612 - INFO - Individual_maximum_demands calculated
+2025-01-14 10:44:01,613 - INFO - Sum_individual_maximum_demands calculated
+2025-01-14 10:44:01,613 - INFO - Coincidence_factor calculated
+2025-01-14 10:44:01,613 - INFO - Coincidence factor is within the expected range (<= 1).
+2025-01-14 10:44:01,614 - INFO - Diversity factor is within the expected range (>= 1).
+2025-01-14 10:44:01,614 - INFO - Load factor is within the expected range (<= 1).
+2025-01-14 10:44:01,614 - INFO - Average_peak_load_per_meter: 8
+2025-01-14 10:44:01,759 - INFO - Times with total KW < 0.5 saved to: C:/Users/micha/GitHub/load-profile/wellsfargo/LP_comma_head_202501091050_TR6919_NO-LOAD.csv
+2025-01-14 10:44:02,799 - INFO - Current Directory: C:\Users\micha\GitHub\load-profile\src
+2025-01-14 10:44:02,799 - INFO - Input: LP_comma_head_202501091050_TR6919.csv
+2025-01-14 10:44:02,799 - INFO - Results: LP_comma_head_202501091050_TR6919_RESULTS.txt
+2025-01-14 10:44:02,799 - INFO - Load Profile: LP_comma_head_202501091050_TR6919_RESULTS-LP.csv
+2025-01-14 10:44:02,800 - INFO - Graph: LP_comma_head_202501091050_TR6919_RESULTS-GRAPH.png
+2025-01-14 10:44:02,800 - INFO - No Load: LP_comma_head_202501091050_TR6919_NO-LOAD.csv
+2025-01-14 17:24:01,513 - INFO - #                   *** Start ***                   #
+2025-01-14 17:24:01,513 - INFO - C:\Users\micha\GitHub\load-profile\src
+2025-01-14 17:24:01,515 - INFO - fn process_csv - try
+2025-01-14 17:24:01,926 - INFO - fn process_csv - read csv OK
+2025-01-14 17:24:02,676 - INFO - fn process_csv - datetime conversion OK
+2025-01-14 17:24:02,677 - INFO - initial row count 1381223
+2025-01-14 17:24:02,701 - INFO - rows dropped (datetime) calculated
+2025-01-14 17:24:02,728 - INFO - Rows dropped after kw conversion calculated
+2025-01-14 17:24:02,733 - INFO - Start and end dates calculated
+2025-01-14 17:24:02,875 - INFO - resample to 15-minute intervals - OK
+2025-01-14 17:24:02,875 - INFO - Resampling completed successfully.
+2025-01-14 17:24:02,876 - INFO - Rename columns for clarity.
+2025-01-14 17:24:02,877 - INFO - peak_row calculated
+2025-01-14 17:24:02,877 - INFO - peak_datetime calculated
+2025-01-14 17:24:02,877 - INFO - peak_load calculated
+2025-01-14 17:24:02,877 - INFO - peak_info calculated
+2025-01-14 17:24:02,877 - INFO - average_load calculated
+2025-01-14 17:24:02,898 - INFO - average_load_per_meter calculated
+2025-01-14 17:24:02,903 - INFO - num_days calculated
+2025-01-14 17:24:02,910 - INFO - num_meters calculated
+2025-01-14 17:24:02,926 - INFO - Individual_maximum_demands calculated
+2025-01-14 17:24:02,926 - INFO - Sum_individual_maximum_demands calculated
+2025-01-14 17:24:02,926 - INFO - Coincidence_factor calculated
+2025-01-14 17:24:02,927 - INFO - Coincidence factor is within the expected range (<= 1).
+2025-01-14 17:24:02,927 - INFO - Diversity factor is within the expected range (>= 1).
+2025-01-14 17:24:02,927 - INFO - Load factor is within the expected range (<= 1).
+2025-01-14 17:24:02,927 - INFO - Average_peak_load_per_meter: 8
+2025-01-14 17:24:03,081 - INFO - Times with total KW < 0.5 saved to: C:/Users/micha/GitHub/load-profile/wellsfargo/LP_comma_head_202501091050_TR6919_NO-LOAD.csv
+2025-01-14 17:24:04,126 - INFO - Current Directory: C:\Users\micha\GitHub\load-profile\src
+2025-01-14 17:24:04,126 - INFO - Input: LP_comma_head_202501091050_TR6919.csv
+2025-01-14 17:24:04,127 - INFO - Results: LP_comma_head_202501091050_TR6919_RESULTS.txt
+2025-01-14 17:24:04,127 - INFO - Load Profile: LP_comma_head_202501091050_TR6919_RESULTS-LP.csv
+2025-01-14 17:24:04,127 - INFO - Graph: LP_comma_head_202501091050_TR6919_RESULTS-GRAPH.png
+2025-01-14 17:24:04,127 - INFO - No Load: LP_comma_head_202501091050_TR6919_NO-LOAD.csv
