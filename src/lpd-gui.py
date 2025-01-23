@@ -35,6 +35,10 @@ import subprocess
 import threading
 import sys
 import datetime
+from math import floor, ceil
+import pandas as pd
+
+DEBUG = True  # Set to True for debugging, False for production
 
 class RedirectText:
     def __init__(self, text_widget):
@@ -166,7 +170,7 @@ def launch_analysis(csv_file, kva_value, datetime_value=None):
         # Run lpd-interactive.exe
         interactive_command = ["lpd-interactive.exe"] + base_command
         print("Running lpd-interactive.exe with command:", " ".join(interactive_command))
-        subprocess.run(interactive_command, check=True)
+        subprocess.run(interactive_command, check=True)  
 
         # Display results
         if os.path.isfile(results_file):
@@ -181,12 +185,55 @@ def launch_analysis(csv_file, kva_value, datetime_value=None):
         print(f"Subprocess error: {e}")
     except Exception as e:
         print(f"An error occurred: {e}")
-
-
     except subprocess.CalledProcessError as e:
         print(f"Subprocess error: {e}")
     except Exception as e:
         print(f"An error occurred: {e}")
+
+def launch_weather_analysis():
+    """Launch lpd-weather.py with calculated parameters if weather_analysis_var is True."""
+    if weather_analysis_var.get():
+        try:
+            # Get the CSV file path
+            csv_file = csv_path_entry.get()
+            if not csv_file:
+                update_status("Error: Please select a CSV file.", "error")
+                return
+
+            # Generate the results file path
+            lpd_results = f"{os.path.splitext(csv_file)[0]}_RESULTS-LP.csv"
+
+            # Read the file and check for the 'datetime' column
+            df = pd.read_csv(lpd_results)
+            if DEBUG:
+                print("Columns in the results file:", df.columns)  # Debugging step
+            if 'datetime' not in df.columns:
+                raise ValueError("Required column 'datetime' is missing in the results file.")
+
+            # Parse the datetime column
+            df['datetime'] = pd.to_datetime(df['datetime'])
+
+            # Calculate min and max datetime, round to hours
+            min_datetime = df['datetime'].min()
+            max_datetime = df['datetime'].max()
+            start_date = min_datetime.strftime('%Y-%m-%d')
+            end_date = max_datetime.strftime('%Y-%m-%d')
+            start_hr = f"{min_datetime.hour:02}"
+            end_hr = f"{max_datetime.hour:02}"
+
+            # Set the default ZIP code
+            zipcode = '84601'
+
+            # Construct and run the weather analysis command
+            command = f"python lpd-weather.py {zipcode} {start_date} {end_date} {start_hr} {end_hr}"
+            if DEBUG:
+                print(f"Running weather analysis with command: {command}")
+            subprocess.run(command, shell=True, check=True)
+
+            update_status("Weather analysis completed.", "success")
+        except Exception as e:
+            update_status(f"Error during weather analysis: {e}", "error")
+
 
 def clear_output_textbox():
     """Clear the output text box."""
@@ -213,54 +260,78 @@ def start_analysis_thread():
     datetime_value = datetime_entry.get()
     print(f"CSV File: {csv_file}, KVA Value: {kva_value}, Datetime: {datetime_value}")
 
-    threading.Thread(
-        target=launch_analysis,
-        args=(csv_file, kva_value, datetime_value),
-        daemon=True
-    ).start()
+    def run_analysis():
+        try:
+            # Run the main analysis
+            launch_analysis(csv_file, kva_value, datetime_value)
+
+            # Run weather analysis if checkbox is selected
+            if weather_analysis_var.get():
+                launch_weather_analysis()
+
+        except Exception as e:
+            update_status(f"Error during analysis: {e}", "error")
+
+    # Start the analysis in a background thread
+    threading.Thread(target=run_analysis, daemon=True).start()
+
+
 
 # Create the main window
 root = tk.Tk()
 root.title("Transformer Load Analysis")
 root.resizable(False, False)
 
+# Define a variable to store the checkbox state for weather analysis
+weather_analysis_var = tk.BooleanVar()
+
 # Input File
-tk.Label(root, text="Select Input CSV File:").grid(row=0, column=0, padx=10, pady=2, sticky="w")
-csv_path_entry = tk.Entry(root, width=40)
-csv_path_entry.grid(row=0, column=1, padx=5, pady=2)
-tk.Button(root, text="Browse...", command=browse_file).grid(row=0, column=2, padx=5, pady=2)
+tk.Label(root, text="Select Input CSV File:").grid(row=0, column=0, padx=5, pady=2, sticky="w")
+csv_path_entry = tk.Entry(root, width=45)
+csv_path_entry.grid(row=0, column=1, columnspan=2, padx=5, pady=2, sticky="w")
+tk.Button(root, text="Browse...", command=browse_file).grid(row=0, column=3, padx=5, pady=2, sticky="w")
 
 # Transformer KVA
-tk.Label(root, text="Transformer KVA:").grid(row=0, column=3, padx=10, pady=2, sticky="w")
-kva_entry = tk.Entry(root, width=10)
-kva_entry.insert(0, default_kva)  # Insert the default value at position 0 (start)
-kva_entry.grid(row=0, column=4, padx=5, pady=2)
+tk.Label(root, text="Transformer KVA:").grid(row=0, column=4, padx=5, pady=2, sticky="e")
+kva_entry = tk.Entry(root, width=8)
+kva_entry.insert(0, default_kva)  # Default value
+kva_entry.grid(row=0, column=5, padx=5, pady=2, sticky="w")
 
 # Datetime Input
-tk.Label(root, text="Datetime (YYYY-MM-DD HH:MM:SS):").grid(row=1, column=0, padx=10, pady=2, sticky="w")
-datetime_entry = tk.Entry(root, width=40)
-datetime_entry.insert(0, default_date)  # Insert the default value at position 0 (start)
-datetime_entry.grid(row=1, column=1, padx=5, pady=2)
+tk.Label(root, text="Datetime (YYYY-MM-DD HH:MM:SS):").grid(row=1, column=0, padx=5, pady=2, sticky="w")
+datetime_entry = tk.Entry(root, width=19)
+datetime_entry.insert(0, default_date)  # Default value
+datetime_entry.grid(row=1, column=1, padx=5, pady=2, sticky="w")
+
+# ZIP Code Input
+tk.Label(root, text="ZIP Code:").grid(row=1, column=2, padx=5, pady=2, sticky="e")
+zipcode_entry = tk.Entry(root, width=5)
+zipcode_entry.insert(0, "84601")  # Default value
+zipcode_entry.grid(row=1, column=3, padx=5, pady=2, sticky="w")
+
+# Run Weather Analysis Checkbox
+tk.Checkbutton(root, text="Run Weather Analysis", variable=weather_analysis_var).grid(row=1, column=4, padx=5, pady=2, sticky="w")
 
 # Run Analysis Button
-tk.Button(root, text="Run Analysis", command=start_analysis_thread).grid(row=1, column=4, padx=5, pady=2)
+tk.Button(root, text="Run Analysis", command=start_analysis_thread).grid(row=1, column=5, padx=5, pady=2, sticky="w")
 
 # Status Label
 status_label = tk.Label(root, text="", anchor="w")
-status_label.grid(row=2, column=0, columnspan=5, sticky="w", padx=10, pady=2)
+status_label.grid(row=2, column=0, columnspan=6, sticky="w", padx=5, pady=2)
 
 # Output Text Box
-output_textbox = scrolledtext.ScrolledText(root, width=80, height=25, wrap=tk.WORD)
-output_textbox.grid(row=3, column=0, columnspan=5, padx=10, pady=5)
+output_textbox = scrolledtext.ScrolledText(root, width=85, height=20, wrap=tk.WORD)
+output_textbox.grid(row=3, column=0, columnspan=6, padx=5, pady=5)
 output_textbox.insert(tk.END, default_text)
 
 # Redirect standard output to the text box
 output_redirector = RedirectText(output_textbox)
 sys.stdout = output_redirector
-# sys.stdout = original_stdout
 
 # Clear and Close Buttons
-tk.Button(root, text="Clear All", command=clear_all).grid(row=4, column=3, pady=5, padx=2)
-tk.Button(root, text="Close", command=root.destroy).grid(row=4, column=4, pady=5, padx=2)
+tk.Button(root, text="Clear All", command=clear_all).grid(row=4, column=4, pady=5, padx=5, sticky="e")
+tk.Button(root, text="Close", command=root.destroy).grid(row=4, column=5, pady=5, padx=5, sticky="w")
 
+# Run the main loop
 root.mainloop()
+

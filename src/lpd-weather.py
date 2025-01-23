@@ -50,7 +50,7 @@ def get_lat_lon_from_zip(zip_code):
         print(f"An error occurred while fetching lat/lon: {e}")
         return None, None
 
-def fetch_weather_for_date_range(lat, lon, start_date, end_date):
+def fetch_weather_for_date_range(lat, lon, start_date, end_date, start_hr, end_hr):
     """Fetch weather data for a date range using Open-Meteo."""
     try:
         if not lat or not lon:
@@ -65,6 +65,13 @@ def fetch_weather_for_date_range(lat, lon, start_date, end_date):
             print("Error: Start date must be before or equal to the end date.")
             return pd.DataFrame()
 
+        # Ensure start_hr and end_hr are valid
+        start_hr = int(start_hr)
+        end_hr = int(end_hr)
+        if not (0 <= start_hr <= 23) or not (0 <= end_hr <= 23):
+            print("Error: Start and End hours must be between 0 and 23.")
+            return pd.DataFrame()
+
         url = (
             f"{API_BASE_URL}?"
             f"latitude={lat}&longitude={lon}&start_date={start_date}&end_date={end_date}"
@@ -72,22 +79,18 @@ def fetch_weather_for_date_range(lat, lon, start_date, end_date):
             f"&temperature_unit=fahrenheit&precipitation_unit=inch"
         )
 
-        print(f"Fetching weather data from {start_date} to {end_date}...")
+        print(f"Fetching weather data from {start_date} {start_hr} to {end_date} {end_hr}")
         response = requests.get(url)
         response.raise_for_status()
 
         data = response.json()
-        # Debugging line
-        # print("API Response:", data)
 
-        hourly_data = data.get("hourly", {})
-        daily_data = data.get("daily", {})
-
-        if not hourly_data:
+        if not data.get("hourly"):
             print("Error: No hourly data available in the response.")
             return pd.DataFrame()
 
         # Extract hourly data
+        hourly_data = data.get("hourly", {})
         times = hourly_data.get("time", [])
         temperatures = hourly_data.get("temperature_2m", [])
         precipitations = hourly_data.get("precipitation", [])
@@ -97,17 +100,34 @@ def fetch_weather_for_date_range(lat, lon, start_date, end_date):
 
         # Combine data
         all_weather_data = []
-        for hour, temp, precip, cloud, sunshine, weather_code in zip(
+        for time, temp, precip, cloud, sunshine, weather_code in zip(
             times, temperatures, precipitations, cloud_covers, sunshine_durations, weather_codes
         ):
-            all_weather_data.append({
-                "datetime": hour,
-                "temperature_f": temp,
-                "precipitation_in": precip,
-                "cloud_cover_percent": cloud,
-                "sunshine_duration_sec": sunshine,
-                "weather_code": weather_code,
-            })
+            hour = int(time.split("T")[1].split(":")[0])  # Extract hour from time
+
+            # Handle wrapping hours
+            if start_hr <= end_hr:
+                # Same-day range, e.g., 8 to 18
+                if start_hr <= hour <= end_hr:
+                    all_weather_data.append({
+                        "datetime": time,
+                        "temperature_f": temp,
+                        "precipitation_in": precip,
+                        "cloud_cover_percent": cloud,
+                        "sunshine_duration_sec": sunshine,
+                        "weather_code": weather_code,
+                    })
+            else:
+                # Wrapping range, e.g., 19 to 00
+                if hour >= start_hr or hour <= end_hr:
+                    all_weather_data.append({
+                        "datetime": time,
+                        "temperature_f": temp,
+                        "precipitation_in": precip,
+                        "cloud_cover_percent": cloud,
+                        "sunshine_duration_sec": sunshine,
+                        "weather_code": weather_code,
+                    })
 
         return pd.DataFrame(all_weather_data)
 
@@ -118,15 +138,18 @@ def fetch_weather_for_date_range(lat, lon, start_date, end_date):
         print(f"An unexpected error occurred: {e}")
         return pd.DataFrame()
 
+
 def main():
     """Main script to fetch and save weather data."""
-    if len(sys.argv) != 4:
-        print("Usage: python script.py <ZIP code> <start_date: YYYY-MM-DD> <end_date: YYYY-MM-DD>")
+    if len(sys.argv) != 6:
+        print("Usage: python lpd-weather.py <ZIP code> <start_date: YYYY-MM-DD> <end_date: YYYY-MM-DD> <start_hr: HH> <end_hr: HH>")
         return
 
     zip_code = sys.argv[1]
     start_date_str = sys.argv[2]
     end_date_str = sys.argv[3]
+    start_hr = sys.argv[4]
+    end_hr = sys.argv[5]
 
     try:
         if not zip_code.isdigit():
@@ -147,8 +170,8 @@ def main():
             print("Unable to fetch weather data without valid latitude and longitude.")
             return
 
-        # Fetch weather data for the date range
-        weather_data = fetch_weather_for_date_range(lat, lon, start_date, end_date)
+        # Fetch weather data for the date range and hours
+        weather_data = fetch_weather_for_date_range(lat, lon, start_date, end_date, start_hr, end_hr)
         if not weather_data.empty:
             output_file = f"weather-data_{zip_code}_{start_date}_{end_date}.csv"
             weather_data.to_csv(output_file, index=False)
@@ -157,12 +180,14 @@ def main():
             print("No weather data fetched.")
 
     except ValueError as ve:
-        print(f"Invalid date format: {ve}")
+        print(f"Invalid date or hour format: {ve}")
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
 
+
 if __name__ == "__main__":
     main()
+
 
 # WMO Weather Codes (ww codes) Reference
 # 0 - 3: General cloud conditions
