@@ -44,3 +44,5 @@ src/config.py !API key for weather goes here.
 src/lpd-gui.exe
 src/config.py
 src/lpd_debug.log
+src/lpd_debug.log
+*.log

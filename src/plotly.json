@@ -1,0 +1,142 @@
+{
+	"layout": {
+		"title": {
+			"text": "Time-Based Load Profile Visualization2",
+			"font": {
+				"size": 24,
+				"color": "#333333"
+			},
+			"x": 0.5,
+			"xanchor": "center"
+		},
+		"xaxis": {
+			"title": {
+				"text": "Time<br>(Roll to zoom)",
+				"font": {
+					"size": 16,
+					"color": "#333333"
+				}
+			},
+			"showgrid": true,
+			"gridcolor": "#e6e6e6",
+			"zeroline": false,
+			"showline": true,
+			"linecolor": "#cccccc"
+
+		},
+		"yaxis": {
+			"title": {
+				"text": "Load (kW)<br>(Roll to zoom)",
+				"font": {
+					"size": 16,
+					"color": "#333333"
+				}
+			},
+			"showgrid": true,
+			"gridcolor": "#e6e6e6",
+			"zeroline": false,
+			"showline": true,
+			"linecolor": "#cccccc"
+		},
+		"legend": {
+			"title": {
+				"text": "Legend<br>Click to toggle traces",
+				"font": {
+					"size": 14,
+					"color": "#333333"
+				}
+			},
+			"bgcolor": "#f9f9f9",
+			"bordercolor": "#e6e6e6",
+			"borderwidth": 1
+		},
+		"hovermode": "x",
+		"dragmode": "pan",
+		"template": "plotly_white",
+		"margin": {
+			"l": 60,
+			"r": 60,
+			"t": 80,
+			"b": 60
+		}
+	},
+	"traces": {
+		"main_load": {
+			"line": {
+				"color": "lightgrey",
+				"width": 1,
+				"dash": "solid"
+			},
+			"name": "Load (kW)"
+		},
+		"target_datetime": {
+			"line": {
+				"color": "blue",
+				"width": 2,
+				"dash": "solid"
+			},
+			"name": "Target Datetime"
+		},
+		"85_load": {
+			"line": {
+				"color": "green",
+				"width": 2,
+				"dash": "dash"
+			},
+			"name": "85% Load"
+		},
+		"100_load": {
+			"line": {
+				"color": "orange",
+				"width": 2,
+				"dash": "dash"
+			},
+			"name": "100% Load"
+		},
+		"120_load": {
+			"line": {
+				"color": "red",
+				"width": 2,
+				"dash": "dash"
+			},
+			"name": "120% Load"
+		},
+		"peak_load": {
+			"line": {
+				"color": "purple",
+				"width": 2,
+				"dash": "dot"
+			},
+			"name": "Peak Load"
+		}
+	},
+	"annotations": {
+		"warning": {
+			"font": {
+				"size": 14,
+				"color": "red"
+			},
+			"bgcolor": "yellow",
+			"bordercolor": "red",
+			"borderwidth": 2
+		},
+		"target": {
+			"font": {
+				"size": 12,
+				"color": "blue"
+			},
+			"bgcolor": "lightgray",
+			"bordercolor": "blue",
+			"borderwidth": 1
+		},
+		"peak": {
+			"font": {
+				"size": 12,
+				"color": "purple"
+			},
+			"bgcolor": "lightgray",
+			"bordercolor": "purple",
+			"borderwidth": 1
+		}
+	}
+}
