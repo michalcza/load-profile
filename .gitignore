@@ -7,9 +7,6 @@
 # Ignote all PNG image files
 *.png
 
-# Allow process flowchart for documentation
-!cmd-only/src/lpd.py.flowchart.png
-
 # Allow specific sample files
 #!sample-data/98meters-300days-2788K_rows.csv Excluding because file is 108MB
 #!sample-data/98meters-600days-5596K_rows.csv Excluding because file is 216MB
@@ -36,13 +33,21 @@ src/build/
 src/*.spec
 
 *.log
+
 src/__pycache__/
 src/pwd.py
 src/lpd_debug.log
 src/python
 src/config.py !API key for weather goes here.
 src/lpd-gui.exe
-src/config.py
 src/lpd_debug.log
-src/lpd_debug.log
+
+src2/lpd_debug.log
+src2/python
+src2/config.py !API key for weather goes here.
+src2/lpd_debug.log
+/src-r1/__pycache__
+/src-r1/build
+/src-r2/__pycache__
 *.log
+*.spec

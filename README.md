@@ -70,6 +70,17 @@ Ensure the following Python libraries are installed:
 - `<input_file>_RESULTS-GRAPH.png`: Graphical visualization of the load profile.
 
 ---
+## Functions
+1. lpd-gui.py starts
+2. GUI is built and event loop starts with root.mainloop()
+3. User selects a CSV -> browse_file() -> Updates csv_path_entry
+4. User clicks Run Analysis -> start_analysis_thread()
+5. start_analysis_thread() -> run_analysis() starts in background
+6. run_analysis() -> launch_analysis()
+   - lpd-main.py runs -> Results generated
+   - lpd-interactive.py runs -> Visualization generated
+7. If weather checkbox selected -> launch_weather_analysis() runs
+8. Results displayed in the GUI
 
 ## Usage
 

@@ -94,18 +94,6 @@ def browse_file():
         clear_output_textbox()
         update_status("")
 
-# def save_arguments_to_file(csv_file, kva_value, datetime_value):
-    # """Save the arguments to a file."""
-    # try:
-        # args_file = "arguments.txt"
-        # with open(args_file, "w") as file:
-            # file.write(f"CSV File: {csv_file}\n")
-            # file.write(f"Transformer KVA: {kva_value}\n")
-            # file.write(f"Datetime: {datetime_value if datetime_value else 'None'}\n")
-        # print(f"Arguments saved to {args_file}.")
-    # except Exception as e:
-        # print(f"An error occurred while saving arguments to file: {e}")
-
 def save_arguments_to_file(csv_file, kva_value, datetime_value):
     """Save the arguments to a file in a format suitable for other applications."""
     try:
@@ -274,8 +262,6 @@ def start_analysis_thread():
 
     # Start the analysis in a background thread
     threading.Thread(target=run_analysis, daemon=True).start()
-
-
 
 # Create the main window
 root = tk.Tk()
