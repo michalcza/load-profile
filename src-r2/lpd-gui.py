@@ -108,12 +108,11 @@ def browse_file():
         csv_path_entry.delete(0, tk.END)
         csv_path_entry.insert(0, file_path)
         update_status("File selected successfully.", "success")
-
         display_datetime_range(file_path)
 
 
 def save_arguments_to_file(csv_file, kva_value, datetime_value):
-    """Save the arguments to a file."""
+    """Save the arguments to a file. Will be read by outside functions."""
     try:
         args_file = "arguments.txt"
         with open(args_file, "w") as file:
@@ -160,33 +159,38 @@ def launch_analysis(csv_file, kva_value, datetime_value=None):
         if datetime_value:
             base_command.extend(["--datetime", datetime_value.strip()])
 
-        # Run lpd-main.py only if results are missing
+        # Run lpd-main.py
         main_results_file = f"{base}_RESULTS.txt"
-        if not os.path.exists(main_results_file):
-            print(f"Running lpd-main.py to process load data for {input_file}")
-            main_command = [sys.executable, "lpd-main.py"] + base_command
-            subprocess.run(main_command, check=True)
-        else:
-            print(f"Skipping lpd-main.py: Results file '{main_results_file}' already exists.")
+        main_command = [sys.executable, "lpd-main.py"] + base_command
+        subprocess.run(main_command, check=True)
+        # if not os.path.exists(main_results_file):
+            # print(f"Running lpd-main.py to process load data for {input_file}")
+            # main_command = [sys.executable, "lpd-main.py"] + base_command
+            # subprocess.run(main_command, check=True)
+        # else:
+            # print(f"Skipping lpd-main.py: Results file '{main_results_file}' already exists.")
 
-        # Run weather analysis only if the weather file is missing
+        # Run weather analysis
         weather_file = f"{base}_WEATHER.csv"
-        if not os.path.exists(weather_file):
-            launch_weather_analysis()
-        else:
-            print(f"Skipping weather analysis: Weather file '{weather_file}' already exists.")
+        launch_weather_analysis()
+        # if not os.path.exists(weather_file):
+            # launch_weather_analysis()
+        # else:
+            # print(f"Skipping weather analysis: Weather file '{weather_file}' already exists.")
 
         load_profile_file = f"{base}_RESULTS-LP.csv"
         merge_command = [sys.executable, "lpd-merge.py"] + base_command
         subprocess.run(merge_command, check=True)
 
-        # Run lpd-interactive.py only if the interactive results file is missing
+        # Run lpd-interactive.py
         interactive_results_file = f"{base}_INTERACTIVE_RESULTS.html"
-        if not os.path.exists(interactive_results_file):
-            interactive_command = [sys.executable, "lpd-interactive.py"] + base_command
-            subprocess.run(interactive_command, check=True)
-        else:
-            print(f"Skipping lpd-interactive.py: Results file '{interactive_results_file}' already exists.")
+        interactive_command = [sys.executable, "lpd-interactive.py"] + base_command
+        subprocess.run(interactive_command, check=True)
+        # if not os.path.exists(interactive_results_file):
+            # interactive_command = [sys.executable, "lpd-interactive.py"] + base_command
+            # subprocess.run(interactive_command, check=True)
+        # else:
+            # print(f"Skipping lpd-interactive.py: Results file '{interactive_results_file}' already exists.")
 
         # Check for final results file
         results_file = f"{base}_RESULTS.txt"

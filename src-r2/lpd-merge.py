@@ -65,14 +65,14 @@ if not weather_profile.empty:
     print(f"Weather data resampled and merged successfully into '{load_profile_file}'.")
 
     # Delete the weather file after merging successfully
-    #try:
-    #    if os.path.exists(weather_profile_file):
-    #        os.remove(weather_profile_file)
-    #        print(f"Deleted temporary weather file: '{weather_profile_file}'")
-    #    else:
-    #        print(f"Warning: Weather file '{weather_profile_file}' not found. Skipping deletion.")
-    #except Exception as e:
-    #    print(f"Error deleting weather file: {e}")
+    try:
+        if os.path.exists(weather_profile_file):
+            os.remove(weather_profile_file)
+            print(f"Deleted temporary weather file: '{weather_profile_file}'")
+        else:
+            print(f"Warning: Weather file '{weather_profile_file}' not found. Skipping deletion.")
+    except Exception as e:
+        print(f"Error deleting weather file: {e}")
 else:
     # If no weather data, just use the original file
     print(f"No weather data available. Using '{load_profile_file}' as-is for analysis.")

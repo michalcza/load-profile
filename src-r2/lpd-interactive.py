@@ -48,7 +48,9 @@ def process_csv(input_file):
 
 # Add traces to the figure
 def add_traces(fig, data, style, transformer_kva):
-    fig.add_trace(go.Scatter(x=data["datetime"], y=data["total_kw"], **style["traces"]["main_load"]))
+    fig.add_trace(go.Scatter(x=data["datetime"],
+    y=data["total_kw"],
+    **style["traces"]["main_load"]))
     add_transformer_thresholds(fig, data, transformer_kva, style)
     add_daily_peak_load(fig, data, style)
 
@@ -56,7 +58,10 @@ def add_traces(fig, data, style, transformer_kva):
 def add_transformer_thresholds(fig, data, transformer_kva, style):
     for pct, key in zip([0.85, 1.0, 1.2], ["85_load", "100_load", "120_load"]):
         load_level = transformer_kva * pct
-        fig.add_trace(go.Scatter(x=[data["datetime"].min(), data["datetime"].max()], y=[load_level, load_level], **style["traces"][key]))
+        fig.add_trace(go.Scatter(x=[data["datetime"].min(),
+        data["datetime"].max()],
+        y=[load_level, load_level],
+        **style["traces"][key]))
 
 # Add daily peak load trace
 def add_daily_peak_load(fig, data, style):
@@ -64,20 +69,13 @@ def add_daily_peak_load(fig, data, style):
     fig.add_trace(go.Scatter(
         x=daily_peak["datetime"],
         y=daily_peak["total_kw"],
-        mode="markers+lines",
+        mode="markers+lines", #mode="markers+lines+text", 
         #text=[f"{kw:.2f} kW" for kw in daily_peak["total_kw"]],
         **{k: v for k, v in style["traces"].get("daily_peak", {}).items() if k != "mode"}
     ))
 
-# Plot cloud cover and temperature if available
-# def add_weather_traces(fig, data, style):
-    # if "cloud_cover_percent" in data.columns:
-        # fig.add_trace(go.Scatter(x=data["datetime"], y=data["cloud_cover_percent"], yaxis="y3", **style["traces"]["cloud_cover"]))
-    # if "temperature_f" in data.columns:
-        # peak_temp_data = data.loc[data.groupby("date")["temperature_f"].idxmax()]
-        # fig.add_trace(go.Scatter(x=peak_temp_data["datetime"], y=peak_temp_data["temperature_f"], mode="markers+text", yaxis="y2", marker=dict(color="red", size=8), text=[f"{temp:.1f}°F" for temp in peak_temp_data["temperature_f"]], textposition="top right", name="Daily Temp Peak"))
 
-def add_weather_traces(fig, data, style, show_cloud_cover=False):
+def add_weather_traces(fig, data, style, show_cloud_cover=True, show_temp_peak=True):
     # Only add cloud cover trace if show_cloud_cover is True
     if show_cloud_cover and "cloud_cover_percent" in data.columns:
         fig.add_trace(go.Scatter(
@@ -87,24 +85,26 @@ def add_weather_traces(fig, data, style, show_cloud_cover=False):
             **style["traces"]["cloud_cover"]
         ))
 
-    if "temperature_f" in data.columns:
+    # Add temperature peak trace if enabled
+    if show_temp_peak and "temperature_f" in data.columns:
         peak_temp_data = data.loc[data.groupby("date")["temperature_f"].idxmax()]
         fig.add_trace(go.Scatter(
             x=peak_temp_data["datetime"],
             y=peak_temp_data["temperature_f"],
-            mode="markers+lines",
-            yaxis="y2",
-            marker=dict(color="red", size=8),
-            #text=[f"{temp:.1f}°F" for temp in peak_temp_data["temperature_f"]],
-            #textposition="top right",
-            name="Daily Temp Peak"
+            **style["traces"]["temp_peak"]
         ))
 
 # Annotate peak load
 def annotate_peak_load(fig, data, style):
     max_row = data.loc[data["total_kw"].idxmax()]
-    fig.add_trace(go.Scatter(x=[max_row["datetime"], max_row["datetime"]], y=[0, max(data["total_kw"])], **style["traces"]["peak_load"]))
-    fig.add_annotation(x=max_row["datetime"], y=max_row["total_kw"], **style["annotations"]["peak"], text=f"Coincidental Peak:<br>{max_row['datetime'].strftime('%Y-%m-%d %H:%M')}<br>{max_row['total_kw']:.2f} kW")
+    fig.add_trace(go.Scatter(x=[max_row["datetime"],
+    max_row["datetime"]],
+    y=[0, max(data["total_kw"])],
+    **style["traces"]["peak_load"]))
+    fig.add_annotation(x=max_row["datetime"],
+    y=max_row["total_kw"],
+    **style["annotations"]["peak"],
+    text=f"Coincidental Peak:<br>{max_row['datetime'].strftime('%Y-%m-%d %H:%M')}<br>{max_row['total_kw']:.2f} kW")
 
 # Main function to generate interactive load profile visualization
 def visualize_load_profile_interactive(load_profile_file, transformer_kva, target_datetime=None):
@@ -128,14 +128,16 @@ def visualize_load_profile_interactive(load_profile_file, transformer_kva, targe
                 title="Temperature (°F)",
                 overlaying="y",
                 side="right",
+                position=1,
                 showgrid=False
             ),
             yaxis3=dict(
                 title="Cloud Cover (%)",
                 overlaying="y",
                 side="right",
-                position=0.98,
-                showgrid=False
+                position=0.95,
+                showgrid=False,
+                range=[0, 100]  # Force axis limits between 0 and 100
             )
         )
 
@@ -149,8 +151,14 @@ def handle_target_datetime(fig, data, style, target_datetime):
         try:
             target_datetime = pd.to_datetime(target_datetime)
             closest_row = data.iloc[(data['datetime'] - target_datetime).abs().argmin()]
-            fig.add_trace(go.Scatter(x=[closest_row['datetime'], closest_row['datetime']], y=[0, max(data["total_kw"])], **style["traces"]["target_datetime"]))
-            fig.add_annotation(x=closest_row['datetime'], y=closest_row['total_kw'], **style["annotations"]["target"], text=f"Load at target:<br>{closest_row['datetime'].strftime('%Y-%m-%d %H:%M')}<br>{closest_row['total_kw']:.2f} kW")
+            fig.add_trace(go.Scatter(x=[closest_row['datetime'],
+            closest_row['datetime']],
+            y=[0, max(data["total_kw"])],
+            **style["traces"]["target_datetime"]))
+            fig.add_annotation(x=closest_row['datetime'],
+            y=closest_row['total_kw'],
+            **style["annotations"]["target"],
+            text=f"Load at target:<br>{closest_row['datetime'].strftime('%Y-%m-%d %H:%M')}<br>{closest_row['total_kw']:.2f} kW")
         except Exception as e:
             print(f"Error parsing target datetime: {e}")
 

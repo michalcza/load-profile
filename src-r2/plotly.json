@@ -81,7 +81,7 @@
         "symbol": "triangle-up"
       },
       "textposition": "top center",
-      "name": "Daily Peak Load"
+      "name": "Daily Peak (Load)"
     },
     "target_datetime": {
       "line": {
@@ -137,7 +137,17 @@
         "width": 1,
         "dash": "solid"
       },
-      "name": "Cloud Cover (%)"
+      "name": "Cloud Cover (%)",
+	  "visible": "legendonly"
+    },
+	"temp_peak": {
+      "mode": "markers+lines",
+      "marker": {
+        "color": "lightblue",
+        "size": 1
+      },
+      "yaxis": "y2",
+      "name": "Daily Peak (Temp)"
     }
   },
   "annotations": {
