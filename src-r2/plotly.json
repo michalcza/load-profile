@@ -13,7 +13,7 @@
       "title": {
         "text": "Time<br>(Roll to zoom x,y axis)<br>(SHIFT+roll to zoom x-axis only)",
         "font": {
-          "size": 16,
+          "size": 12,
           "color": "#333333"
         }
       },
@@ -27,7 +27,7 @@
       "title": {
         "text": "Load (KW)<br>(Roll to zoom x,y axis)<br>(SHIFT+roll to zoom y-axis only)",
         "font": {
-          "size": 16,
+          "size": 12,
           "color": "#333333"
         }
       },
@@ -39,9 +39,9 @@
     },
     "legend": {
       "title": {
-        "text": "Legend<br>Click to toggle traces",
+        "text": "   Legend<br>Click to toggle<br>Double-click to isolate",
         "font": {
-          "size": 14,
+          "size": 12,
           "color": "#333333"
         }
       },
@@ -66,7 +66,8 @@
         "width": 1,
         "dash": "solid"
       },
-      "name": "Load (kW)"
+      "name": "Load (kW)",
+	  "visible": "legendonly"
     },
     "daily_peak": {
       "mode": "lines+markers+text",
@@ -97,7 +98,8 @@
         "width": 1,
         "dash": "dash"
       },
-      "name": "85% Load"
+      "name": "85% Load",
+	  "visible": "legendonly"
     },
     "100_load": {
       "line": {
@@ -105,7 +107,8 @@
         "width": 1,
         "dash": "dash"
       },
-      "name": "100% Load"
+      "name": "100% Load",
+	  "visible": "legendonly"
     },
     "120_load": {
       "line": {
@@ -113,7 +116,8 @@
         "width": 1,
         "dash": "dash"
       },
-      "name": "120% Load"
+      "name": "120% Load",
+	  "visible": "legendonly"
     },
     "peak_load": {
       "line": {
