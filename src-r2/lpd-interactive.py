@@ -39,6 +39,62 @@ def group_weather_observations(df):
         df["group"] = (df["weather_description"] != df["weather_description"].shift()).cumsum()
         df = df.groupby("group").first().reset_index(drop=True)
     return df
+    
+def weather_observations(load_profile_file):
+    try:
+        # Load the data
+        data = pd.read_csv(load_profile_file)
+
+        # Load weather codes for translation
+        with open("weather-codes.json", "r") as f:
+            weather_codes = json.load(f)
+
+        # Translate weather codes to descriptions
+        if "weather_code" in data.columns:
+            data["weather_description"] = data["weather_code"].astype(str).map(weather_codes).fillna("Unknown")
+        else:
+            data["weather_description"] = "Unknown"
+
+        # Group consecutive identical weather observations
+        if "weather_description" in data.columns:
+            data["group"] = (data["weather_description"] != data["weather_description"].shift()).cumsum()
+            grouped_data = data.groupby("group").agg({
+                "datetime": "first",
+                "weather_description": "first"
+            }).reset_index(drop=True)
+
+        # Convert datetime to datetime format for plotting
+        grouped_data["datetime"] = pd.to_datetime(grouped_data["datetime"])
+
+        # Create a timeline plot for weather observations
+        fig = go.Figure()
+        for i, row in grouped_data.iterrows():
+            if i < len(grouped_data) - 1:
+                next_time = grouped_data["datetime"].iloc[i + 1]
+            else:
+                next_time = row["datetime"]
+            
+            fig.add_trace(go.Scatter(
+                x=[row["datetime"], next_time],
+                y=[row["weather_description"], row["weather_description"]],
+                mode="lines",
+                name=row["weather_description"]
+            ))
+
+        fig.update_layout(
+            title="Grouped Weather Observations Over Time",
+            xaxis_title="Time",
+            yaxis_title="Weather Condition",
+            showlegend=False
+        )
+
+        # Save the plot as an HTML file
+        plot_file_path = load_profile_file.replace("_RESULTS-LP.csv", "_WEATHER_OBSERVATIONS.html")
+        fig.write_html(plot_file_path)
+        print(f"Weather observations plot saved to '{plot_file_path}'")
+
+    except Exception as e:
+        print(f"An error occurred while visualizing weather observations: {e}")
 
 # Load the merged load profile with weather data
 def process_csv(input_file):
@@ -192,6 +248,7 @@ if __name__ == "__main__":
 
         if transformer_kva > 0:
             visualize_load_profile_interactive(load_profile_file, transformer_kva, target_datetime)
+            #visualize_load_profile_interactive(load_profile_file, transformer_kva, target_datetime, weather_observations)
         else:
             print("Transformer KVA not specified or is zero. Skipping analysis and visualization.")
     except Exception as e:
