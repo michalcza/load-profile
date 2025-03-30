@@ -103,9 +103,9 @@ import re
 import argparse
 import os
 import matplotlib.pyplot as plt
+import plotly.graph_objects as go
 from contextlib import redirect_stdout
 from datetime import datetime
-import plotly.graph_objects as go
 from bokeh.plotting import figure, show, output_file
 from bokeh.models import Span
 
@@ -287,7 +287,6 @@ def process_csv(input_file):
         logger.info("Average_peak_load_per_meter: %d", average_peak_load_per_meter)
         
         #List datetime when sum of loads < 0.5 KW
-        #no_load_data = data.groupby("datetime")["kw"].sum()
         no_load_data = data["kw"].resample("15min").sum()
         no_load_times = no_load_data[no_load_data < 0.5].reset_index()
         if no_load_times.empty:
@@ -623,24 +622,13 @@ if __name__ == "__main__":
         print(f"Error: File '{input_file}' does not exist.")
         sys.exit(1)
 
-# Validate datetime argument  NEEDS REPAIRS WE NEED DATETIME AS BOTH STRING
-#AND DATETIME. WE SHOULD SPLIT THIS INTO TWO FUNCTIONS. ONE IS 
-# target_datetime AND THE OTHER IS target_datetime_str        
-    # if target_datetime:
-        # try:
-            # target_datetime = datetime.strptime(target_datetime, "%Y-%m-%d %H:%M:%S")
-            # print(f"Valid datetime provided: {target_datetime}")
-        # except ValueError:
-            # print(f"Error: Invalid datetime format '{args.datetime}'. Use 'YYYY-MM-DD HH:MM:SS'.")
-            # sys.exit(1)
-
     # Process the CSV file
     try:
-        data, load_profile_file = process_csv(input_file) # NEEDS REPAIRS, RUNS TWICE TO WORK.
+        data, load_profile_file = process_csv(input_file)
         #load_profile_file = process_csv(input_file)
-        print(f"CSV processing complete. Output file: {load_profile_file}")
+        #print(f"CSV processing complete. Output file: {load_profile_file}")
         #data = process_csv(input_file)
-        print(f"CSV processing complete. Output file: {data}")
+        #print(f"CSV processing complete. Output file: {data}")
     except ValueError as e:
         print(f"ValueError: {e}")
         sys.exit(1)

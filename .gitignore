@@ -51,3 +51,6 @@ src2/lpd_debug.log
 /src-r2/__pycache__
 *.log
 *.spec
+src-r2/config.py
+src-r2/config.py
+/tests/__pycache__
