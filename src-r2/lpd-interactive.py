@@ -193,7 +193,7 @@ def visualize_load_profile_interactive(load_profile_file, transformer_kva, targe
                 side="right",
                 position=0.95,
                 showgrid=False,
-                range=[0, 100]  # Force axis limits between 0 and 100
+                range=[-100, 200]  # Force axis limits to shift up.
             )
         )
 
