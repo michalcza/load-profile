@@ -35,7 +35,38 @@
       "gridcolor": "#e6e6e6",
       "zeroline": false,
       "showline": true,
-      "linecolor": "#cccccc"
+      "linecolor": "#cccccc",
+      "domain": [0, 0.8]
+    },
+    "yaxis2": {
+      "title": {
+        "text": "Temperature (°F)",
+        "font": {
+          "size": 12,
+          "color": "#333333"
+        }
+      },
+      "overlaying": "y",
+      "side": "right",
+      "position": 1,
+      "showgrid": false,
+      "domain": [0.85, 1.0],
+      "anchor": "x"
+    },
+    "yaxis3": {
+      "title": {
+        "text": "Cloud Cover (%)",
+        "font": {
+          "size": 12,
+          "color": "#333333"
+        }
+      },
+      "overlaying": "y",
+      "side": "right",
+      "position": 0.95,
+      "showgrid": false,
+      "domain": [0, 0.8],
+      "range": [-100, 200]
     },
     "legend": {
       "title": {
@@ -128,29 +159,28 @@
       "name": "Coincidental Peak"
     },
     "temperature": {
-      "line": {
-        "color": "grey",
-        "width": 1,
-        "dash": "solid"
-      },
-      "name": "Temperature (F)"
+		"line": {
+			"color": "grey",
+			"width": 1,
+			"dash": "solid"
+		},
+    "name": "Temperature (F)"
     },
     "cloud_cover": {
-      "line": {
-        "color": "lightblue",
-        "width": 1,
-        "dash": "solid"
-      },
-      "name": "Cloud Cover (%)",
-	  "visible": "legendonly"
-    },
+		"line": {
+			"color": "lightblue",
+			"width": 1,
+			"dash": "solid"
+		},
+			"name": "Cloud Cover (%)",
+			"visible": "legendonly"},
 	"temp_peak": {
-      "mode": "markers+lines",
-      "marker": {
-        "color": "lightblue",
-        "size": 1
-      },
-      "yaxis": "y2",
+		"mode": "markers+lines",
+		"marker": {
+			"color": "lightblue",
+			"size": 1
+		},
+      "yaxis": "y3",
       "name": "Daily Peak (Temp)"
     }
   },
