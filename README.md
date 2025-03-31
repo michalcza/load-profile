@@ -77,114 +77,48 @@ meter,date,time,kw
 
 ---
 
-## Function Map
+## Function Summary (./src-weather)
 
-Below is an ASCII map of all the functions within each file and how they get called from each file:
+Below is a concise list of all functions with a short synopsis:
 
-```
-lpd-gui.py
-==========
-round_to_nearest_15_minutes()
-display_datetime_range()
-browse_file()
-    └── update_status()
-    └── display_datetime_range()
-save_arguments_to_file()
-    └── open()
-    └── print()
-launch_analysis()
-    └── update_status()
-    └── clear_output_textbox()
-    └── save_arguments_to_file()
-    └── launch_weather_analysis()
-    └── update_status()
-    └── update_status()
-    └── str()
-    └── print()
-launch_weather_analysis()
-    └── update_status()
-    └── update_status()
-clear_output_textbox()
-open_folder()
-    └── update_status()
-clear_all()
-    └── clear_output_textbox()
-    └── update_status()
-update_status()
-start_analysis_thread()
-    └── launch_analysis()
-    └── update_status()
-run_analysis()
-    └── launch_analysis()
-    └── update_status()
-
-lpd-interactive.py
-==================
-load_style()
-    └── open()
-load_weather_codes()
-    └── open()
-translate_weather_codes()
-group_weather_observations()
-weather_observations()
-    └── open()
-process_csv()
-add_traces()
-    └── add_transformer_thresholds()
-    └── add_daily_peak_load()
-add_transformer_thresholds()
-add_daily_peak_load()
-add_weather_traces()
-annotate_peak_load()
-    └── max()
-visualize_load_profile_interactive()
-    └── load_style()
-    └── add_traces()
-    └── add_weather_traces()
-    └── annotate_peak_load()
-    └── handle_target_datetime()
-handle_target_datetime()
-    └── print()
-
-lpd-main.py
-===========
-clear_screen()
-process_csv()
-    └── len()
-    └── print_and_save()
-    └── open()
-    └── ValueError()
-    └── print()
-transformer_load_analysis()
-    └── print()
-    └── ValueError()
-visualize_load_profile()
-    └── print()
-print_and_save()
-    └── open()
-    └── redirect_stdout()
-
-lpd-merge.py
-============
-process_csv()
-process_weather()
-    └── print()
-
-lpd-weather.py
-==============
-get_lat_lon_from_zip()
-    └── print()
-fetch_weather_for_date_range()
-    └── zip()
-    └── print()
-main()
-    └── len()
-    └── get_lat_lon_from_zip()
-    └── fetch_weather_for_date_range()
-    └── open()
-```
-
+| **File**             | **Function**                         | **Synopsis**                                           |
+|----------------------|--------------------------------------|--------------------------------------------------------|
+| `lpd-gui.py`         | `round_to_nearest_15_minutes`        | Rounds datetime to the nearest 15-minute interval.     |
+| `lpd-gui.py`         | `display_datetime_range`             | Reads CSV and displays the first and last date.        |
+| `lpd-gui.py`         | `browse_file`                        | Opens file dialog to select CSV file.                  |
+| `lpd-gui.py`         | `save_arguments_to_file`             | Saves user input arguments to a file.                  |
+| `lpd-gui.py`         | `launch_analysis`                    | Launches load analysis and calls required scripts.     |
+| `lpd-gui.py`         | `launch_weather_analysis`            | Runs weather analysis using lpd-weather.py.            |
+| `lpd-gui.py`         | `clear_output_textbox`               | Clears the text output box in the GUI.                 |
+| `lpd-gui.py`         | `open_folder`                        | Opens folder where input CSV is located.               |
+| `lpd-gui.py`         | `clear_all`                          | Clears all user inputs and resets output.              |
+| `lpd-gui.py`         | `update_status`                      | Updates status message in GUI.                         |
+| `lpd-gui.py`         | `start_analysis_thread`              | Starts analysis in a background thread.                |
+| `lpd-interactive.py` | `load_style`                         | Loads plotly graph styling from plotly.json.           |
+| `lpd-interactive.py` | `load_weather_codes`                 | Loads weather codes from JSON.                         |
+| `lpd-interactive.py` | `translate_weather_codes`            | Maps weather codes to descriptions.                    |
+| `lpd-interactive.py` | `group_weather_observations`         | Groups consecutive identical weather observations.     |
+| `lpd-interactive.py` | `weather_observations`               | Creates weather timeline visualization.                |
+| `lpd-interactive.py` | `process_csv`                        | Loads load profile with weather data.                  |
+| `lpd-interactive.py` | `add_traces`                         | Adds graph traces for load profile.                    |
+| `lpd-interactive.py` | `add_transformer_thresholds`         | Adds threshold markers for transformer KVA % levels    |
+| `lpd-interactive.py` | `add_daily_peak_load`                | Adds markers for daily peak loads.                     |
+| `lpd-interactive.py` | `add_weather_traces`                 | Adds weather traces to graph.                          |
+| `lpd-interactive.py` | `annotate_peak_load`                 | Annotates the graph with peak load values.             |
+| `lpd-interactive.py` | `visualize_load_profile_interactive` | Generates interactive load profile visualization.      |
+| `lpd-interactive.py` | `handle_target_datetime`             | Handles target datetime markers on graph.              |
+| `lpd-main.py`        | `clear_screen`                       | Clears the console screen.                             |
+| `lpd-main.py`        | `process_csv`                        | Processes CSV to generate load profile and results.    |
+| `lpd-main.py`        | `transformer_load_analysis`          | Analyzes load profiles vs. transformer capacity.       |
+| `lpd-main.py`        | `visualize_load_profile`             | Generates a time-based load profile visualization.     |
+| `lpd-main.py`        | `print_and_save`                     | Saves analysis summary and prints to file.             |
+| `lpd-merge.py`       | `process_csv`                        | Loads load profile CSV file.                           |
+| `lpd-merge.py`       | `process_weather`                    | Loads and merges weather data with load profile.       |
+| `lpd-weather.py`     | `get_lat_lon_from_zip`               | Fetches latitude/longitude from ZIP code using API.    |
+| `lpd-weather.py`     | `fetch_weather_for_date_range`       | Fetches weather data for a using Open-Meteo API        |
+| `lpd-weather.py`     | `main`                               | Main function to fetch and save weather data.          |
 ---
+
 
 ## File Tree
 ```
@@ -192,7 +126,7 @@ main()
 |   .gitattributes
 |   .gitignore
 |   LICENSE
-|   README.md
+|   README.md								This file
 |   requirements.txt
 |
 +---sample-data
