@@ -187,6 +187,7 @@ main()
 ---
 
 ## File Tree
+```
 .
 |   .gitattributes
 |   .gitignore
@@ -248,7 +249,7 @@ main()
 \---tests
     |   test-all.py
     |   test_lpd_gui.py
-
+```
 ## Usage
 
 ### Graphical Interface (GUI)
