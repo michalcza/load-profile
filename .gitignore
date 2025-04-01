@@ -12,6 +12,8 @@
 #!sample-data/98meters-600days-5596K_rows.csv Excluding because file is 216MB
 !sample-data/98meters-600days-5596K_rows_RESULTS-GRAPH.png
 !sample-data/98meters-600days-5596K_rows_RESULTS.txt
+!sample-data/98meters-600days-5596K_rows_RESULTS.txt
+!sample-data/98meters-600days-5596K_rows_RESULTS-LP.csv
 !sample-data/98meters-600days-5596K_rows_RESULTS-LP.csv
 !sample-data/98meters-300days-2788K_rows_RESULTS.txt
 !sample-data/98meters-300days-2788K_rows_RESULTS-LP.csv
@@ -29,30 +31,33 @@
 !sample-data/923meters-7days-545K_rows.csv
 
 # Binary EXE build files
-src/build/
-src/*.spec
 
-*.log
-
-src/__pycache__/
-src/pwd.py
-src/lpd_debug.log
-src/python
-src/config.py !API key for weather goes here.
-src/lpd-gui.exe
-src/lpd_debug.log
-
-src2/lpd_debug.log
-src2/python
-src2/config.py !API key for weather goes here.
-src2/lpd_debug.log
-/src-r1/__pycache__
 /src-r1/build
-/src-r2/__pycache__
-*.log
+/src-r2/build
+src/*.spec
 *.spec
+*.log
+
+src-r1/__pycache__/
+src-r2/__pycache__/
+
+src-r1/python
+src-r2/python
+
+src-r2/config.py !API key for weather goes here.
+src-r1/config.py !API key for weather goes here.
+
+src-r1/lpd_debug.log
+src-r2/lpd_debug.log
+
 src-r2/config.py
 src-r2/config.py
+
 /tests/__pycache__
-sample-data/98meters-600days-5596K_rows_RESULTS.txt
+
+/sample-data-3ph/
+sample-data-3ph/
+/src-3ph/_recycle
+src-3ph/.processed-hashes.json
 sample-data/98meters-600days-5596K_rows_RESULTS-LP.csv
+sample-data/98meters-600days-5596K_rows_RESULTS.txt

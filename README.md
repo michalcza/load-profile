@@ -126,7 +126,7 @@ Below is a concise list of all functions with a short synopsis:
 |   .gitattributes
 |   .gitignore
 |   LICENSE
-|   README.md								This file
+|   README.md
 |   requirements.txt
 |
 +---sample-data
@@ -154,18 +154,12 @@ Below is a concise list of all functions with a short synopsis:
 |   |   lpd-analytics3.py
 |   |   lpd-combined-analysis.py
 |   |   lpd-gui.py
-|   |   lpd-gui.spec
 |   |   lpd-interactive.exe
 |   |   lpd-interactive.py
 |   |   lpd-interactive.spec
 |   |   lpd-interactive2.py
 |   |   lpd-main.exe
 |   |   lpd-main.py
-|   |   lpd-main.spec
-|   |   lpd-weather.py
-|   |   lpd_debug.log
-|   |   weather-codes.txt
-|   |   weather.py
 |   |
 +---src-r2
 |   |   arguments.txt
