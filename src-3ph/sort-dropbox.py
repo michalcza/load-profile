@@ -1,26 +1,29 @@
-import os
 import csv
-import shutil
+from pathlib import Path
 from datetime import datetime
+import shutil
 
 # Paths
-dropbox_dir = os.path.join(".", "_dropbox", "KW")
-destination_root = os.path.join(".", "data", "KW")
-error_dir = os.path.join(destination_root, "ERROR")
-log_file_path = os.path.join(".", "dropbox.log")
-error_log_path = os.path.join(".", "dropbox-error.log")
+project_root = Path('.')
+dropbox_dir = project_root / '_dropbox' / 'KW'
+destination_root = project_root / 'data' / 'KW'
+error_dir = destination_root / 'ERROR'
+log_dir = project_root / 'logs'
+log_file_path = log_dir / 'dropbox.log'
+error_log_path = log_dir / 'dropbox-error.log'
+
 date_format = "%m/%d/%y %H:%M:%S"
 
 # Ensure source and error directories exist
-if not os.path.exists(dropbox_dir):
+if not dropbox_dir.exists():
     print(f"Source directory does not exist: {dropbox_dir}")
     exit(1)
 
-os.makedirs(error_dir, exist_ok=True)
+error_dir.mkdir(parents=True, exist_ok=True)
 
 # Open both log files
-with open(log_file_path, 'a', encoding='utf-8') as log_file, \
-     open(error_log_path, 'a', encoding='utf-8') as err_file:
+with log_file_path.open('a', encoding='utf-8') as log_file, \
+     error_log_path.open('a', encoding='utf-8') as err_file:
 
     def log(msg, error=False):
         log_file.write(msg)
@@ -30,20 +33,19 @@ with open(log_file_path, 'a', encoding='utf-8') as log_file, \
     log("\n==== Log Start ====\n")
     log(f"Process started at: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
 
-    for filename in os.listdir(dropbox_dir):
-        if filename.lower().endswith('.csv'):
-            source_path = os.path.join(dropbox_dir, filename)
+    for file_path in dropbox_dir.iterdir():
+        if file_path.suffix.lower() == '.csv':
+            filename = file_path.name
 
             try:
-                with open(source_path, 'r', encoding='utf-8-sig') as f:
+                with file_path.open('r', encoding='utf-8-sig') as f:
                     reader = csv.reader(f)
 
                     # Skip until header
                     for row in reader:
                         row = [cell.strip() for cell in row]
                         if row and row[0].startswith("Record No."):
-                            # Rename headers directly
-                            row = [
+                            header = [
                                 'kw_del' if cell.strip() == '-1-' else
                                 'kw_rec' if cell.strip() == '-2-' else
                                 'kva_del' if cell.strip() == '-3-' else
@@ -51,7 +53,6 @@ with open(log_file_path, 'a', encoding='utf-8') as log_file, \
                                 cell.strip()
                                 for cell in row
                             ]
-                            header = row
                             break
 
                     data_rows = [
@@ -84,10 +85,9 @@ with open(log_file_path, 'a', encoding='utf-8') as log_file, \
 
                 if mismatch_found:
                     quarantined_name = filename.replace(".csv", "_SEQUENCE-ERROR.csv")
-                    dest_path = os.path.join(error_dir, quarantined_name)
-                    shutil.move(source_path, dest_path)
+                    dest_path = error_dir / quarantined_name
+                    shutil.move(str(file_path), dest_path)
 
-                    # Log the mismatch to both logs
                     msg = (
                         f"[ERROR] Non-sequential timestamps in '{filename}'\n"
                         f"  At Record: {parsed_rows[mismatch_index][0][0]} | "
@@ -102,7 +102,7 @@ with open(log_file_path, 'a', encoding='utf-8') as log_file, \
                     context_end = min(len(parsed_rows), mismatch_index + 5)
                     for i in range(context_start, context_end):
                         row = parsed_rows[i][0]
-                        log(f"    {row[0]}, {row[2].strip()} -> {row[3].strip()}\n", error=True)
+                        log(f"    {row[0]}, {row[2]} -> {row[3]}\n", error=True)
 
                     continue  # Skip normal move
 
@@ -110,14 +110,12 @@ with open(log_file_path, 'a', encoding='utf-8') as log_file, \
                 start_dt = parsed_rows[0][1]
                 end_dt = parsed_rows[-1][2]
                 folder_name = start_dt.strftime("%Y-%m")
+                dest_folder = destination_root / folder_name
+                dest_folder.mkdir(parents=True, exist_ok=True)
 
-                dest_folder = os.path.join(destination_root, folder_name)
-                os.makedirs(dest_folder, exist_ok=True)
+                dest_path = dest_folder / filename
 
-                dest_path = os.path.join(dest_folder, filename)
-
-                # Write cleaned, quoted CSV
-                with open(dest_path, 'w', newline='', encoding='utf-8-sig') as cleaned:
+                with dest_path.open('w', newline='', encoding='utf-8-sig') as cleaned:
                     writer = csv.writer(cleaned, quoting=csv.QUOTE_ALL)
                     writer.writerow(header)
                     for row, _, _ in parsed_rows:
@@ -127,8 +125,8 @@ with open(log_file_path, 'a', encoding='utf-8') as log_file, \
                     f"Moved: '{filename}' | Start: {start_dt.strftime('%Y-%m-%d %H:%M')} "
                     f"| End: {end_dt.strftime('%Y-%m-%d %H:%M')} | Folder: {dest_folder}\n"
                 )
-                # Remove the original source file after writing cleaned version
-                os.remove(source_path)
+
+                file_path.unlink()  # Delete the original
 
             except Exception as e:
                 msg = f"Error processing '{filename}': {e}\n"
