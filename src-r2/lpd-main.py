@@ -41,9 +41,9 @@ Output:
 
 Compile instructions:
 Syntax:
-$ pyinstaller --onefile --distpath . lpd-main.py
+$ powershell -ExecutionPolicy Bypass -File .\build-onefile.ps1
 will compile binary to:
-\src\lpd-main.exe
+.\dist\lpd-suite.exe
 
 Sample Data:
    ..\sample-data
@@ -91,6 +91,10 @@ Example: 98meters-300days-2788K_rows.csv
     -Add primary voltage amperage calculations for 1-phase.
     -Split display of interactive graph from funciton into lpd-interactive.py
     that way we can launh it from GUI with button and not as part of lpd-main.py
+    
+- 10/02/2025
+    Added censecutive time above 120% calculation.
+    Improved how executable is combined.
     
     
 python lpd-main.py ..\sample-data\OCD226826-700days.csv --transformer_kva 75 --datetime "2024-10-08 16:15:00"
@@ -335,7 +339,6 @@ def process_csv(input_file):
         amps208 = (peak_load * 1000)/(208)
         amps240 = (peak_load * 1000)/(240)
         amps7200 = (peak_load * 1000)/(7200)
-        
         target_amps120 = (target_load * 1000)/(120)
         target_amps208 = (target_load * 1000)/(208)
         target_amps240 = (target_load * 1000)/(240)
@@ -391,22 +394,23 @@ def process_csv(input_file):
             "=" * calculation_summary_width,
             f"{'Results':^{calculation_summary_width}}",
             "=" * calculation_summary_width,
-            f"{'Peak load (KW): ':<30} {peak_load:>20.2f} {'KW on ' + str(peak_datetime):<28}",
+            f"{'Peak Loads':^{calculation_summary_width}}",
+            f"{'Peak load KW: ':<30} {peak_load:>20.2f} {'KW on ' + str(peak_datetime):<28}",
             f"{'Peak load (120V, 1-phase, PF=1): ':<30} {amps120:>17.2f} {'amps':<28}",
             f"{'Peak load (208V, 1-phase, PF=1): ':<30} {amps208:>17.2f} {'amps':<28}",
             f"{'Peak load (240V, 1-phase, PF=1): ':<30} {amps240:>17.2f} {'amps':<28}",
             f"{'Peak load (7200V (L-N), 1-phase, PF=1): ':<30} {amps7200:>10.2f} {'amps':<28}",
             "-" * calculation_summary_width,
             f"{'Coincidental Peaks':^{calculation_summary_width}}",
-            f"{'Target datetime (given): ':<45}{str(target_datetime):<}",
-            #f"{'Coincidental peak (KW) for target datetime: ':<44} {target_load:>5.2f} {'KW on ' + str(target_datetime):<}",
-            f"{'Coincidental peak (KW) for target datetime: ':<44} {target_load:>5.2f} KW",
-            f"{'Target load (120V, 1-phase, PF=1): ':<30} {target_amps120:>17.2f} {'amps':<28}",
-            f"{'Target load (208V, 1-phase, PF=1): ':<30} {target_amps208:>17.2f} {'amps':<28}",
-            f"{'Target load (240V, 1-phase, PF=1): ':<30} {target_amps240:>17.2f} {'amps':<28}",
-            f"{'Target load (7200V (L-N), 1-phase, PF=1): ':<30} {target_amps7200:>10.2f} {'amps':<28}",
+            #f"{'Target datetime (given): ':<45}{str(target_datetime):<}",
+            f"{'Coincidental peak KW for target datetime: ':<44} {target_load:>6.2f} {'KW on ' + str(target_datetime):<}",
+            #f"{'Coincidental peak (KW) for target datetime: ':<44} {target_load:>5.2f} KW",
+            f"{'Target load (120V, 1-phase, PF=1): ':<30} {target_amps120:>15.2f} {'amps':<28}",
+            f"{'Target load (208V, 1-phase, PF=1): ':<30} {target_amps208:>15.2f} {'amps':<28}",
+            f"{'Target load (240V, 1-phase, PF=1): ':<30} {target_amps240:>15.2f} {'amps':<28}",
+            f"{'Target load (7200V (L-N), 1-phase, PF=1): ':<30} {target_amps7200:>8.2f} {'amps':<28}",
             f"",
-            f"{'Non-coincidental peak (KW) for target date: ':<44} {target_peak_load:>5.2f} {'KW on ' + str(target_peak_datetime):<}",
+            f"{'Non-coincidental peak KW for target date: ':<44} {target_peak_load:>6.2f} {'KW on ' + str(target_peak_datetime):<}",
             "=" * calculation_summary_width,
             f"{'Calculated Factors':^{calculation_summary_width}}",
             "=" * calculation_summary_width,
@@ -498,6 +502,58 @@ def transformer_load_analysis(load_profile_file, transformer_kva):
         # Determine time spent within different load ranges
         # Get time interval in hours
         time_interval = (out_data["datetime"].iloc[1] - out_data["datetime"].iloc[0]).total_seconds() / 3600
+        # ------------------------------------------------------------------
+        # Helper: find the longest consecutive run where load >= threshold%
+        # Assumes a mostly-regular time series. We infer the interval from
+        # the most common timestamp difference (mode) for robustness.
+        # Returns (start_dt, end_dt, duration_hours, duration_days).
+        # ------------------------------------------------------------------
+        def longest_consecutive_run_over_threshold(df: pd.DataFrame,
+                                                   value_col: str,
+                                                   threshold: float,
+                                                   time_col: str = "datetime"):
+            # Ensure sorted by time and compute diffs
+            df = df.sort_values(time_col).reset_index(drop=True).copy()
+            diffs = df[time_col].diff()
+
+            # Infer regular interval (fallback to 15 minutes if not inferrable)
+            try:
+                interval_td = diffs.mode().iloc[0]
+                if pd.isna(interval_td) or interval_td == pd.Timedelta(0):
+                    interval_td = pd.Timedelta(minutes=15)
+            except Exception:
+                interval_td = pd.Timedelta(minutes=15)
+
+            # Boolean mask for over-threshold points
+            is_over = df[value_col] >= threshold
+
+            # "Break" when not over-threshold OR when gap != expected interval
+            breaks = (~is_over) | (diffs != interval_td)
+
+            # Group consecutive over-threshold segments
+            group_id = breaks.cumsum()
+
+            over_df = df[is_over].copy()
+            if over_df.empty:
+                return None, None, 0.0, 0.0
+
+            over_df["grp"] = group_id[is_over].values
+            agg = over_df.groupby("grp").agg(
+                start=(time_col, "min"),
+                end=(time_col, "max"),
+                count=(time_col, "size"),
+            )
+
+            # Each sample spans one full interval -> duration = N * interval
+            agg["duration_hours"] = agg["count"] * (interval_td / pd.Timedelta(hours=1))
+            best = agg.loc[agg["duration_hours"].idxmax()]
+
+            start_dt = pd.to_datetime(best["start"])
+            end_dt   = pd.to_datetime(best["end"])
+            dur_h    = float(agg.loc[agg['duration_hours'].idxmax(), 'duration_hours'])
+            dur_d    = dur_h / 24.0
+            return start_dt, end_dt, dur_h, dur_d
+
 
         # Calculate time spent in each load range in hours
         below_85 = len(out_data[out_data["load_percentage"] < 85]) * time_interval
@@ -530,10 +586,10 @@ def transformer_load_analysis(load_profile_file, transformer_kva):
         # Print to output file
         with open(load_distribution_output_file, "a") as f:
             f.write("=" * 80 + "\n")
-            f.write(f"{'Transformer Calculations and Capacity Distribution':^80}\n")
+            f.write(f"{'Load Calculations and Capacity Distribution':^80}\n")
             f.write("=" * 80 + "\n")
             f.write(f"{'Total time: ':<35}{total_days:>20.1f}{' days ('}{total_hours:>.2f}{' hours)'}\n")
-            f.write(f"{'Transformer KVA: ':<35}{transformer_kva:>20.1f}{' KVA':<25}\n")
+            f.write(f"{'Full load KVA: ':<35}{transformer_kva:>20.1f}{' KVA':<25}\n")
             f.write("-" * 80 + "\n")
             f.write(f" {'LOAD RANGE':^30}| {'DAYS':^16}| {'HOURS':^17}| {'%':^10}\n")
             f.write("-" * 80 + "\n")
@@ -541,6 +597,19 @@ def transformer_load_analysis(load_profile_file, transformer_kva):
             f.write(f" {'Between 85% and 100%':<30}| {(between_85_100 / 24):<10.2f} days | {between_85_100:<10.2f} hours | {percent_between_85_100:<7.2f} % \n")
             f.write(f" {'Between 100% and 120%':<30}| {(between_100_120 / 24):<10.2f} days | {between_100_120:<10.2f} hours | {percent_between_100_120:<7.2f} % \n")
             f.write(f" {'Exceeds 120%':<30}| {(above_120 / 24):<10.2f} days | {above_120:<10.2f} hours | {percent_above_120:<7.2f} % \n")
+            
+            # ---- Longest continuous time above 120% of load capacity ----
+            start_120, end_120, hours_120, days_120 = longest_consecutive_run_over_threshold(
+                out_data, value_col="load_percentage", threshold=120.0, time_col="datetime"
+            )
+            f.write("-" * 80 + "\n")
+            if hours_120 > 0:
+                start_str = start_120.strftime("%Y-%m-%d %H:%M:%S")
+                end_str   = end_120.strftime("%Y-%m-%d %H:%M:%S")
+                f.write(f" Max consecutive >120%: {hours_120:>7.2f} hours ({days_120:>5.2f} days)\n")
+                f.write(f" Start: {start_str} End: {end_str}\n")
+            else:
+                f.write(" Max consecutive >120%: 0.00 hours (no intervals above 120%)\n")
             f.write("=" * 80 + "\n")
             f.write(f"{'Current directory: ':<80}\n")
             f.write(f"{pwd:<80}\n\n")
@@ -609,7 +678,7 @@ if __name__ == "__main__":
     # Parse command-line arguments
     parser = argparse.ArgumentParser(description="Process a CSV file for load profile analysis.")
     parser.add_argument("filename", type=str, help="Path to the input CSV file")
-    parser.add_argument("--transformer_kva", type=float, default=0, help="Transformer size in KVA")
+    parser.add_argument("--transformer_kva", type=float, default=0, help="Full load in KVA")
     parser.add_argument("--datetime", type=str, help="DateTime for total load calculation (format: YYYY-MM-DD HH:MM:SS)")
     args = parser.parse_args()
 
@@ -645,9 +714,9 @@ if __name__ == "__main__":
         except ValueError as e:
             print(f"Error: {e}")
         except Exception as e:
-            print(f"Error during transformer load analysis or visualization: {e}")
+            print(f"Error during load analysis or visualization: {e}")
             sys.exit(1)
     else:
-        print("Transformer KVA not specified or is zero. Skipping analysis and visualization.")
+        print("Full load KVA not specified or is zero. Skipping analysis and visualization.")
 
 

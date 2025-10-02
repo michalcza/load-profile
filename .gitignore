@@ -61,3 +61,12 @@ sample-data-3ph/
 src-3ph/.processed-hashes.json
 sample-data/98meters-600days-5596K_rows_RESULTS-LP.csv
 sample-data/98meters-600days-5596K_rows_RESULTS.txt
+/src-r2/.venv
+/src-r2/.vs
+src-r2/dist/config.py
+sample-data/98meters-300days-2788K_rows_RESULTS.txt
+sample-data/98meters-600days-5596K_rows_RESULTS-LP-INTERACTIVE.html
+sample-data/98meters-300days-2788K_rows_RESULTS-LP.csv
+sample-data/98meters-300days-2788K_rows_RESULTS-LP-INTERACTIVE.html
+sample-data/8meters-405days-307K_rows_RESULTS-LP-INTERACTIVE.html
+*.html
