@@ -1,0 +1,216 @@
+{
+  "layout": {
+    "title": {
+      "text": "Time-Based Load Profile Visualization",
+      "font": {
+        "size": 24,
+        "color": "#333333"
+      },
+      "x": 0.5,
+      "xanchor": "center"
+    },
+    "xaxis": {
+      "title": {
+        "text": "Time<br>(Roll to zoom x,y axis)<br>(SHIFT+roll to zoom x-axis only)",
+        "font": {
+          "size": 12,
+          "color": "#333333"
+        }
+      },
+      "showgrid": true,
+      "gridcolor": "#e6e6e6",
+      "zeroline": false,
+      "showline": true,
+      "linecolor": "#cccccc"
+    },
+    "yaxis": {
+      "title": {
+        "text": "Load (KW)<br>(Roll to zoom x,y axis)<br>(SHIFT+roll to zoom y-axis only)",
+        "font": {
+          "size": 12,
+          "color": "#333333"
+        }
+      },
+      "showgrid": true,
+      "gridcolor": "#e6e6e6",
+      "zeroline": false,
+      "showline": true,
+      "linecolor": "#cccccc",
+      "domain": [0, 0.8]
+    },
+    "yaxis2": {
+      "title": {
+        "text": "Temperature (°F)",
+        "font": {
+          "size": 12,
+          "color": "#333333"
+        }
+      },
+      "overlaying": "y",
+      "side": "right",
+      "position": 1,
+      "showgrid": false,
+      "domain": [0.85, 1.0],
+      "anchor": "x"
+    },
+    "yaxis3": {
+      "title": {
+        "text": "Cloud Cover (%)",
+        "font": {
+          "size": 12,
+          "color": "#333333"
+        }
+      },
+      "overlaying": "y",
+      "side": "right",
+      "position": 0.95,
+      "showgrid": false,
+      "domain": [0, 0.8],
+      "range": [-100, 200]
+    },
+    "legend": {
+      "title": {
+        "text": "   Legend<br>Click to toggle<br>Double-click to isolate",
+        "font": {
+          "size": 12,
+          "color": "#333333"
+        }
+      },
+      "bgcolor": "#f9f9f9",
+      "bordercolor": "#e6e6e6",
+      "borderwidth": 1
+    },
+    "hovermode": "x",
+    "dragmode": "pan",
+    "template": "plotly_white",
+    "margin": {
+      "l": 60,
+      "r": 60,
+      "t": 80,
+      "b": 60
+    }
+  },
+  "traces": {
+    "main_load": {
+      "line": {
+        "color": "blue",
+        "width": 1,
+        "dash": "solid"
+      },
+      "name": "Load (kW)",
+	  "visible": "legendonly"
+    },
+    "daily_peak": {
+      "mode": "lines+markers+text",
+      "line": {
+        "color": "blue",
+        "width": 1,
+        "dash": "solid"
+      },
+      "marker": {
+        "color": "red",
+        "size": 1,
+        "symbol": "triangle-up"
+      },
+      "textposition": "top center",
+      "name": "Daily Peak (Load)"
+    },
+    "target_datetime": {
+      "line": {
+        "color": "blue",
+        "width": 1,
+        "dash": "solid"
+      },
+      "name": "Target Datetime"
+    },
+    "85_load": {
+      "line": {
+        "color": "green",
+        "width": 1,
+        "dash": "dash"
+      },
+      "name": "85% Load",
+	  "visible": "legendonly"
+    },
+    "100_load": {
+      "line": {
+        "color": "orange",
+        "width": 1,
+        "dash": "dash"
+      },
+      "name": "100% Load",
+	  "visible": "legendonly"
+    },
+    "120_load": {
+      "line": {
+        "color": "red",
+        "width": 1,
+        "dash": "dash"
+      },
+      "name": "120% Load",
+	  "visible": "legendonly"
+    },
+    "peak_load": {
+      "line": {
+        "color": "purple",
+        "width": 1,
+        "dash": "solid"
+      },
+      "name": "Coincidental Peak"
+    },
+    "temperature": {
+		"line": {
+			"color": "grey",
+			"width": 1,
+			"dash": "solid"
+		},
+    "name": "Temperature (F)"
+    },
+    "cloud_cover": {
+		"line": {
+			"color": "lightblue",
+			"width": 1,
+			"dash": "solid"
+		},
+			"name": "Cloud Cover (%)",
+			"visible": "legendonly"},
+	"temp_peak": {
+		"mode": "markers+lines",
+		"marker": {
+			"color": "lightblue",
+			"size": 1
+		},
+      "yaxis": "y3",
+      "name": "Daily Peak (Temp)"
+    }
+  },
+  "annotations": {
+    "warning": {
+      "font": {
+        "size": 14,
+        "color": "red"
+      },
+      "bgcolor": "yellow",
+      "bordercolor": "red",
+      "borderwidth": 2
+    },
+    "target": {
+      "font": {
+        "size": 12,
+        "color": "blue"
+      },
+      "bgcolor": "lightgray",
+      "bordercolor": "blue",
+      "borderwidth": 1
+    },
+    "peak": {
+      "font": {
+        "size": 12,
+        "color": "purple"
+      },
+      "bgcolor": "lightgray",
+      "bordercolor": "purple",
+      "borderwidth": 1
+    }
+  }
+}
