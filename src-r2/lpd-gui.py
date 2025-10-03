@@ -5,15 +5,19 @@ Load Profile Analysis GUI — one-file EXE–friendly
 ==============================================================================
 Author:  Michal Czarnecki
 Updated: 2025-10-02
-Version:  1.2
+Version:  1.3
 
 Changes in this version:
- - Ensures all embedded scripts run in the **CSV's folder** so outputs land
-   next to the input (pushd context manager).
- - Captures **stdout + stderr** into the GUI textbox.
- - Adds a **logging handler** so logging.* messages also appear in the textbox.
- - Keeps the weather CSV by calling lpd-merge.py with --keep-weather.
- - Leaves external assets (plotly.json, weather-codes.json, config.py) on disk.
+ - 🧭 Runs all embedded scripts in the **CSV's folder** so outputs land next to input.
+ - 📜 Captures **stdout/stderr** and Python **logging** into the GUI textbox.
+ - 🌦️ Weather: respects the **Run Weather Analysis** checkbox.
+ - 🌦️ Weather file path is resolved robustly:
+     1) Prefer EXE dir pattern: `weather_{ZIP}_{START}_{END}.csv` (what lpd-weather.py writes
+        when arguments.txt is missing in frozen mode)
+     2) Fallback: `<base>_WEATHER.csv` next to the LP CSV
+ - 🔗 Merge: only runs if weather analysis is enabled **and** a weather CSV was actually found.
+ - 🌐 Interactive HTML is opened **once** from the GUI; embedded script should not auto-open.
+ - 📝 Leaves external assets (plotly.json, weather-codes.json, config.py) on disk.
 
 Design notes:
  - In dev (not frozen), files resolve relative to this file's directory.
@@ -37,6 +41,8 @@ import pandas as pd
 import contextlib
 import logging
 import webbrowser
+from pathlib import Path
+from typing import Optional, Tuple
 
 DEBUG = False  # Set to True for extra prints
 
@@ -47,29 +53,23 @@ def is_frozen() -> bool:
     """Return True when running as a PyInstaller-frozen executable."""
     return getattr(sys, "frozen", False) is True
 
-def exe_dir() -> str:
+
+def exe_dir() -> Path:
     """
     Directory containing the running EXE (frozen) or this source file (dev).
     Use for files we expect to ship next to the EXE (plotly.json, config.py, etc.).
     """
-    return os.path.dirname(sys.executable) if is_frozen() else os.path.dirname(__file__)
+    return Path(sys.executable).parent if is_frozen() else Path(__file__).resolve().parent
 
-def external_path(rel: str) -> str:
-    """
-    Path to a resource. When frozen (one-file EXE), use the extracted bundle
-    directory (sys._MEIPASS) so the assets are effectively “inside the EXE”.
-    In dev, use the source file directory.
-    """
-    base = embedded_base_dir() if is_frozen() else exe_dir()
-    return os.path.join(base, rel)
 
-def embedded_base_dir() -> str:
+def embedded_base_dir() -> Path:
     """
     Base directory for embedded resources when frozen (sys._MEIPASS),
     otherwise the directory of this source file. We load the bundled
     secondary scripts (lpd-*.py) from here in onefile mode.
     """
-    return getattr(sys, "_MEIPASS", os.path.dirname(__file__))
+    return Path(getattr(sys, "_MEIPASS", Path(__file__).resolve().parent))
+
 
 def run_embedded_script(script_name: str, args: list[str]) -> int:
     """
@@ -79,17 +79,18 @@ def run_embedded_script(script_name: str, args: list[str]) -> int:
     cannot terminate the whole GUI process.
     Returns an integer exit code (0 = success).
     """
-    script_path = os.path.join(embedded_base_dir(), script_name)
-    if not os.path.isfile(script_path):
+    script_path = embedded_base_dir() / script_name
+    if not script_path.is_file():
         raise FileNotFoundError(f"Embedded script not found: {script_path}")
 
     old_argv = sys.argv
-    # Monkeypatch os._exit to prevent hard process termination
     import os as _os
     _orig_os_exit = _os._exit
+
     def _fake_exit(code=0):
         print(f"[WARN] {script_name} attempted os._exit({code}); converting to SystemExit.")
         raise SystemExit(code)
+
     _os._exit = _fake_exit
 
     try:
@@ -97,11 +98,10 @@ def run_embedded_script(script_name: str, args: list[str]) -> int:
         if DEBUG:
             print(f"[DEBUG] run_embedded_script -> {sys.argv}")
         try:
-            runpy.run_path(script_path, run_name="__main__")
+            runpy.run_path(str(script_path), run_name="__main__")
             print(f"[INFO] {script_name} completed (no sys.exit).")
             return 0
         except SystemExit as se:
-            # Convert SystemExit to a numeric code and continue.
             code = se.code
             try:
                 code = int(code)
@@ -114,14 +114,15 @@ def run_embedded_script(script_name: str, args: list[str]) -> int:
             return code
     finally:
         sys.argv = old_argv
-        # Restore os._exit
         _os._exit = _orig_os_exit
+
 
 # ──────────────────────────────────────────────────────────────────────────────
 # Console/logging redirection into the GUI
 # ──────────────────────────────────────────────────────────────────────────────
 class RedirectText:
     """Redirects stdout/stderr into the GUI's scrolling text box."""
+
     def __init__(self, text_widget: tk.Text):
         self.text_widget = text_widget
 
@@ -132,8 +133,10 @@ class RedirectText:
     def flush(self) -> None:
         pass
 
+
 class TextHandler(logging.Handler):
     """Route logging records into the GUI textbox (format: ts - LEVEL - msg)."""
+
     def __init__(self, text_widget: tk.Text):
         super().__init__()
         self.text_widget = text_widget
@@ -151,6 +154,20 @@ class TextHandler(logging.Handler):
 # ──────────────────────────────────────────────────────────────────────────────
 # Utilities
 # ──────────────────────────────────────────────────────────────────────────────
+@contextlib.contextmanager
+def pushd(new_dir: Path):
+    """
+    Temporarily change CWD so relative outputs (e.g., *_RESULTS-LP.csv) are created
+    next to the input CSV file, not in the EXE's working directory.
+    """
+    prev = Path.cwd()
+    os.chdir(new_dir)
+    try:
+        yield
+    finally:
+        os.chdir(prev)
+
+
 def round_to_nearest_15_minutes(dt: datetime.datetime) -> datetime.datetime:
     """Round a datetime object to the nearest 15-minute interval."""
     minute = (dt.minute + 7) // 15 * 15
@@ -159,36 +176,46 @@ def round_to_nearest_15_minutes(dt: datetime.datetime) -> datetime.datetime:
         rounded_dt += datetime.timedelta(hours=1)
     return rounded_dt
 
-@contextlib.contextmanager
-def pushd(new_dir: str):
+
+def results_lp_path(raw_csv_path: str) -> Path:
+    """Given the raw input CSV path, return sibling <name>_RESULTS-LP.csv."""
+    p = Path(raw_csv_path)
+    return p.with_name(p.stem + "_RESULTS-LP.csv")
+
+
+def lp_date_range(lp_csv: Path) -> Tuple[str, str]:
+    """Return (start_date, end_date) as YYYY-MM-DD strings from LP CSV."""
+    df = pd.read_csv(lp_csv, usecols=["datetime"])  # fast read
+    s = pd.to_datetime(df["datetime"], errors="coerce").dropna()
+    start = s.min().date().isoformat()
+    end = s.max().date().isoformat()
+    return start, end
+
+
+def resolve_weather_path(zip_code: str, start_date: str, end_date: str, lp_csv: Path) -> Optional[Path]:
     """
-    Temporarily change CWD so relative outputs (e.g., *_RESULTS-LP.csv) are created
-    next to the input CSV file, not in the EXE's working directory.
+    Resolve where lpd-weather.py actually wrote the weather CSV.
+    Preference:
+      1) EXE dir: weather_{zip}_{start}_{end}.csv
+      2) LP folder: <base>_WEATHER.csv
+    Returns Path if exists, else None.
     """
-    prev = os.getcwd()
-    os.chdir(new_dir)
-    try:
-        yield
-    finally:
-        os.chdir(prev)
+    # 1) EXE dir pattern (seen in your logs when arguments.txt missing)
+    exe_weather = exe_dir() / f"weather_{zip_code}_{start_date}_{end_date}.csv"
+    if exe_weather.is_file():
+        return exe_weather
+
+    # 2) Fallback next to the LP CSV
+    lp_weather = lp_csv.with_name(lp_csv.stem.replace("_RESULTS-LP", "_WEATHER") + ".csv")
+    if lp_weather.is_file():
+        return lp_weather
+
+    return None
 
 
-default_text = """                INSTRUCTIONS FOR USE
-This program will run a load analysis profile for data in the input file.
-Input CSV file is generated outside of this application and should be formatted:
-
-Line 1: meter,date,time,kw
-Line 2+: 85400796,2024-01-01,00:15:00.000,0.052
-
-If transformer KVA is entered, a time-based transformer loading profile will 
-be generated in the output along with a graph. (Single-phase only.)
-If KVA = 0, transformer loading will be skipped in the output file, and no 
-visualization will be available.
-"""
-default_kva = "75"
-default_date = "2024-08-10 16:45:00"
-
-
+# ──────────────────────────────────────────────────────────────────────────────
+# GUI helpers and actions
+# ──────────────────────────────────────────────────────────────────────────────
 def display_datetime_range(csv_file: str) -> None:
     """
     Read the CSV and display the first and last date in the output box.
@@ -235,32 +262,61 @@ def save_arguments_to_file(csv_file: str, kva_value: str, datetime_value: str | 
       which corresponds to “inside the EXE” at runtime.
     - If that fails (permissions), fallback next to the EXE.
     """
-    primary = os.path.join(embedded_base_dir() if is_frozen() else exe_dir(), "arguments.txt")
-    fallback = os.path.join(exe_dir(), "arguments.txt")
+    primary = embedded_base_dir() / "arguments.txt"
+    fallback = exe_dir() / "arguments.txt"
 
     payload = f'"{csv_file}" --transformer_kva {kva_value}'
     if datetime_value:
         payload += f' --datetime "{datetime_value}"'
     payload += "\n"
 
-    # Try primary location first
     try:
-        with open(primary, "w", encoding="utf-8") as f:
-            f.write(payload)
+        primary.write_text(payload, encoding="utf-8")
         update_status(f"arguments.txt written: {primary}", "success")
         return
     except Exception as e:
         print(f"[WARN] Could not write to MEIPASS: {e}. Trying EXE folder...")
 
-    # Fallback next to the EXE
     try:
-        with open(fallback, "w", encoding="utf-8") as f:
-            f.write(payload)
+        fallback.write_text(payload, encoding="utf-8")
         update_status(f"arguments.txt written: {fallback}", "success")
     except Exception as e:
         print(f"[ERROR] Failed to write arguments.txt to both locations: {e}")
         update_status("An error occurred while saving arguments to file.", "error")
 
+
+# NEW: run weather and return the resolved weather file path (or None)
+def run_weather_and_resolve_path(zip_code: str, lp_results: Path) -> Optional[Path]:
+    """
+    Runs lpd-weather.py for the min/max dates found in lp_results, then resolves
+    the actual weather CSV path using resolve_weather_path(). Returns Path or None.
+    """
+    try:
+        if not weather_analysis_var.get():
+            print("[INFO] Weather analysis unchecked; skipping weather generation.")
+            return None
+
+        if not lp_results.is_file():
+            update_status("Load profile file not found; cannot run weather analysis.", "warning")
+            return None
+
+        start_date, end_date = lp_date_range(lp_results)
+        update_status("Running weather analysis (lpd-weather.py)...", "info")
+        rc = run_embedded_script("lpd-weather.py", [zip_code, start_date, end_date])
+        if rc != 0:
+            update_status("Weather analysis reported a non-zero exit code.", "warning")
+
+        wx_path = resolve_weather_path(zip_code, start_date, end_date, lp_results)
+        if wx_path and wx_path.is_file():
+            update_status(f"Weather file found: {wx_path.name}", "success")
+            return wx_path
+        else:
+            update_status("Weather file not found after generation.", "warning")
+            return None
+
+    except Exception as e:
+        update_status(f"Error during weather analysis: {e}", "error")
+        return None
 
 
 def launch_analysis(csv_file: str, kva_value: str, datetime_value: str | None = None) -> None:
@@ -291,42 +347,50 @@ def launch_analysis(csv_file: str, kva_value: str, datetime_value: str | None = 
         # Write arguments.txt next to EXE/.py for consistency
         save_arguments_to_file(csv_file, kva_value, datetime_value)
 
-        # Build a shared CLI arg list used by main/interactive (merge takes only filename)
+        # Build a shared CLI arg list used by main/interactive
         base_command = [csv_file, "--transformer_kva", str(kva_value)]
         if datetime_value:
             base_command.extend(["--datetime", datetime_value.strip()])
 
-        # Ensure all scripts run in the CSV's folder so outputs go to the right place
-        work_dir = os.path.dirname(csv_file) or os.getcwd()
+        work_dir = Path(csv_file).parent if Path(csv_file).parent else Path.cwd()
         with pushd(work_dir):
             # 1) MAIN: compute results & _RESULTS-LP.csv
             update_status("Running analysis (lpd-main.py)...", "info")
             run_embedded_script("lpd-main.py", base_command)
 
-            # 2) WEATHER (optional): compute _WEATHER.csv from _RESULTS-LP.csv date range
-            launch_weather_analysis()
+            # Path to processed LP used by merge & interactive
+            lp_results = results_lp_path(csv_file)
 
-            # 3) MERGE weather into LP (keep weather file by default)
-            update_status("Merging weather with load profile (lpd-merge.py)...", "info")
-            run_embedded_script("lpd-merge.py", [csv_file, "--keep-weather"])
+            # 2) WEATHER + MERGE (only if checkbox is set and a weather file exists)
+            if weather_analysis_var.get():
+                zip_code = (zipcode_entry.get().strip() or "84601")
+                wx_path = run_weather_and_resolve_path(zip_code, lp_results)
 
-            # 4) INTERACTIVE view
+                if wx_path and wx_path.is_file():
+                    update_status("Merging weather with load profile (lpd-merge.py)...", "info")
+                    run_embedded_script("lpd-merge.py", [str(lp_results), "--weather", str(wx_path), "--keep-weather"])
+                else:
+                    print("[WARN] Weather file missing; skipping merge.")
+            else:
+                print("[INFO] Weather analysis unchecked; skipping weather and merge.")
+
+            # 3) INTERACTIVE view (writes HTML without auto-opening)
             update_status("Launching interactive view (lpd-interactive.py)...", "info")
             run_embedded_script("lpd-interactive.py", base_command)
 
-        # Show final textual results if present (lives beside the CSV)
-        base, _ = os.path.splitext(csv_file)
+        # Show final textual results if present (beside the CSV)
+        base = Path(csv_file).with_suffix("")
         results_file = f"{base}_RESULTS.txt"
-        if os.path.isfile(results_file):
+        if Path(results_file).is_file():
             with open(results_file, "r", encoding="utf-8", errors="ignore") as f:
                 clear_output_textbox()
                 output_textbox.insert(tk.END, f.read())
         else:
             print(f"[WARN] Expected results not found: {results_file}")
 
-        # Try opening the interactive HTML fallback if the interactive script wrote it
+        # Open interactive HTML once (GUI controls opening)
         html_fallback = f"{base}_RESULTS-LP-INTERACTIVE.html"
-        if os.path.isfile(html_fallback):
+        if Path(html_fallback).is_file():
             try:
                 webbrowser.open("file://" + os.path.abspath(html_fallback))
             except Exception as e:
@@ -337,49 +401,6 @@ def launch_analysis(csv_file: str, kva_value: str, datetime_value: str | None = 
     except Exception as e:
         print(f"[ERROR] launch_analysis failed: {e}")
         update_status("An error occurred during analysis.", "error")
-
-
-def launch_weather_analysis() -> None:
-    """
-    Launch lpd-weather.py using the min/max datetime found in the generated
-    *_RESULTS-LP.csv. Only runs if the checkbox is set.
-    """
-    if not weather_analysis_var.get():
-        return
-
-    try:
-        csv_file = csv_path_entry.get()
-        if not csv_file:
-            update_status("Error: Please select a CSV file.", "error")
-            return
-
-        lp_path = f"{os.path.splitext(csv_file)[0]}_RESULTS-LP.csv"
-        if not os.path.isfile(lp_path):
-            update_status("Load profile file not found; cannot run weather analysis.", "warning")
-            return
-
-        df = pd.read_csv(lp_path)
-        if "datetime" not in df.columns:
-            update_status("Required column 'datetime' is missing in the results file.", "error")
-            return
-
-        df["datetime"] = pd.to_datetime(df["datetime"])
-        min_dt = df["datetime"].min()
-        max_dt = df["datetime"].max()
-        start_date = min_dt.strftime("%Y-%m-%d")
-        end_date = max_dt.strftime("%Y-%m-%d")
-
-        zipcode = zipcode_entry.get().strip() or "84601"
-
-        # Run embedded weather script; it will read OPENWEATHER_API_KEY from
-        # external config.py (next to EXE) via its own import fallback.
-        update_status("Running weather analysis (lpd-weather.py)...", "info")
-        run_embedded_script("lpd-weather.py", [zipcode, start_date, end_date])
-
-        update_status("Weather analysis completed.", "success")
-
-    except Exception as e:
-        update_status(f"Error during weather analysis: {e}", "error")
 
 
 def clear_output_textbox() -> None:
@@ -446,6 +467,23 @@ root.title("Load Profile Analysis")
 root.resizable(False, False)
 
 weather_analysis_var = tk.BooleanVar(value=True)
+
+default_text = """                INSTRUCTIONS FOR USE
+This program will run a load analysis profile for data in the input file.
+Input CSV file is generated outside of this application and should be formatted:
+
+Line 1: meter,date,time,kw
+Line 2+: 85400796,2024-01-01,00:15:00.000,0.052
+
+If transformer KVA is entered, a time-based transformer loading profile will 
+be generated in the output along with a graph. (Single-phase only.)
+If KVA = 0, transformer loading will be skipped in the output file, and no 
+visualization will be available.
+"""
+
+default_kva = "75"
+
+default_date = "2024-08-10 16:45:00"
 
 # Top Frame
 top_frame = tk.Frame(root)

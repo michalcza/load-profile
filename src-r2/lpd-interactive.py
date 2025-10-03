@@ -255,15 +255,15 @@ def visualize_load_profile_interactive(load_profile_file: str, transformer_kva: 
         fig.write_html(html_path, include_plotlyjs="cdn", auto_open=False, config=plot_config)
         print(f"[OK] Interactive HTML written to: {html_path}")
 
-        try:
-            fig.show(config=plot_config)
-        except Exception as e:
-            print(f"[WARN] fig.show() failed: {e}")
+        #try:
+        #    fig.show(config=plot_config)
+        #except Exception as e:
+        #    print(f"[WARN] fig.show() failed: {e}")
 
-        try:
-            webbrowser.open("file://" + os.path.abspath(html_path))
-        except Exception as e:
-            print(f"[WARN] Could not open HTML in browser: {e}")
+        #try:
+        #    webbrowser.open("file://" + os.path.abspath(html_path))
+        #except Exception as e:
+        #    print(f"[WARN] Could not open HTML in browser: {e}")
 
     except Exception as e:
         print(f"[ERROR] An error occurred while generating the interactive visualization: {e}")

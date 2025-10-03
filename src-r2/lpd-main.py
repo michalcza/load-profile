@@ -140,7 +140,7 @@ clear_screen()
 
 global pwd
 pwd = os.getcwd()
-logger.info("#                   *** Start ***                   #")
+logger.info("*** Start ***")
 logger.info(pwd)
 
 def process_csv(input_file):
@@ -454,18 +454,7 @@ def process_csv(input_file):
         error_message = f"Error: The file '{input_file}' was not found."
         print(error_message)
         logger.error(error_message)
-        raise e
-    class CustomValueError(ValueError):
-        pass
-
-    try:
-        raise CustomValueError("The provided value is invalid.")
-
-    except CustomValueError as e:
-        error_message = f"Custom value error: {e}"
-        print(error_message)
-        logger.error(error_message)
-        sys.exit(1)
+        raise
 
     except Exception as e:
         error_message = f"Unexpected error: {e}"
@@ -503,14 +492,13 @@ def transformer_load_analysis(load_profile_file, transformer_kva):
         # Get time interval in hours
         time_interval = (out_data["datetime"].iloc[1] - out_data["datetime"].iloc[0]).total_seconds() / 3600
         # ------------------------------------------------------------------
-        # Helper: find the longest consecutive run where load >= threshold%
+        # Helper: longest continuous run where load >= threshold%
         # Assumes a mostly-regular time series. We infer the interval from
         # the most common timestamp difference (mode) for robustness.
         # Returns (start_dt, end_dt, duration_hours, duration_days).
         # ------------------------------------------------------------------
-        def longest_consecutive_run_over_threshold(df: pd.DataFrame,
+        def longest_consecutive_run_over_threshold_100(df: pd.DataFrame,
                                                    value_col: str,
-                                                   threshold: float,
                                                    time_col: str = "datetime"):
             # Ensure sorted by time and compute diffs
             df = df.sort_values(time_col).reset_index(drop=True).copy()
@@ -525,7 +513,52 @@ def transformer_load_analysis(load_profile_file, transformer_kva):
                 interval_td = pd.Timedelta(minutes=15)
 
             # Boolean mask for over-threshold points
-            is_over = df[value_col] >= threshold
+            is_over = df[value_col] >= 100.0
+
+            # "Break" when not over-threshold OR when gap != expected interval
+            breaks = (~is_over) | (diffs != interval_td)
+
+            # Group consecutive over-threshold segments
+            group_id = breaks.cumsum()
+
+            over_df = df[is_over].copy()
+            if over_df.empty:
+                return None, None, 0.0, 0.0
+
+            over_df["grp"] = group_id[is_over].values
+            agg = over_df.groupby("grp").agg(
+                start=(time_col, "min"),
+                end=(time_col, "max"),
+                count=(time_col, "size"),
+            )
+
+            # Each sample spans one full interval -> duration = N * interval
+            agg["duration_hours"] = agg["count"] * (interval_td / pd.Timedelta(hours=1))
+            best = agg.loc[agg["duration_hours"].idxmax()]
+
+            start_dt = pd.to_datetime(best["start"])
+            end_dt   = pd.to_datetime(best["end"])
+            dur_h    = float(agg.loc[agg['duration_hours'].idxmax(), 'duration_hours'])
+            dur_d    = dur_h / 24.0
+            return start_dt, end_dt, dur_h, dur_d
+
+        def longest_consecutive_run_over_threshold_120(df: pd.DataFrame,
+                                                   value_col: str,
+                                                   time_col: str = "datetime"):
+            # Ensure sorted by time and compute diffs
+            df = df.sort_values(time_col).reset_index(drop=True).copy()
+            diffs = df[time_col].diff()
+
+            # Infer regular interval (fallback to 15 minutes if not inferrable)
+            try:
+                interval_td = diffs.mode().iloc[0]
+                if pd.isna(interval_td) or interval_td == pd.Timedelta(0):
+                    interval_td = pd.Timedelta(minutes=15)
+            except Exception:
+                interval_td = pd.Timedelta(minutes=15)
+
+            # Boolean mask for over-threshold points
+            is_over = df[value_col] >= 120.0
 
             # "Break" when not over-threshold OR when gap != expected interval
             breaks = (~is_over) | (diffs != interval_td)
@@ -599,17 +632,28 @@ def transformer_load_analysis(load_profile_file, transformer_kva):
             f.write(f" {'Exceeds 120%':<30}| {(above_120 / 24):<10.2f} days | {above_120:<10.2f} hours | {percent_above_120:<7.2f} % \n")
             
             # ---- Longest continuous time above 120% of load capacity ----
-            start_120, end_120, hours_120, days_120 = longest_consecutive_run_over_threshold(
-                out_data, value_col="load_percentage", threshold=120.0, time_col="datetime"
-            )
+            start_120, end_120, hours_120, days_120 = longest_consecutive_run_over_threshold_120(out_data, value_col="load_percentage", time_col="datetime")
             f.write("-" * 80 + "\n")
             if hours_120 > 0:
-                start_str = start_120.strftime("%Y-%m-%d %H:%M:%S")
-                end_str   = end_120.strftime("%Y-%m-%d %H:%M:%S")
+                start_str120 = start_120.strftime("%Y-%m-%d %H:%M")
+                end_str120   = end_120.strftime("%Y-%m-%d %H:%M")
                 f.write(f" Max consecutive >120%: {hours_120:>7.2f} hours ({days_120:>5.2f} days)\n")
-                f.write(f" Start: {start_str} End: {end_str}\n")
+                f.write(f" Start: {start_str120} End: {end_str120}\n")
             else:
                 f.write(" Max consecutive >120%: 0.00 hours (no intervals above 120%)\n")
+
+            # ---- Longest continuous time above 100% of transformer capacity ----
+            start_100, end_100, hours_100, days_100 = longest_consecutive_run_over_threshold_100(
+                out_data, value_col="load_percentage", time_col="datetime"
+            )
+            if hours_100 > 0:
+                start100_str = start_100.strftime("%Y-%m-%d %H:%M")
+                end100_str   = end_100.strftime("%Y-%m-%d %H:%M")
+                f.write(f" Max consecutive >100%: {hours_100:>7.2f} hours ({days_100:>5.2f} days)\n")
+                f.write(f" Start: {start100_str} End: {end100_str}\n")
+            else:
+                f.write(" Max consecutive >100%: 0.00 hours (no intervals above 100%)\n")
+
             f.write("=" * 80 + "\n")
             f.write(f"{'Current directory: ':<80}\n")
             f.write(f"{pwd:<80}\n\n")
@@ -718,5 +762,3 @@ if __name__ == "__main__":
             sys.exit(1)
     else:
         print("Full load KVA not specified or is zero. Skipping analysis and visualization.")
-
-
