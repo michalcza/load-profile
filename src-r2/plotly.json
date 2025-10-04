@@ -184,33 +184,44 @@
       "name": "Daily Peak (Temp)"
     }
   },
-  "annotations": {
-    "warning": {
-      "font": {
-        "size": 14,
-        "color": "red"
-      },
-      "bgcolor": "yellow",
-      "bordercolor": "red",
-      "borderwidth": 2
-    },
-    "target": {
-      "font": {
-        "size": 12,
-        "color": "blue"
-      },
-      "bgcolor": "lightgray",
-      "bordercolor": "blue",
-      "borderwidth": 1
-    },
-    "peak": {
-      "font": {
-        "size": 12,
-        "color": "purple"
-      },
-      "bgcolor": "lightgray",
-      "bordercolor": "purple",
-      "borderwidth": 1
-    }
+"annotations": {
+  "warning": {
+    "font": { "size": 14, "color": "red" },
+    "bgcolor": "yellow",
+    "bordercolor": "red",
+    "borderwidth": 2
+  },
+
+  "target": {
+    "font": { "size": 12, "color": "blue" },
+    "bgcolor": "lightgray",
+    "bordercolor": "blue",
+    "borderwidth": 1,
+
+    "showarrow": true,
+    "arrowhead": 2,
+    "xanchor": "left",
+    "yanchor": "bottom",
+    "ax": 100,   
+    "ay": -100, 
+    "xref": "x",
+    "yref": "y"
+  },
+
+  "peak": {
+    "font": { "size": 12, "color": "purple" },
+    "bgcolor": "lightgray",
+    "bordercolor": "purple",
+    "borderwidth": 1,
+
+    "showarrow": true,
+    "arrowhead": 2,
+    "xanchor": "left",
+    "yanchor": "bottom",
+    "ax": 100,
+    "ay": -100,
+    "xref": "x",
+    "yref": "y"
   }
+}
 }
