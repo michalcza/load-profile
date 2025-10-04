@@ -146,24 +146,9 @@ Below is a concise list of all functions with a short synopsis:
 |       OCD226826-365days.csv
 |       OCD226826-700days.csv
 |
-+---src-r1
++---src
 |   |   arguments.txt
-|   |   config.py
-|   |   lpd-analytics.py
-|   |   lpd-analytics2.py
-|   |   lpd-analytics3.py
-|   |   lpd-combined-analysis.py
-|   |   lpd-gui.py
-|   |   lpd-interactive.exe
-|   |   lpd-interactive.py
-|   |   lpd-interactive.spec
-|   |   lpd-interactive2.py
-|   |   lpd-main.exe
-|   |   lpd-main.py
-|   |
-+---src-r2
-|   |   arguments.txt
-|   |   config.py
+|   |   config.py (Weather API key)
 |   |   lpd-gui.py
 |   |   lpd-interactive.py
 |   |   lpd-main.py
@@ -172,20 +157,22 @@ Below is a concise list of all functions with a short synopsis:
 |   |   lpd_debug.log
 |   |   plotly.json
 |   |   weather-codes.json
+|   |   onefile-gui-external.spec
+|   |   requirements.txt
+|   |   build-onefile.ps1
 |   |
 |
-\---tests
-    |   test-all.py
-    |   test_lpd_gui.py
 ```
 ## Usage
 
 ### Graphical Interface (GUI)
 
 1. Run the GUI (command line):
-   ```bash
-   python lpd-gui.py
-   ```
+   `> python ./src/lpd-gui.py
+   Launch python application directly
+   `> ./dist/lpd-suite.exe
+   Launch one-file windows executable
+   
 2. Follow the on-screen instructions:
    - Select the input CSV file.
    - Enter the transformer KVA size.
@@ -220,10 +207,11 @@ meter,date,time,kw
 - **Load Profile CSV**: Aggregated time-based load profile data.
 - **Visualization Graph**: A time-series plot showing load percentages against transformer capacity thresholds.
 
-## Compiler syntax (future)
-`pyinstaller --onefile --add-data "lpd-main.exe;." --distpath . lpd-gui.py`
-`pyinstaller --onefile --distpath . lpd-main.py`
-`pyinstaller --onefile --add-data "lpd-main.exe;lpd-main.exe" --add-data "lpd-interactive.exe;lpd-interactive.exe" --distpath . lpd-gui.py`
+## Compiler syntax
+`powershell -ExecutionPolicy Bypass -File .\build-onefile.ps1
+
+`powershell -ExecutionPolicy Bypass -File .\build-onefile.ps1 -Clean  
+Will delete /build and /dist folders
 
 ## Documentation
 Additional documentation is available:

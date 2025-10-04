@@ -70,3 +70,6 @@ sample-data/98meters-300days-2788K_rows_RESULTS-LP.csv
 sample-data/98meters-300days-2788K_rows_RESULTS-LP-INTERACTIVE.html
 sample-data/8meters-405days-307K_rows_RESULTS-LP-INTERACTIVE.html
 *.html
+/src/.venv
+/src/.vs
+/src/build
