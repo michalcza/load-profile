@@ -1,75 +1,62 @@
-# Ignore all CSV files
+#  Python bytecode / caches / virtualenvs
+__pycache__/
+*.py[cod]
+*.pyd
+.mypy_cache/
+.pytest_cache/
+.venv/
+env/
+venv/
+
+#  Build / packaging / PyInstaller outputs
+build/
+dist/
+*.egg-info/
+*.whl
+*.manifest
+*.pkg
+*_MEI*/
+
+#  Logs and scratch
+*.log
+*.tmp
+*.bak
+.DS_Store
+Thumbs.db
+
+#  IDE
+.vscode/
+.idea/
+
+#  Generated analysis artifacts (never track)
+*_RESULTS.txt
+*_RESULTS-LP.csv
+*_RESULTS-GRAPH*.png
+*_WEATHER.csv
+*_INTERACTIVE.html
+arguments.txt
+weather_*.csv
+lpd_debug.log
+
+#  Legacy project structure
+src-r1/
+src-r2/
+src-3ph/
+sample-data-3ph/
+
+#  CSVs, PNGs, HTML:
 *.csv
-
-# Ignore all TXT files
-*.txt
-
-# Ignote all PNG image files
 *.png
+*.html
 
-# Allow specific sample files
-#!sample-data/98meters-300days-2788K_rows.csv Excluding because file is 108MB
-#!sample-data/98meters-600days-5596K_rows.csv Excluding because file is 216MB
-!sample-data/98meters-600days-5596K_rows_RESULTS-GRAPH.png
-!sample-data/98meters-600days-5596K_rows_RESULTS.txt
-!sample-data/98meters-600days-5596K_rows_RESULTS.txt
-!sample-data/98meters-600days-5596K_rows_RESULTS-LP.csv
-!sample-data/98meters-600days-5596K_rows_RESULTS-LP.csv
-!sample-data/98meters-300days-2788K_rows_RESULTS.txt
-!sample-data/98meters-300days-2788K_rows_RESULTS-LP.csv
-!sample-data/98meters-300days-2788K_rows_RESULTS-GRAPH.png
-!sample-data/22meters-365days-731K_rows.csv
-!sample-data/22meters-500days-1000K_rows.csv
-!sample-data/22meters-736days-1470K_rows.csv
-!sample-data/22meters-list.csv
-!sample-data/8meters-364days-278K_rows.csv
-!sample-data/8meters-405days-307K_rows.csv
-!sample-data/8meters-list.csv
+# keep a couple of tiny sample CSVs for docs/tests
 !sample-data/8meters-14days-10K_rows.csv
 !sample-data/8meters-30days-23K_rows.csv
-!sample-data/98meters-list.csv
 !sample-data/923meters-7days-545K_rows.csv
 
-# Binary EXE build files
+SPEC file for reproducible builds.
+ !src/build-onefile.spec
 
-/src-r1/build
-/src-r2/build
-src/*.spec
-*.spec
-*.log
-
-src-r1/__pycache__/
-src-r2/__pycache__/
-
-src-r1/python
-src-r2/python
-
-src-r2/config.py !API key for weather goes here.
-src-r1/config.py !API key for weather goes here.
-
-src-r1/lpd_debug.log
-src-r2/lpd_debug.log
-
-src-r2/config.py
-src-r2/config.py
-
-/tests/__pycache__
-
-/sample-data-3ph/
-sample-data-3ph/
-/src-3ph/_recycle
-src-3ph/.processed-hashes.json
-sample-data/98meters-600days-5596K_rows_RESULTS-LP.csv
-sample-data/98meters-600days-5596K_rows_RESULTS.txt
-/src-r2/.venv
-/src-r2/.vs
-src-r2/dist/config.py
-sample-data/98meters-300days-2788K_rows_RESULTS.txt
-sample-data/98meters-600days-5596K_rows_RESULTS-LP-INTERACTIVE.html
-sample-data/98meters-300days-2788K_rows_RESULTS-LP.csv
-sample-data/98meters-300days-2788K_rows_RESULTS-LP-INTERACTIVE.html
-sample-data/8meters-405days-307K_rows_RESULTS-LP-INTERACTIVE.html
-*.html
-/src/.venv
-/src/.vs
-/src/build
+# Secrets
+config.py
+!config.example.py
