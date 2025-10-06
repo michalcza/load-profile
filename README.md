@@ -10,18 +10,12 @@ The tool includes a graphical interface (GUI) for ease of use and a command-line
 
 ## Features
 
-- **Process CSV Load Data**:
-  - Accepts CSV files with `meter`, `date`, `time`, and `kw` columns.
-- **Transformer Analysis**:
-  - Optionally analyzes load profiles against transformer KVA ratings.
-- **Visualization**:
-  - Generates time-based load profile graphs.
-- **Metrics Calculation**:
-  - Load Factor, Diversity Factor, Coincidence Factor, and more.
-- **Error Handling**:
-  - Validates input data and provides detailed error messages.
-- **GUI Interface**:
-  - Easy-to-use graphical interface for selecting files and configuring settings.
+- **Process CSV Load Data**: Accepts CSV files with `meter`, `date`, `time`, and `kw` columns.
+- **Transformer Analysis**: Optionally analyzes load profiles against transformer KVA ratings.
+- **Visualization**: Generates time-based load profile graphs.
+- **Metrics Calculation**: Load Factor, Diversity Factor, Coincidence Factor, and more.
+- **Error Handling**: Validates input data and provides detailed error messages.
+- **GUI Interface**: Easy-to-use graphical interface for selecting files and configuring settings.
 
 ---
 
@@ -160,18 +154,17 @@ Below is a concise list of all functions with a short synopsis:
 |   |   onefile-gui-external.spec
 |   |   requirements.txt
 |   |   build-onefile.ps1
-|   |
-|
 ```
 ## Usage
 
 ### Graphical Interface (GUI)
 
-1. Run the GUI (command line):
-   `> python ./src/lpd-gui.py
-   Launch python application directly
-   `> ./dist/lpd-suite.exe
-   Launch one-file windows executable
+1.    Launch one-file windows executable
+
+Run the GUI (command line):   `> python ./src/lpd-gui.py`
+
+Launch python application directly   `> ./dist/lpd-suite.exe`
+   
    
 2. Follow the on-screen instructions:
    - Select the input CSV file.
@@ -208,9 +201,10 @@ meter,date,time,kw
 - **Visualization Graph**: A time-series plot showing load percentages against transformer capacity thresholds.
 
 ## Compiler syntax
-`powershell -ExecutionPolicy Bypass -File .\build-onefile.ps1
+`> powershell -ExecutionPolicy Bypass -File .\build-onefile.ps1`
 
-`powershell -ExecutionPolicy Bypass -File .\build-onefile.ps1 -Clean  
+`> powershell -ExecutionPolicy Bypass -File .\build-onefile.ps1 -Clean`
+
 Will delete /build and /dist folders
 
 ## Documentation
@@ -218,5 +212,4 @@ Additional documentation is available:
 [GitHub Repository](https://github.com/michalcza/load-profile)
   
 ## Author
-- **Michal Czarnecki**
-- Email: mczarnecki@gmail.com
+**Michal Czarnecki** (mczarnecki@gmail.com)
